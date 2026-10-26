@@ -1,0 +1,41 @@
+{
+  "name": "@local/dsh-provider-card",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "切换模型时在会话输入框旁展示一张角色卡",
+  "license": "MIT",
+  "exports": {
+    ".": "./index.js",
+    "./client": "./src/client.js",
+    "./locale/*.json": "./src/locale/*.json",
+    "./icon": "./src/icon.svg"
+  },
+  "files": [
+    "index.js",
+    "lib/**/*.cjs",
+    "data/*.json",
+    "src/client.js",
+    "src/locale/*.json",
+    "src/i18n/*.json",
+    "src/icon.svg",
+    "seed/**",
+    "cordis.patch.yml",
+    "LICENSE",
+    "ASSET_LICENSE.md",
+    "README.md"
+  ],
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "platform": "web",
+      "immediately": true,
+      "inject": [
+        "@deepseek-ai/dsh-client-ui-conversation",
+        "@deepseek-ai/dsh-client-locale"
+      ]
+    }
+  }
+}

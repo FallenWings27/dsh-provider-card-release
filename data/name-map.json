@@ -1,0 +1,343 @@
+{
+  "$schema_version": 1,
+  "version": 1,
+  "updated_at": "2026-10-24",
+  "provider_routes": [
+    {
+      "provider": "cc-z-ai",
+      "route": "cc-z-ai/glm"
+    },
+    {
+      "provider": "claude",
+      "route": "claude/opus"
+    },
+    {
+      "provider": "codex",
+      "route": "codex/astra"
+    },
+    {
+      "provider": "commandcode",
+      "route": "commandcode/ds"
+    },
+    {
+      "provider": "deepseek-official",
+      "route": "deepseek-official/ds"
+    },
+    {
+      "provider": "longcat",
+      "route": "longcat/longcat"
+    },
+    {
+      "provider": "minimax-code",
+      "route": "minimax/m3.1"
+    },
+    {
+      "provider": "minimax-code-2",
+      "route": "minimax/m3.1-2"
+    }
+  ],
+  "entries": [
+    {
+      "route": "wb-cn/ds",
+      "provider": "wbhub-cn",
+      "model": "deepseek-v4.1-flash",
+      "dataset_model": "deepseek-v4.1-flash-1017",
+      "confirmed": true
+    },
+    {
+      "route": "wb-glob/ds",
+      "provider": "wbhub-intl",
+      "model": "deepseek-v4.1-flash",
+      "dataset_model": "deepseek-v4.1-flash-1017",
+      "confirmed": true
+    },
+    {
+      "route": "wb-cn/glm",
+      "provider": "wbhub-cn",
+      "model": "glm-5.3-flash",
+      "dataset_model": "glm-5.3-flash",
+      "confirmed": true
+    },
+    {
+      "route": "wb-cn/hy3",
+      "provider": "wbhub-cn",
+      "model": "hy3",
+      "dataset_model": "hy3",
+      "confirmed": true
+    },
+    {
+      "route": "wb-cn/hy4",
+      "provider": "wbhub-cn",
+      "model": "hy4-preview-f",
+      "dataset_model": "hy4-preview-f",
+      "confirmed": true
+    },
+    {
+      "route": "wb-glob/hy3",
+      "provider": "wbhub-intl",
+      "model": "hy3",
+      "dataset_model": "hy3",
+      "confirmed": true
+    },
+    {
+      "route": "wb-cn/hy3b",
+      "provider": "wbhub-cn",
+      "model": "hy3-b",
+      "dataset_model": "hy3",
+      "confirmed": true
+    },
+    {
+      "route": "wb-glob/hy4f",
+      "provider": "wbhub-intl",
+      "model": "hy4-preview-f",
+      "dataset_model": "hy4-preview-f",
+      "confirmed": false
+    },
+    {
+      "route": "wb-cn/bunny",
+      "provider": "wbhub-cn",
+      "model": "space-bunny",
+      "dataset_model": null,
+      "confirmed": false
+    },
+    {
+      "route": "wb-cn/kimi3",
+      "provider": "wbhub-cn",
+      "model": "kimi-k3",
+      "dataset_model": "kimi-k3",
+      "confirmed": false,
+      "ledger_keys": [
+        "wbhub-cn:kimi-k3-1"
+      ]
+    },
+    {
+      "route": null,
+      "provider": "kimi-coding",
+      "model": "k3",
+      "dataset_model": "kimi-k3",
+      "confirmed": true,
+      "ledger_keys": [
+        "kimi-coding:k3"
+      ]
+    },
+    {
+      "route": null,
+      "provider": "kimi-coding",
+      "model": "k3-256k",
+      "dataset_model": "kimi-k3",
+      "confirmed": true,
+      "ledger_keys": [
+        "kimi-coding:k3-256k"
+      ]
+    },
+    {
+      "route": "wb-cn/step5",
+      "provider": "wbhub-cn",
+      "model": "step-5-preview",
+      "dataset_model": "step-5-preview",
+      "confirmed": false
+    },
+    {
+      "route": "wb-cn/mimo-pro",
+      "provider": "wbhub-cn",
+      "model": "mimo-v2.6-pro",
+      "dataset_model": "mimo-v2.6-pro",
+      "confirmed": false,
+      "ledger_keys": [
+        "wbhub-cn:mimo-v2.6-pro"
+      ]
+    },
+    {
+      "route": "wb-glob/step5",
+      "provider": "wbhub-intl",
+      "model": "step-5-preview",
+      "dataset_model": "step-5-preview",
+      "confirmed": false
+    },
+    {
+      "route": "ag/gemini",
+      "provider": "antigravity",
+      "model": "gemini-3.8-flash-tiered",
+      "dataset_model": "gemini-3.8-flash",
+      "confirmed": true
+    },
+    {
+      "route": "minimax/m3.1",
+      "provider": "minimax-code",
+      "model": "MiniMax-M3.1-Flash-Preview",
+      "dataset_model": "MiniMax-M3.1-Flash-Preview",
+      "confirmed": true,
+      "card": {
+        "provider": "minimax-code",
+        "model": "MiniMax-M3.1-Flash-Preview"
+      }
+    },
+    {
+      "route": "minimax/m3.1-2",
+      "provider": "minimax-code-2",
+      "model": "MiniMax-M3.1-Flash-Preview",
+      "dataset_model": "MiniMax-M3.1-Flash-Preview",
+      "confirmed": true,
+      "ledger_keys": [
+        "minimax-code-2:MiniMax-M3.1-Flash-Preview"
+      ],
+      "card": {
+        "provider": "minimax-code",
+        "model": "MiniMax-M3.1-Flash-Preview"
+      }
+    },
+    {
+      "route": "zcode-glm/glm",
+      "provider": "zcode-glm",
+      "model": "GLM-5.3-Flash",
+      "dataset_model": "glm-5.3-flash",
+      "confirmed": true
+    },
+    {
+      "route": "zcode-glm/glm-5.3",
+      "provider": "zcode-glm",
+      "model": "GLM-5.3",
+      "dataset_model": "glm-5.3",
+      "confirmed": true
+    },
+    {
+      "route": "commandcode/ds",
+      "provider": "commandcode",
+      "model": "deepseek/deepseek-v4.1-flash",
+      "dataset_model": "deepseek-v4.1-flash",
+      "confirmed": false
+    },
+    {
+      "route": "cc-z-ai/glm",
+      "provider": "cc-z-ai",
+      "model": null,
+      "dataset_model": "glm-5.3-flash",
+      "confirmed": false
+    },
+    {
+      "route": "deepseek-official/ds",
+      "provider": "deepseek-official",
+      "model": "deepseek-flash",
+      "dataset_model": "deepseek-v4.1-flash",
+      "confirmed": false
+    },
+    {
+      "route": "claude/opus",
+      "provider": "claude",
+      "model": "claude-opus-5.5",
+      "dataset_model": "claude-opus-5.5",
+      "confirmed": true,
+      "ledger_keys": [
+        "anthropic:claude-opus-5-5",
+        "claude:claude-opus-5-5"
+      ]
+    },
+    {
+      "route": "codex/astra",
+      "provider": "codex",
+      "model": "gpt-6-astra",
+      "dataset_model": "gpt-6-astra",
+      "confirmed": true
+    },
+    {
+      "route": "longcat/longcat",
+      "provider": "longcat",
+      "model": "LongCat-2.5-Preview",
+      "dataset_model": "LongCat-2.5-Preview",
+      "confirmed": true
+    },
+    {
+      "route": null,
+      "provider": "grok",
+      "model": "grok-4.6",
+      "dataset_model": null,
+      "confirmed": true
+    },
+    {
+      "route": null,
+      "provider": "xiaomi-token-plan-cn",
+      "model": "mimo-v2.6-flash",
+      "dataset_model": "mimo-v2.6-flash",
+      "confirmed": true
+    },
+    {
+      "route": null,
+      "provider": "claude",
+      "model": "claude-opus-5-5",
+      "dataset_model": "claude-opus-5.5",
+      "confirmed": true,
+      "ledger_keys": [
+        "anthropic:claude-opus-5-5",
+        "claude:claude-opus-5-5"
+      ]
+    },
+    {
+      "route": null,
+      "provider": "codex",
+      "model": "gpt-6.1-sol",
+      "dataset_model": "gpt-6.1-sol",
+      "confirmed": true,
+      "ledger_keys": [
+        "codex:gpt-6.1-sol"
+      ]
+    },
+    {
+      "route": null,
+      "provider": "dsh-provider-qoder",
+      "model": "qfmodel",
+      "dataset_model": null,
+      "confirmed": true,
+      "ledger_keys": [
+        "dsh-provider-qoder:qfmodel"
+      ]
+    },
+    {
+      "route": null,
+      "provider": "dsh-provider-qoder",
+      "model": "Qwen3.8-Flash",
+      "dataset_model": "qwen3.8-flash",
+      "confirmed": true
+    },
+    {
+      "route": null,
+      "provider": "dsh-provider-qoder",
+      "model": "Qwen3.8-Max",
+      "dataset_model": "qwen3.8-max",
+      "confirmed": true,
+      "ledger_keys": [
+        "dsh-provider-qoder:qmodel_38max"
+      ]
+    },
+    {
+      "route": null,
+      "provider": "sensenova",
+      "model": "sensenova-6.8-flash-lite",
+      "dataset_model": null,
+      "confirmed": true
+    },
+    {
+      "route": null,
+      "provider": "commandcode",
+      "model": "inclusionai/ling-3.1-flash",
+      "dataset_model": null,
+      "confirmed": true,
+      "ledger_keys": [
+        "commandcode:inclusionai/ling-3.1-flash:free"
+      ]
+    },
+    {
+      "route": null,
+      "provider": "unisound",
+      "model": "u2-flash",
+      "dataset_model": null,
+      "confirmed": true
+    },
+    {
+      "route": null,
+      "provider": "wbhub-cn",
+      "model": "kimi-k3.1-pro",
+      "dataset_model": "kimi-k3.1-pro",
+      "confirmed": true
+    }
+  ]
+}

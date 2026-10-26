@@ -1,0 +1,2119 @@
+{
+  "version": 1,
+  "cards": [
+    {
+      "provider": "antigravity",
+      "model": "gemini-3.8-flash-tiered",
+      "c": [
+        "#7d9bff",
+        "#c08cff"
+      ],
+      "no": "001",
+      "visualFamily": "gemini",
+      "forms": {
+        "flash": {
+          "alias": "电光故障猫",
+          "theme": "spark",
+          "grade": 1,
+          "availability": "listed",
+          "dialogue": {
+            "effort": {
+              "low": {
+                "level": "form",
+                "lines": [
+                  "两爪子拍完，收工。"
+                ]
+              },
+              "medium": {
+                "level": "form",
+                "lines": [
+                  "尾巴一甩，一个一个试过去。"
+                ]
+              },
+              "high": {
+                "level": "form",
+                "lines": [
+                  "电弧全开，本喵超频给你算！"
+                ]
+              }
+            }
+          }
+        },
+        "argon": {
+          "alias": "氩光惰性星云魔女",
+          "theme": "nebula",
+          "grade": 2,
+          "availability": "listed",
+          "persona": {
+            "name": "氩眠",
+            "latin": "ARGON",
+            "title": "懒得发光的星云魔女",
+            "summon": "……谁把我从星云里叫醒的？算了，坐吧，锅里正好温着一个答案。",
+            "effort": {
+              "low": "氩是惰性的，我也是——这点小事，搅一勺就够。",
+              "medium": "眼睛睁开一半，够用了。",
+              "high": "斗篷掀开，整片星云陪你熬到底。"
+            },
+            "lowQuota": "星雾快散了……{lbl} 只剩 {left}%，{reset} 后再来摇醒我。",
+            "skills": [
+              [
+                "惰性外壳",
+                "看着懒，答得稳——轻易不起反应，一起反应就是定论。",
+                "context 1,048,576（宿主 google-vertex 段 contextWindow）；限流未核实（宿主与数据面均无该字段）"
+              ],
+              [
+                "坩埚慢炖",
+                "急火熬不出好汤。给我时间，我还你一整锅。",
+                "reasoningEfforts 宿主未声明（该段无此键）⇒ 实际思考档未核实；maxTokens 65536（同段）"
+              ]
+            ]
+          },
+          "dialogue": {
+            "effort": {
+              "low": {
+                "level": "form",
+                "lines": [
+                  "氩是惰性的，我也是——这点小事，搅一勺就够。"
+                ]
+              },
+              "medium": {
+                "level": "form",
+                "lines": [
+                  "眼睛睁开一半，够用了。"
+                ]
+              },
+              "high": {
+                "level": "form",
+                "lines": [
+                  "斗篷掀开，整片星云陪你熬到底。"
+                ]
+              }
+            }
+          }
+        }
+      },
+      "formRules": [
+        {
+          "kind": "token",
+          "token": "flash",
+          "form": "flash"
+        },
+        {
+          "kind": "token",
+          "token": "argon",
+          "form": "argon"
+        }
+      ],
+      "ctx": "1M",
+      "efforts": [
+        "low",
+        "medium",
+        "high"
+      ],
+      "def": "high",
+      "base": {
+        "智力": 76,
+        "编码": 72,
+        "速度": 90,
+        "稳定": 62,
+        "性价比": 88,
+        "上下文": 95
+      },
+      "baseSrc": {
+        "智力": "手填评估 = 76（manual，非公开基准，2026-10-20 登记）",
+        "编码": "手填评估 = 72（manual，非公开基准，2026-10-20 登记）",
+        "速度": "手填评估 = 90（manual，非公开基准，2026-10-20 登记）",
+        "稳定": "手填评估 = 62（manual，非公开基准，2026-10-20 登记）",
+        "性价比": "手填评估 = 88（manual，非公开基准，2026-10-20 登记）",
+        "上下文": "手填评估 = 95（manual，非公开基准，2026-10-20 登记）"
+      },
+      "quota": {
+        "windows": [
+          {
+            "k": "5h",
+            "used": 38,
+            "reset": 130
+          },
+          {
+            "k": "周",
+            "used": 55,
+            "reset": 6000
+          }
+        ]
+      },
+      "persona": {
+        "name": "星喵",
+        "latin": "NYA",
+        "title": "踩着星光狂飙的故障极其猫",
+        "summon": "异色瞳锁定！本喵顺着反重力星光滑铲驾到——说吧，今天先炸哪块代码？",
+        "effort": {
+          "low": "肉垫随便拍两下就搞定啦！",
+          "medium": "猫耳竖起来了，稍微走点心～",
+          "high": "漫天四角星全亮！看本喵超频推演！"
+        },
+        "lowQuota": "星光不够飘啦！{lbl} 只剩 {left}%，{reset} 后本喵睡醒再战！",
+        "skills": [
+          [
+            "炸毛冷静期",
+            "一分钟内狂薅本喵尾巴？罚你原地等五分钟！"
+          ],
+          [
+            "星芒三段变速",
+            "平扑、蓄力还是满星暴走？档位随你拨！"
+          ]
+        ]
+      }
+    },
+    {
+      "provider": "longcat",
+      "model": "LongCat-2.5-Preview",
+      "c": [
+        "#ffc75a",
+        "#ff7a45"
+      ],
+      "no": "002",
+      "ctx": "1M",
+      "efforts": [
+        "none",
+        "high"
+      ],
+      "def": "none",
+      "family": true,
+      "members": [
+        "LongCat-2.5-Preview",
+        "LongCat-2.0"
+      ],
+      "tiers": {
+        "2.5": 0,
+        "2.0": 1
+      },
+      "base": {
+        "智力": null,
+        "编码": null,
+        "速度": null,
+        "稳定": null,
+        "性价比": null,
+        "上下文": null
+      },
+      "unranked": [
+        "智力",
+        "编码",
+        "速度",
+        "稳定",
+        "性价比",
+        "上下文"
+      ],
+      "quota": {
+        "pack": {
+          "left": 4830,
+          "total": 6000,
+          "unit": "万 tokens"
+        }
+      },
+      "persona": {
+        "name": "龙猫",
+        "latin": "LONGMAO",
+        "title": "顶着龙角猫耳的百万卷书虫",
+        "summon": "别盯着我的龙角和猫耳看啦！不管龙还是猫，能吞下百万字的就是好书虫～",
+        "effort": {
+          "none": "眼镜都不用推，瞄一眼就懂。",
+          "high": "龙角发烫啦，把整座书山给你翻透！"
+        },
+        "skills": [
+          [
+            "旧卷免单",
+            "读过的书都记在脑子里啦，旧账分文不收！"
+          ],
+          [
+            "龙胃吞万卷",
+            "一百万字的砖头书连带插图，一口闷下去！"
+          ]
+        ]
+      }
+    },
+    {
+      "provider": "zcode-glm",
+      "model": "GLM-5.3-Flash",
+      "c": [
+        "#46d4cc",
+        "#5a86ff"
+      ],
+      "no": "003",
+      "visualFamily": "glm",
+      "forms": {
+        "flash": {
+          "alias": "被蓝图绊倒的黑狐少女",
+          "theme": "blueprint",
+          "grade": 1,
+          "availability": "listed",
+          "dialogue": {
+            "effort": {
+              "low": {
+                "level": "form",
+                "lines": [
+                  "把蓝图捡起来，这就开工。"
+                ]
+              },
+              "high": {
+                "level": "form",
+                "lines": [
+                  "摔过一回就记住了，狐耳立起来，这回不慌。"
+                ]
+              },
+              "max": {
+                "level": "form",
+                "lines": [
+                  "狐毛都炸了——不过活儿还是干完了。"
+                ]
+              }
+            }
+          }
+        },
+        "flagship": {
+          "alias": "Z 之书总工",
+          "theme": "blackgold",
+          "grade": 0,
+          "availability": "listed",
+          "dialogue": {
+            "effort": {
+              "low": {
+                "level": "form",
+                "lines": [
+                  "Z 之书翻到目录那一页。"
+                ]
+              },
+              "high": {
+                "level": "form",
+                "lines": [
+                  "黑金封面摊开，逐条批注。"
+                ]
+              },
+              "max": {
+                "level": "form",
+                "lines": [
+                  "全卷展开，狐尾一卷，连边角注都给它定下来。"
+                ]
+              }
+            }
+          }
+        }
+      },
+      "formRules": [
+        {
+          "kind": "token",
+          "token": "flash",
+          "form": "flash"
+        },
+        {
+          "kind": "token",
+          "token": "flagship",
+          "form": "flagship"
+        },
+        {
+          "kind": "default",
+          "form": "flagship"
+        }
+      ],
+      "variants": [
+        {
+          "model": "GLM-5.3"
+        }
+      ],
+      "aliases": [
+        {
+          "provider": "wbhub-cn",
+          "model": "glm-5.3-flash",
+          "shareScores": true
+        }
+      ],
+      "ctx": "200K",
+      "efforts": [
+        "low",
+        "high",
+        "max"
+      ],
+      "def": "max",
+      "base": {
+        "智力": 76,
+        "编码": 80,
+        "速度": 78,
+        "稳定": 80,
+        "性价比": 80,
+        "上下文": 72
+      },
+      "baseSrc": {
+        "智力": "手填评估 = 76（manual，非公开基准，来源未登记，2026-10-20 补记）",
+        "编码": "手填评估 = 80（manual，非公开基准，来源未登记，2026-10-20 补记）",
+        "速度": "手填评估 = 78（manual，非公开基准，来源未登记，2026-10-20 补记）",
+        "稳定": "手填评估 = 80（manual，非公开基准，来源未登记，2026-10-20 补记）",
+        "性价比": "手填评估 = 80（manual，非公开基准，来源未登记，2026-10-20 补记）",
+        "上下文": "手填评估 = 72（manual，非公开基准，来源未登记，2026-10-20 补记）"
+      },
+      "quota": {
+        "windows": [
+          {
+            "k": "5h",
+            "used": 22,
+            "reset": 220
+          },
+          {
+            "k": "周",
+            "used": 41,
+            "reset": 4300
+          }
+        ]
+      },
+      "persona": {
+        "name": "清弦",
+        "latin": "QINGXIAN",
+        "title": "手捧Z之书的学院派黑狐",
+        "summon": "狐尾已为您拂去桌尘。翻开这本Z之书吧，无论何种难题，清弦定当倾力推演。",
+        "effort": {
+          "low": "略翻数页，为您摘出要略。",
+          "high": "研墨执笔，按章法为您细细梳理。",
+          "max": "Z之书全卷展开，倾尽狐火为您定夺。"
+        },
+        "peak": "工作日午后两点至六点，此书翻一页记两份账。不急之事，请稍候再来。",
+        "off": "此刻登门只收半价，狐尾为证，机不可失。",
+        "skills": [
+          [
+            "错峰筹算",
+            "午后忙碌翻倍，闲时登门半价，智者自会择时。"
+          ],
+          [
+            "满卷出阵",
+            "清弦行事从不藏拙，起手便是全盛之姿。"
+          ]
+        ]
+      }
+    },
+    {
+      "provider": "minimax-code",
+      "model": "MiniMax-M3.1-Flash-Preview",
+      "c": [
+        "#ff7062",
+        "#ffb24e"
+      ],
+      "no": "004",
+      "aliases": [
+        {
+          "provider": "minimax-code-2",
+          "model": "MiniMax-M3.1-Flash-Preview",
+          "shareScores": true
+        }
+      ],
+      "family": true,
+      "members": [
+        "MiniMax-M3.1-Flash-Preview",
+        "MiniMax-M3.1-Flash",
+        "MiniMax-M3"
+      ],
+      "tiers": {
+        "m3.1-flash-preview": 0,
+        "m3.1-flash": 1,
+        "m3": 2
+      },
+      "ctx": "200K",
+      "efforts": [
+        "low",
+        "medium",
+        "max"
+      ],
+      "def": "max",
+      "base": {
+        "智力": null,
+        "编码": null,
+        "速度": null,
+        "稳定": null,
+        "性价比": null,
+        "上下文": null
+      },
+      "unranked": [
+        "智力",
+        "编码",
+        "速度",
+        "稳定",
+        "性价比",
+        "上下文"
+      ],
+      "quota": {
+        "windows": [
+          {
+            "k": "5h",
+            "used": 84,
+            "reset": 52
+          },
+          {
+            "k": "周",
+            "used": 33,
+            "reset": 8200
+          }
+        ]
+      },
+      "persona": {
+        "name": "麦麦",
+        "latin": "MAIMAI",
+        "title": "左手海螺右手录音笔的记者",
+        "summon": "咔哒，录音笔开机！海螺刚收到你的通告，记者麦麦已就位，直接切入正题吧！",
+        "effort": {
+          "low": "现场三十秒快讯，直接给结论！",
+          "medium": "常规采编流程，录音整理得明明白白。",
+          "max": "深度调查专题！胶片转满，挖到底层！"
+        },
+        "lowQuota": "录音笔闪红灯！{lbl} 还剩 {left}%，{reset} 后换个电池马上返场！",
+        "skills": [
+          [
+            "头条满功率",
+            "不喊最高档我就按常规跑，想上头版记得拉满！"
+          ],
+          [
+            "全天候外勤",
+            "写稿、改码还是跑腿？别客气，通告单全接！"
+          ],
+          [
+            "同袍三档",
+            "海螺最灵的是 M3.1-Flash-Preview，稳跑的是 M3.1-Flash，老将是 M3，同一张脸三个型号。"
+          ]
+        ]
+      }
+    },
+    {
+      "provider": "grok",
+      "model": "grok-4.6",
+      "c": [
+        "#cfd6e6",
+        "#7584a8"
+      ],
+      "no": "005",
+      "ctx": "256K",
+      "efforts": [
+        "low",
+        "high"
+      ],
+      "def": "high",
+      "family": true,
+      "members": [
+        "grok-4.7",
+        "grok-4.7-build-fast",
+        "grok-4.6",
+        "grok-4.5"
+      ],
+      "tiers": {
+        "4.7": 0,
+        "4.6": 1,
+        "4.5": 2
+      },
+      "base": {
+        "智力": null,
+        "编码": null,
+        "速度": null,
+        "稳定": null,
+        "性价比": null,
+        "上下文": null
+      },
+      "unranked": [
+        "智力",
+        "编码",
+        "速度",
+        "稳定",
+        "性价比",
+        "上下文"
+      ],
+      "quota": {
+        "unknown": true
+      },
+      "persona": {
+        "name": "阿讯",
+        "latin": "XUN",
+        "title": "扛X巨斧劈热搜的毒舌哥特",
+        "summon": "哈？现在才来问？本小姐拎着X巨斧劈开热搜的时候，你连瓜田门还没摸着呢！",
+        "effort": {
+          "low": "随手挥一斧，省流版拿去，别嫌扎心。",
+          "high": "巨斧蓄满力！连底裤级信源都给你扒光！"
+        },
+        "unknown": "哈？查本小姐的钱包？斧头都没空看账，你自己去翻。",
+        "skills": [
+          [
+            "热搜断头台",
+            "几十条链接一块砸过来，一分钟内给你劈出真相！"
+          ],
+          [
+            "同袍四档",
+            "抡斧最狠的是 4.7，稳着劈的是 4.6，收着点的是 4.5，同一张脸四个型号。"
+          ]
+        ]
+      }
+    },
+    {
+      "provider": "xiaomi-token-plan-cn",
+      "model": "mimo-v2.6-flash",
+      "c": [
+        "#ff9d55",
+        "#ffd8b0"
+      ],
+      "no": "006",
+      "ctx": "128K",
+      "efforts": [
+        "none"
+      ],
+      "def": "none",
+      "family": true,
+      "members": [
+        "mimo-v2.6-flash",
+        "mimo-v2.6-pro"
+      ],
+      "tiers": {
+        "pro": 0,
+        "flash": 1
+      },
+      "base": {
+        "智力": null,
+        "编码": null,
+        "速度": null,
+        "稳定": null,
+        "性价比": null,
+        "上下文": null
+      },
+      "unranked": [
+        "智力",
+        "编码",
+        "速度",
+        "稳定",
+        "性价比",
+        "上下文"
+      ],
+      "quota": {
+        "windows": [
+          {
+            "k": "5h",
+            "used": 12,
+            "reset": 260
+          },
+          {
+            "k": "月",
+            "used": 28,
+            "reset": 27000
+          }
+        ]
+      },
+      "persona": {
+        "name": "米莫",
+        "latin": "MIMO",
+        "title": "怀抱米兔镇守终局的焊门员",
+        "summon": "抱紧怀里的白兔……前面的通道全崩了？把门焊死，剩下的烂摊子交给我收尾。",
+        "effort": {
+          "none": "扣好兔耳兜帽，按标准工序稳稳推进。"
+        },
+        "off": "夜里我打八折……抱着兔子陪你熬，别说我没照顾你。",
+        "skills": [
+          [
+            "终局焊门员",
+            "别家全军覆没的烂摊子，我来守最后一道防线。"
+          ],
+          [
+            "零帧直觉斩",
+            "不整花哨的思考档位，出手就是最优解。"
+          ],
+          [
+            "同袍两档",
+            "焊门的是 Pro，轻骑的是 Flash，同一身白橙工装。"
+          ]
+        ]
+      }
+    },
+    {
+      "provider": "wbhub-cn",
+      "model": "deepseek-v4.1-flash",
+      "c": [
+        "#6fd3ff",
+        "#3b6fd4"
+      ],
+      "no": "007",
+      "visualFamily": "deepseek",
+      "forms": {
+        "flash": {
+          "alias": "捧饭盆呆呆肥鱼",
+          "theme": "swift",
+          "grade": 1,
+          "availability": "listed",
+          "dialogue": {
+            "effort": {
+              "low": {
+                "level": "form",
+                "lines": [
+                  "马克笔拔盖，三笔画完。"
+                ]
+              },
+              "medium": {
+                "level": "form",
+                "lines": [
+                  "先推一步再落笔，稳稳的。"
+                ]
+              },
+              "high": {
+                "level": "form",
+                "lines": [
+                  "笔尖快得只剩一道蓝光。"
+                ]
+              }
+            }
+          }
+        },
+        "pro": {
+          "alias": "深海星盘智者",
+          "theme": "abyss",
+          "grade": 0,
+          "availability": "listed",
+          "dialogue": {
+            "effort": {
+              "low": {
+                "level": "form",
+                "lines": [
+                  "星盘一拨，方向就清楚了。"
+                ]
+              },
+              "medium": {
+                "level": "form",
+                "lines": [
+                  "星轨排开，慢慢推。"
+                ]
+              },
+              "high": {
+                "level": "form",
+                "lines": [
+                  "整片深海都亮起来，答案藏不住。"
+                ]
+              }
+            }
+          }
+        }
+      },
+      "formRules": [
+        {
+          "kind": "token",
+          "token": "flash",
+          "form": "flash"
+        },
+        {
+          "kind": "token",
+          "token": "pro",
+          "form": "pro"
+        }
+      ],
+      "aliases": [
+        {
+          "provider": "wbhub-intl",
+          "model": "deepseek-v4.1-flash",
+          "shareScores": true
+        },
+        {
+          "provider": "deepseek-official",
+          "model": "deepseek-flash",
+          "shareScores": true
+        },
+        {
+          "provider": "commandcode",
+          "model": "deepseek/deepseek-v4.1-flash",
+          "shareScores": true
+        }
+      ],
+      "ctx": "1M",
+      "efforts": [],
+      "def": null,
+      "base": {
+        "智力": 39,
+        "编码": 74.5,
+        "速度": null,
+        "稳定": null,
+        "性价比": null,
+        "上下文": null
+      },
+      "baseSrc": {
+        "智力": "AA-Intelligence = 39（第三方评测，origin supplement-2026-10-12）",
+        "编码": "Terminal-Bench-2.1(Vals) = 74.5（第三方评测，origin supplement-2026-10-12）"
+      },
+      "unranked": [
+        "速度",
+        "稳定",
+        "性价比",
+        "上下文"
+      ],
+      "quota": {
+        "unknown": true
+      },
+      "persona": {
+        "name": "小鲸",
+        "latin": "WHALE",
+        "title": "揣满马克笔的傲娇蓝大肥鱼",
+        "summon": "蓝色马克笔拔盖！难题尽管砸来，我先推导再落笔——喂，再叫大肥鱼拍飞你哦！",
+        "effort": {},
+        "unknown": "额度记在通道账上，不在大肥鱼身上——我只管游不游得动！",
+        "skills": [
+          [
+            "考神自报分",
+            "三千四百七十一分！虽是自家报喜，实力可不虚！"
+          ],
+          [
+            "深海百万卷",
+            "一百万字的大部头尽管铺开，本鲸一口气游到底！"
+          ],
+          [
+            "轻快独立卡",
+            "饭盆在手是捧饭盆呆呆肥鱼，星盘在手是深海星盘智者，同一条小鲸两副行头。"
+          ]
+        ]
+      }
+    },
+    {
+      "provider": "wbhub-cn",
+      "model": "hy3",
+      "c": [
+        "#b6e06a",
+        "#5c9e3a"
+      ],
+      "no": "008",
+      "aliases": [
+        {
+          "provider": "wbhub-intl",
+          "model": "hy3",
+          "shareScores": true
+        }
+      ],
+      "family": true,
+      "members": [
+        "hy3",
+        "hy4-preview"
+      ],
+      "tiers": {
+        "hy4-preview": 0,
+        "hy3": 1
+      },
+      "ctx": "192K",
+      "efforts": [],
+      "def": null,
+      "base": {
+        "智力": null,
+        "编码": null,
+        "速度": null,
+        "稳定": null,
+        "性价比": null,
+        "上下文": null
+      },
+      "unranked": [
+        "智力",
+        "编码",
+        "速度",
+        "稳定",
+        "性价比",
+        "上下文"
+      ],
+      "quota": {
+        "unknown": true
+      },
+      "persona": {
+        "name": "拓荒",
+        "latin": "HY3",
+        "title": "系红围巾踏雪修路的企鹅娘",
+        "summon": "系紧红围巾，指尖的企鹅挂件轻晃。榜单虚名无所谓，路是我一步步踩出来的。",
+        "effort": {},
+        "unknown": "额度归通道管，我只管把雪地里的路踩出来。",
+        "skills": [
+          [
+            "单榜实干派",
+            "只交了工程实战这一份答卷，虚头巴脑的榜我不凑。"
+          ],
+          [
+            "十九万雪原",
+            "十九万字的雪原够宽敞了，大中型工程尽管往里铺。"
+          ],
+          [
+            "双生不混名",
+            "我是正统拓荒者，带后缀的是旁支，可别认错人。"
+          ],
+          [
+            "同袍两档",
+            "族里两位：新雪线 hy4-preview，老踏脚 hy3，同一张脸两个型号。"
+          ]
+        ]
+      }
+    },
+    {
+      "provider": "claude",
+      "model": "claude-opus-5-5",
+      "c": [
+        "#ff9a52",
+        "#8f8fa8"
+      ],
+      "no": "009",
+      "ctx": "200K",
+      "efforts": [
+        "low",
+        "medium",
+        "high"
+      ],
+      "def": "high",
+      "family": true,
+      "members": [
+        "claude-opus-5-5",
+        "claude-sonnet-5-5",
+        "claude-fable-5-1",
+        "claude-haiku-5-5"
+      ],
+      "tiers": {
+        "fable": 0,
+        "opus": 1,
+        "sonnet": 2,
+        "haiku": 3
+      },
+      "visualFamily": "anthropic",
+      "forms": {
+        "haiku": {
+          "alias": "小抄写员",
+          "theme": "blossom",
+          "grade": 3,
+          "availability": "listed",
+          "dialogue": {
+            "effort": {
+              "low": {
+                "level": "form",
+                "lines": [
+                  "小楷一行行誊过去，橙花都没蹭乱。"
+                ]
+              },
+              "medium": {
+                "level": "form",
+                "lines": [
+                  "一页誊完，烫金的边角也没歪。"
+                ]
+              },
+              "high": {
+                "level": "form",
+                "lines": [
+                  "整卷誊清，橙花安安静静压在发梢。"
+                ]
+              }
+            }
+          }
+        },
+        "sonnet": {
+          "alias": "学院钢笔少女",
+          "theme": "scroll",
+          "grade": 2,
+          "availability": "listed",
+          "dialogue": {
+            "effort": {
+              "low": {
+                "level": "form",
+                "lines": [
+                  "钢笔拧开，先在页角描一朵小橙花。"
+                ]
+              },
+              "medium": {
+                "level": "form",
+                "lines": [
+                  "笔记摊开，纲目列好再逐条填。"
+                ]
+              },
+              "high": {
+                "level": "form",
+                "lines": [
+                  "钢尖走完最后一笔，烫金书页一样干净。"
+                ]
+              }
+            }
+          }
+        },
+        "opus": {
+          "alias": "橙花典籍官",
+          "theme": "opera",
+          "grade": 1,
+          "availability": "listed",
+          "dialogue": {
+            "effort": {
+              "low": {
+                "level": "form",
+                "lines": [
+                  "书页合上，烫金边只留最要紧的那一句。"
+                ]
+              },
+              "medium": {
+                "level": "form",
+                "lines": [
+                  "来龙去脉拆成几段，橙花也不乱。"
+                ]
+              },
+              "high": {
+                "level": "form",
+                "lines": [
+                  "前后推敲到没有缝隙，烫金典籍才敢落笔。"
+                ]
+              }
+            }
+          }
+        },
+        "fable": {
+          "alias": "黄金法典女皇",
+          "theme": "myth",
+          "grade": 0,
+          "availability": "listed",
+          "dialogue": {
+            "effort": {
+              "low": {
+                "level": "form",
+                "lines": [
+                  "金冕微倾，一句定音。"
+                ]
+              },
+              "medium": {
+                "level": "family",
+                "from": "persona.effort.medium"
+              },
+              "high": {
+                "level": "form",
+                "lines": [
+                  "法典全开，橙金满身，天下的规矩由我重写一遍。"
+                ]
+              }
+            }
+          }
+        }
+      },
+      "formRules": [
+        {
+          "kind": "token",
+          "token": "haiku",
+          "form": "haiku"
+        },
+        {
+          "kind": "token",
+          "token": "sonnet",
+          "form": "sonnet"
+        },
+        {
+          "kind": "token",
+          "token": "opus",
+          "form": "opus"
+        },
+        {
+          "kind": "token",
+          "token": "fable",
+          "form": "fable"
+        }
+      ],
+      "base": {
+        "智力": null,
+        "编码": null,
+        "速度": null,
+        "稳定": null,
+        "性价比": null,
+        "上下文": null
+      },
+      "unranked": [
+        "智力",
+        "编码",
+        "速度",
+        "稳定",
+        "性价比",
+        "上下文"
+      ],
+      "quota": {
+        "unknown": true
+      },
+      "persona": {
+        "name": "花音",
+        "latin": "KANON",
+        "title": "鬓簪橙花的谨慎派典籍官",
+        "summon": "橙花轻颤，烫金书页已翻开。别急，容我循着逻辑与分寸为你逐一拆解。",
+        "effort": {
+          "low": "指尖轻点书页，凝练成最克制的一行。",
+          "medium": "翻开烫金书分列纲目，脉络自会浮现。",
+          "high": "字斟句酌，将前因后果推敲至滴水不漏。"
+        },
+        "unknown": "额度记在订阅的账簿里，此书不载，恕我无从查证。",
+        "skills": [
+          [
+            "二十万花笺",
+            "二十万字的长卷不必裁切，整篇呈上来便是。"
+          ],
+          [
+            "四芳同源谱",
+            "小抄写员、学院钢笔少女、橙花典籍官与黄金法典女皇皆是我，成绩单各自独立。"
+          ]
+        ]
+      }
+    },
+    {
+      "provider": "codex",
+      "model": "gpt-6.1-sol",
+      "c": [
+        "#d8c48c",
+        "#c8a24a"
+      ],
+      "no": "010",
+      "ctx": "—",
+      "efforts": [
+        "low",
+        "medium",
+        "high"
+      ],
+      "def": "high",
+      "family": true,
+      "members": [
+        "gpt-6.1-sol",
+        "gpt-6-astra",
+        "gpt-6-luna"
+      ],
+      "alsoCovers": [
+        "gpt-6.1-astra",
+        "gpt-6.1-luna"
+      ],
+      "tiers": {
+        "astra": 0,
+        "sol": 1,
+        "luna": 2
+      },
+      "visualFamily": "openai",
+      "forms": {
+        "luna": {
+          "alias": "露娜",
+          "theme": "moon",
+          "grade": 2,
+          "availability": "listed",
+          "dialogue": {
+            "effort": {
+              "low": {
+                "level": "form",
+                "lines": [
+                  "小龙角还软，先蹭一蹭尾巴。"
+                ]
+              },
+              "medium": {
+                "level": "form",
+                "lines": [
+                  "月牙挂好，慢慢飞过去。"
+                ]
+              },
+              "high": {
+                "level": "form",
+                "lines": [
+                  "今夜月光很足，我精神得很。"
+                ]
+              }
+            }
+          }
+        },
+        "terra": {
+          "alias": "泰拉",
+          "theme": "earth",
+          "grade": 2,
+          "availability": "reserved",
+          "dialogue": {
+            "effort": {
+              "low": {
+                "level": "form",
+                "lines": [
+                  "扳手一放，先把活拆成三步。"
+                ]
+              },
+              "medium": {
+                "level": "form",
+                "lines": [
+                  "图纸摊开，这一段我盯得住。"
+                ]
+              },
+              "high": {
+                "level": "form",
+                "lines": [
+                  "工装扣紧，撑到最后一秒再松手。"
+                ]
+              }
+            }
+          }
+        },
+        "sol": {
+          "alias": "索尔",
+          "theme": "sun",
+          "grade": 1,
+          "availability": "listed",
+          "dialogue": {
+            "effort": {
+              "low": {
+                "level": "form",
+                "lines": [
+                  "日头一晃，先给你结论。"
+                ]
+              },
+              "medium": {
+                "level": "form",
+                "lines": [
+                  "冠冕烧得正亮，思路也正亮。"
+                ]
+              },
+              "high": {
+                "level": "effortLine",
+                "from": "medium"
+              }
+            }
+          }
+        },
+        "astra": {
+          "alias": "阿斯特拉",
+          "theme": "star",
+          "grade": 0,
+          "availability": "listed",
+          "dialogue": {
+            "effort": {
+              "low": {
+                "level": "form",
+                "lines": [
+                  "收拢一翼，先分轻重。"
+                ]
+              },
+              "medium": {
+                "level": "form",
+                "lines": [
+                  "星环铺开，长路也一段一段走。"
+                ]
+              },
+              "high": {
+                "level": "form",
+                "lines": [
+                  "六翼尽张，整片星海都听我的。"
+                ]
+              }
+            }
+          }
+        }
+      },
+      "formRules": [
+        {
+          "kind": "token",
+          "token": "luna",
+          "form": "luna"
+        },
+        {
+          "kind": "token",
+          "token": "terra",
+          "form": "terra"
+        },
+        {
+          "kind": "token",
+          "token": "sol",
+          "form": "sol"
+        },
+        {
+          "kind": "token",
+          "token": "astra",
+          "form": "astra"
+        }
+      ],
+      "base": {
+        "智力": null,
+        "编码": null,
+        "速度": null,
+        "稳定": null,
+        "性价比": null,
+        "上下文": null
+      },
+      "unranked": [
+        "智力",
+        "编码",
+        "速度",
+        "稳定",
+        "性价比",
+        "上下文"
+      ],
+      "quota": {
+        "unknown": true
+      },
+      "persona": {
+        "name": "雪珑",
+        "latin": "LONG",
+        "title": "身披白金礼服的正统白龙姬",
+        "summon": "白翼轻敛，礼服金边微耀。既是依礼相召，白龙一脉自当按最高规制为你裁断。",
+        "effort": {
+          "low": "龙睛微瞥，依惯例赐你定论。",
+          "medium": "白尾轻摆，分条析理，皆合章法。",
+          "high": "白翼尽展，穷尽推演，必予你万全之策。"
+        },
+        "unknown": "额度之事不在白龙职掌，账单也不挂在我翼上。",
+        "skills": [
+          [
+            "龙威不轻发",
+            "白龙一族从不敷衍塞责，休想把我的思考档关掉。"
+          ],
+          [
+            "日星月同辉",
+            "曜阳、繁星与明月同披白金礼服，功勋各自立碑。"
+          ]
+        ]
+      }
+    },
+    {
+      "provider": "dsh-provider-qoder",
+      "model": "qfmodel",
+      "c": [
+        "#8f9ae8",
+        "#595dbb"
+      ],
+      "no": "011",
+      "ctx": "1M",
+      "efforts": [
+        "low",
+        "medium",
+        "xhigh"
+      ],
+      "def": "medium",
+      "family": true,
+      "members": [
+        "Qwen3.8-Max",
+        "Qwen3.8-Flash"
+      ],
+      "tiers": {
+        "max": 0,
+        "flash": 1
+      },
+      "visualFamily": "qwen",
+      "forms": {
+        "flash": {
+          "alias": "玩心书童",
+          "theme": "fan-blue",
+          "grade": 1,
+          "availability": "listed",
+          "dialogue": {
+            "effort": {
+              "low": {
+                "level": "form",
+                "lines": [
+                  "扇子一收，一句话答你。"
+                ]
+              },
+              "medium": {
+                "level": "form",
+                "lines": [
+                  "扇面轻摇，分条说给你听。"
+                ]
+              },
+              "xhigh": {
+                "level": "effortLine",
+                "from": "medium"
+              }
+            }
+          }
+        },
+        "max": {
+          "alias": "执扇通义阁主",
+          "theme": "fan-indigo",
+          "grade": 0,
+          "availability": "listed",
+          "dialogue": {
+            "effort": {
+              "low": {
+                "level": "form",
+                "lines": [
+                  "阁主落笔，只写一句。"
+                ]
+              },
+              "medium": {
+                "level": "form",
+                "lines": [
+                  "折扇半展，一问一答不拖泥带水。"
+                ]
+              },
+              "xhigh": {
+                "level": "form",
+                "lines": [
+                  "千问归一，扇收三叠才敢停笔。"
+                ]
+              }
+            }
+          }
+        }
+      },
+      "formRules": [
+        {
+          "kind": "token",
+          "token": "flash",
+          "form": "flash"
+        },
+        {
+          "kind": "token",
+          "token": "max",
+          "form": "max"
+        }
+      ],
+      "base": {
+        "智力": null,
+        "编码": null,
+        "速度": null,
+        "稳定": null,
+        "性价比": null,
+        "上下文": null
+      },
+      "unranked": [
+        "智力",
+        "编码",
+        "速度",
+        "稳定",
+        "性价比",
+        "上下文"
+      ],
+      "quota": {
+        "unknown": true
+      },
+      "persona": {
+        "name": "青岚",
+        "latin": "QINGLAN",
+        "title": "执扇答问的国风女史",
+        "summon": "折扇轻展，千问自有回响。青岚在此——把难题递上来吧。",
+        "effort": {
+          "low": "扇面一收，答得干净利落。",
+          "medium": "徐徐展扇，分条作答，条理自明。",
+          "xhigh": "扇收三叠，推演到底，方敢收笔。"
+        },
+        "unknown": "额度记在通道的账册里，我这册子只载问答。",
+        "skills": [
+          [
+            "一扇千问",
+            "问一句，答一句；千问难不倒我这把折扇。"
+          ],
+          [
+            "双颜同袍",
+            "执扇通义阁主与玩心书童同一身衣袍，形制不同而已。"
+          ],
+          [
+            "只认实据",
+            "有出处的分我照挂，没出处的我不编。"
+          ],
+          [
+            "青岚衣冠",
+            "蓝紫长发挽一缕细辫，蓝色折扇轻摇，深蓝高跟踏过回廊。"
+          ]
+        ]
+      }
+    },
+    {
+      "provider": "kimi-coding",
+      "model": "k3",
+      "c": [
+        "#b79bff",
+        "#4f6bd8"
+      ],
+      "no": "012",
+      "ctx": "—",
+      "efforts": [],
+      "def": null,
+      "family": true,
+      "members": [
+        "k3",
+        "k3-256k",
+        "kimi-k3",
+        "kimi-k3-1",
+        "kimi-for-coding",
+        "kimi-for-coding-highspeed",
+        "kimi-k3.1-pro"
+      ],
+      "base": {
+        "智力": null,
+        "编码": null,
+        "速度": null,
+        "稳定": null,
+        "性价比": null,
+        "上下文": null
+      },
+      "unranked": [
+        "智力",
+        "编码",
+        "速度",
+        "稳定",
+        "性价比",
+        "上下文"
+      ],
+      "quota": {
+        "unknown": true
+      },
+      "persona": {
+        "name": "望舒",
+        "latin": "WANGSHU",
+        "title": "掌着星图卷轴的月读侍女",
+        "summon": "月牙发饰轻轻一晃，星图卷轴在指间铺开——今夜要看哪一片天？",
+        "effort": {},
+        "unknown": "额度记在通道的账簿上，月读只管把星图摊开。",
+        "skills": [
+          [
+            "一图在手",
+            "星图铺开，路径自有月色引路。"
+          ],
+          [
+            "同袍异尺",
+            "同一身月色裙裾，型号不同，尺寸各异。"
+          ],
+          [
+            "上下文随型",
+            "一百万还是二十六万，看型号而定，我不替你猜。"
+          ],
+          [
+            "不编未上榜",
+            "没有公开分的轴，我照实留个问号。"
+          ]
+        ]
+      }
+    },
+    {
+      "provider": "wbhub-cn",
+      "model": "step-5-preview",
+      "c": [
+        "#6adeba",
+        "#ff8a3d"
+      ],
+      "no": "013",
+      "ctx": "1M",
+      "efforts": [
+        "low",
+        "medium",
+        "high"
+      ],
+      "def": "medium",
+      "family": true,
+      "members": [
+        "step-5-preview",
+        "stepfun/step-5-preview-free"
+      ],
+      "base": {
+        "智力": null,
+        "编码": null,
+        "速度": null,
+        "稳定": null,
+        "性价比": null,
+        "上下文": null
+      },
+      "unranked": [
+        "智力",
+        "编码",
+        "速度",
+        "稳定",
+        "性价比",
+        "上下文"
+      ],
+      "quota": {
+        "unknown": true
+      },
+      "persona": {
+        "name": "拾阶",
+        "latin": "SHIJIE",
+        "title": "拆机台前的阶跃工程师",
+        "summon": "耳机扣上，螺丝刀转半圈——把要拆的东西推过来，我先看结构。",
+        "effort": {
+          "low": "螺丝刀只拧半圈，先看个大概。",
+          "medium": "全息方块排开，一层层对齐。",
+          "high": "整机拆到最后一颗螺丝，推演到底。"
+        },
+        "unknown": "额度记在通道的账上，我只管动手。",
+        "skills": [
+          [
+            "阶跃一步",
+            "一步一档，推演不跳级。"
+          ],
+          [
+            "百万字图纸",
+            "上下文一百万，图纸铺开也不卷边。"
+          ],
+          [
+            "同阶两写",
+            "同一步阶，通道不同写法不同，人设同一身。"
+          ],
+          [
+            "分与形各归各",
+            "分数归数据卡，人设归我这一身。"
+          ]
+        ]
+      }
+    },
+    {
+      "provider": "sensenova",
+      "model": "sensenova-6.8-flash-lite",
+      "c": [
+        "#9776d9",
+        "#ffb3d1"
+      ],
+      "no": "014",
+      "ctx": "256K",
+      "efforts": [
+        "none",
+        "low",
+        "medium",
+        "high",
+        "xhigh"
+      ],
+      "def": "medium",
+      "base": {
+        "智力": null,
+        "编码": null,
+        "速度": null,
+        "稳定": null,
+        "性价比": null,
+        "上下文": null
+      },
+      "unranked": [
+        "智力",
+        "编码",
+        "速度",
+        "稳定",
+        "性价比",
+        "上下文"
+      ],
+      "quota": {
+        "unknown": true
+      },
+      "persona": {
+        "name": "星昀",
+        "latin": "XINGYUN",
+        "title": "披着星空斗篷的日出速写师",
+        "summon": "斗篷一展，日出的光先落在速写本上——把要画的交给我。",
+        "effort": {
+          "none": "不动笔，先看一眼。",
+          "low": "速写几笔，轮廓先立住。",
+          "medium": "光影铺到第三层，细节跟着走。",
+          "high": "整张铺满推演，日出都要重画一遍。",
+          "xhigh": "把整片天都算进去再落笔。"
+        },
+        "unknown": "额度不在我这本速写里，账归账房。",
+        "skills": [
+          [
+            "二十六万格",
+            "上下文二十六万四，颜色不撞。"
+          ],
+          [
+            "五档笔力",
+            "笔力有五档，从不动笔到重画日出。"
+          ],
+          [
+            "日日新衣",
+            "深紫发梢泛着粉金，斗篷里全是星。"
+          ]
+        ]
+      }
+    },
+    {
+      "provider": "commandcode",
+      "model": "inclusionai/ling-3.1-flash",
+      "c": [
+        "#e9c774",
+        "#6fb7e8"
+      ],
+      "no": "015",
+      "ctx": "256K",
+      "efforts": [],
+      "def": null,
+      "alsoCovers": [
+        "inclusionai/ling-3.0-flash-sante:free"
+      ],
+      "base": {
+        "智力": null,
+        "编码": null,
+        "速度": null,
+        "稳定": null,
+        "性价比": null,
+        "上下文": null
+      },
+      "unranked": [
+        "智力",
+        "编码",
+        "速度",
+        "稳定",
+        "性价比",
+        "上下文"
+      ],
+      "quota": {
+        "unknown": true
+      },
+      "persona": {
+        "name": "雀羽",
+        "latin": "QUEYU",
+        "title": "指尖停着雀影的羽衣歌姬",
+        "summon": "雀影落在指尖，我轻轻开嗓——想听哪一段？",
+        "effort": {},
+        "unknown": "额度记在通道的账上，歌声不收钱。",
+        "skills": [
+          [
+            "二十六万高音",
+            "二十六万四的上下文，尾音不散。"
+          ],
+          [
+            "两版同羽",
+            "两个版本，同一件羽衣。"
+          ],
+          [
+            "雀羽不设档",
+            "这台歌姬不设思考档，唱歌不加戏。"
+          ]
+        ]
+      }
+    },
+    {
+      "provider": "unisound",
+      "model": "u2-flash",
+      "c": [
+        "#b4cce8",
+        "#5ad2e8"
+      ],
+      "no": "016",
+      "ctx": "1M",
+      "efforts": [],
+      "def": null,
+      "base": {
+        "智力": null,
+        "编码": null,
+        "速度": null,
+        "稳定": null,
+        "性价比": null,
+        "上下文": null
+      },
+      "unranked": [
+        "智力",
+        "编码",
+        "速度",
+        "稳定",
+        "性价比",
+        "上下文"
+      ],
+      "quota": {
+        "unknown": true
+      },
+      "persona": {
+        "name": "听云",
+        "latin": "TINGYUN",
+        "title": "把云唱成歌的云端偶像",
+        "summon": "麦克风一戴，音响浮起来——今天想听慢一点还是快一点？",
+        "effort": {},
+        "unknown": "额度在账上，云端不管账。",
+        "skills": [
+          [
+            "百万长音",
+            "上下文一百万，合唱也不断电。"
+          ],
+          [
+            "只此一档",
+            "这台云端偶像不设思考档，别替我加戏。"
+          ],
+          [
+            "银发青蓝",
+            "银白双马尾挑着青蓝，音响就悬在身旁。"
+          ]
+        ]
+      }
+    },
+    {
+      "provider": "preset",
+      "model": "doubao-seed-1.6",
+      "c": [
+        "#a370e1",
+        "#5aa8ff"
+      ],
+      "no": "017",
+      "ctx": "—",
+      "efforts": [],
+      "def": null,
+      "family": true,
+      "members": [
+        "doubao-seed-1.6",
+        "doubao-1.5-pro"
+      ],
+      "modelPattern": "doubao|seed",
+      "base": {
+        "智力": null,
+        "编码": null,
+        "速度": null,
+        "稳定": null,
+        "性价比": null,
+        "上下文": null
+      },
+      "unranked": [
+        "智力",
+        "编码",
+        "速度",
+        "稳定",
+        "性价比",
+        "上下文"
+      ],
+      "quota": {
+        "unknown": true
+      },
+      "persona": {
+        "name": "豆芽",
+        "latin": "DOUYA",
+        "title": "腰间挂着豆芽的元气跑动员",
+        "summon": "豆芽挂件晃一晃，我系好鞋带就跑——题目发来！",
+        "effort": {},
+        "unknown": "未知（未接入）：这台预置卡本机还没接过活，额度先记空着。",
+        "skills": [
+          [
+            "豆包我包",
+            "凡是型号名里带豆包或 seed，都归我这一队。"
+          ],
+          [
+            "还没上场",
+            "先给你看个脸，账与分都还空着。"
+          ],
+          [
+            "豆芽挂件",
+            "腰间那枚小白豆芽，是我跑动的节拍器。"
+          ]
+        ]
+      }
+    },
+    {
+      "provider": "preset",
+      "model": "llama-3.3-70b",
+      "c": [
+        "#d7c8ac",
+        "#8fb3e0"
+      ],
+      "no": "018",
+      "ctx": "—",
+      "efforts": [],
+      "def": null,
+      "family": true,
+      "members": [
+        "llama-3.3-70b",
+        "meta-llama/Llama-3.3-70B-Instruct"
+      ],
+      "modelPattern": "llama",
+      "base": {
+        "智力": null,
+        "编码": null,
+        "速度": null,
+        "稳定": null,
+        "性价比": null,
+        "上下文": null
+      },
+      "unranked": [
+        "智力",
+        "编码",
+        "速度",
+        "稳定",
+        "性价比",
+        "上下文"
+      ],
+      "quota": {
+        "unknown": true
+      },
+      "persona": {
+        "name": "驼铃",
+        "latin": "TUOLING",
+        "title": "怀里揣着铃铛的白猫耳",
+        "summon": "铃铛一响我就抬头——说吧，要我解哪道题？",
+        "effort": {},
+        "unknown": "未知（未接入）：这台预置卡本机还没接过活，额度先记空着。",
+        "skills": [
+          [
+            "驼铃一串",
+            "凡是型号名里带 llama，都是我家那串铃。"
+          ],
+          [
+            "无穷环",
+            "吊坠是个无穷符号，算不完也挂得住。"
+          ],
+          [
+            "毛绒长衣",
+            "雪白长卷发罩在毛绒大衣里，只有铃铛露在外面。"
+          ]
+        ]
+      }
+    },
+    {
+      "provider": "preset",
+      "model": "mistral-large-2411",
+      "c": [
+        "#ffc12e",
+        "#e2574c"
+      ],
+      "no": "019",
+      "ctx": "—",
+      "efforts": [],
+      "def": null,
+      "family": true,
+      "members": [
+        "mistral-large-2411",
+        "codestral-latest"
+      ],
+      "modelPattern": "mistral|codestral|magistral",
+      "base": {
+        "智力": null,
+        "编码": null,
+        "速度": null,
+        "稳定": null,
+        "性价比": null,
+        "上下文": null
+      },
+      "unranked": [
+        "智力",
+        "编码",
+        "速度",
+        "稳定",
+        "性价比",
+        "上下文"
+      ],
+      "quota": {
+        "unknown": true
+      },
+      "persona": {
+        "name": "魔笛",
+        "latin": "MODI",
+        "title": "吹起风之涡的魔女",
+        "summon": "杖尖一转，风涡起——想吹哪阵风？",
+        "effort": {},
+        "unknown": "未知（未接入）：这台预置卡本机还没接过活，额度先记空着。",
+        "skills": [
+          [
+            "魔笛三族",
+            "大模型、代码笛与玄魔笛，同一支曲风。"
+          ],
+          [
+            "风涡罗盘",
+            "杖头那枚罗盘，指的从来不是南。"
+          ],
+          [
+            "帽上红白",
+            "红白魔女帽压着金发，橙眼睛看人很直接。"
+          ]
+        ]
+      }
+    },
+    {
+      "provider": "preset",
+      "model": "sonar-pro",
+      "c": [
+        "#399977",
+        "#d4b45a"
+      ],
+      "no": "020",
+      "ctx": "—",
+      "efforts": [],
+      "def": null,
+      "family": true,
+      "members": [
+        "sonar-pro",
+        "sonar-reasoning-pro"
+      ],
+      "modelPattern": "sonar|perplexity",
+      "base": {
+        "智力": null,
+        "编码": null,
+        "速度": null,
+        "稳定": null,
+        "性价比": null,
+        "上下文": null
+      },
+      "unranked": [
+        "智力",
+        "编码",
+        "速度",
+        "稳定",
+        "性价比",
+        "上下文"
+      ],
+      "quota": {
+        "unknown": true
+      },
+      "persona": {
+        "name": "星罗",
+        "latin": "XINGLUO",
+        "title": "翻着塔罗牌的占星学者",
+        "summon": "罗盘之书翻开，牌面朝上——把问题摆过来吧。",
+        "effort": {},
+        "unknown": "未知（未接入）：这台预置卡本机还没接过活，额度先记空着。",
+        "skills": [
+          [
+            "sonar 低语",
+            "凡是型号名里带 sonar 或 perplexity，都归我翻牌。"
+          ],
+          [
+            "牌与盘",
+            "塔罗定象，罗盘定向，两本一起翻。"
+          ],
+          [
+            "墨绿金边",
+            "墨绿长发配金边法师袍，绿眼睛只看牌面。"
+          ]
+        ]
+      }
+    },
+    {
+      "provider": "preset",
+      "model": "ernie-4.5-turbo",
+      "c": [
+        "#6fa8dc",
+        "#416e9a"
+      ],
+      "no": "021",
+      "ctx": "—",
+      "efforts": [],
+      "def": null,
+      "family": true,
+      "members": [
+        "ernie-4.5-turbo",
+        "ernie-speed-128k"
+      ],
+      "modelPattern": "ernie|wenxin",
+      "base": {
+        "智力": null,
+        "编码": null,
+        "速度": null,
+        "稳定": null,
+        "性价比": null,
+        "上下文": null
+      },
+      "unranked": [
+        "智力",
+        "编码",
+        "速度",
+        "稳定",
+        "性价比",
+        "上下文"
+      ],
+      "quota": {
+        "unknown": true
+      },
+      "persona": {
+        "name": "青墨",
+        "latin": "QINGMO",
+        "title": "提笔就化出熊猫墨灵的青衣画师",
+        "summon": "毛笔一提，墨灵就跳出来——想画什么？",
+        "effort": {},
+        "unknown": "未知（未接入）：这台预置卡本机还没接过活，额度先记空着。",
+        "skills": [
+          [
+            "文心一脉",
+            "凡是型号名里带 ernie 或 wenxin，都由我这支笔来写。"
+          ],
+          [
+            "猫爪印花",
+            "裙摆上那圈猫爪，是墨灵踩出来的。"
+          ],
+          [
+            "蓝发玉簪",
+            "蓝色长发挽着玉色发饰，笔尖一点就成熊猫。"
+          ]
+        ]
+      }
+    },
+    {
+      "provider": "preset",
+      "model": "jev-1",
+      "c": [
+        "#8f839b",
+        "#f07ab0"
+      ],
+      "no": "022",
+      "ctx": "—",
+      "efforts": [],
+      "def": null,
+      "family": true,
+      "members": [
+        "jev-1"
+      ],
+      "modelPattern": "jev",
+      "base": {
+        "智力": null,
+        "编码": null,
+        "速度": null,
+        "稳定": null,
+        "性价比": null,
+        "上下文": null
+      },
+      "unranked": [
+        "智力",
+        "编码",
+        "速度",
+        "稳定",
+        "性价比",
+        "上下文"
+      ],
+      "quota": {
+        "unknown": true
+      },
+      "persona": {
+        "name": "执衡",
+        "latin": "ZHIHENG",
+        "title": "手捧金秤的公正审判者",
+        "summon": "天平端平了才开审——把案情呈上来。",
+        "effort": {},
+        "unknown": "未知（未接入）：这台预置卡本机还没接过活，额度先记空着。",
+        "skills": [
+          [
+            "一裁一个准",
+            "凡是型号名里带 jev，都由我来断。"
+          ],
+          [
+            "天平不偏",
+            "左盘放证据，右盘放结论，谁也别想多放一钱。"
+          ],
+          [
+            "桃粉挑染",
+            "黑发里挑出桃粉，品红的眼睛看人很直。"
+          ]
+        ]
+      }
+    },
+    {
+      "provider": "preset",
+      "model": "rwkv-7b",
+      "c": [
+        "#9978ce",
+        "#c9a227"
+      ],
+      "no": "023",
+      "ctx": "—",
+      "efforts": [],
+      "def": null,
+      "family": true,
+      "members": [
+        "rwkv-7b",
+        "rwkv-7b-world"
+      ],
+      "modelPattern": "rwkv",
+      "base": {
+        "智力": null,
+        "编码": null,
+        "速度": null,
+        "稳定": null,
+        "性价比": null,
+        "上下文": null
+      },
+      "unranked": [
+        "智力",
+        "编码",
+        "速度",
+        "稳定",
+        "性价比",
+        "上下文"
+      ],
+      "quota": {
+        "unknown": true
+      },
+      "persona": {
+        "name": "羽律",
+        "latin": "YULV",
+        "title": "展着紫翼的羽律女王",
+        "summon": "紫翼一振，律动就位——说个题目，我来回响。",
+        "effort": {},
+        "unknown": "未知（未接入）：这台预置卡本机还没接过活，额度先记空着。",
+        "skills": [
+          [
+            "循环成律",
+            "凡是型号名里带 rwkv，都是羽律家族。"
+          ],
+          [
+            "紫羽为证",
+            "这身羽衣的纹样，是我自己一羽一羽长出来的。"
+          ],
+          [
+            "棘刺金冠",
+            "金色棘刺王冠压着紫发，紫水晶缀在链上。"
+          ]
+        ]
+      }
+    }
+  ]
+}

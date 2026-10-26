@@ -1,0 +1,3650 @@
+{
+  "$schema_version": 1,
+  "generated_from": [
+    {
+      "file": "SUPPLEMENT.json",
+      "locator": "本机路径见 scripts/export-benchmarks.cjs 的 SOURCES[*].path（该文件是导出正本，发布包不含本机绝对路径）",
+      "sha256": "8AB39B9D96950D3B20048EE833EFFBB7C07B193605EE46F3F6B8334BFC2BE3E8",
+      "collectedAt": "2026-10-12T17:57:59+08:00",
+      "records": 136,
+      "notFound": 6,
+      "absent": true,
+      "absent_reason": "源文件已不在本机（2026-10-24 实测：补采源目录不存在，全盘只剩测试用的假件）；本轮改用冻结 SEED 基座 + 增量源导出，其记录已固化在 SEED 里",
+      "role": "补采源：只记 2026-10-09 之后的新增/更新（collectedAt 见产物 generated_from）"
+    },
+    {
+      "file": "public-benchmarks-20261009.json",
+      "locator": "本机路径见 scripts/export-benchmarks.cjs 的 SOURCES[*].path（该文件是导出正本，发布包不含本机绝对路径）",
+      "sha256": "6DC020D0BC858B2D0D1407F787EB4E964B52F7DDEBD0C2E9E64F2E4083DCD4B1",
+      "records": 58,
+      "latestCollected": "2026-10-17",
+      "role": "基线源：用户贴出的公开成绩汇总（只读，未改动）。2026-10-24 起它的记录已固化在 SEED 基座里，只作身份/字节核验，不再重复合并（重复合并会产生重复候选）"
+    },
+    {
+      "file": "increment-20261024.json",
+      "locator": "本机路径见 scripts/export-benchmarks.cjs 的 SOURCES[*].path（该文件是导出正本，发布包不含本机绝对路径）",
+      "sha256": "72DD5D6933FD69BE45BCA99CD116B47ABC8FAC82F7AD32DC8E68CC41A52A7F4E",
+      "collectedAt": "2026-10-24",
+      "records": 5,
+      "role": "增量源：SEED 基座之后新采集的分数（只许新增模型；与基座同名 ⇒ 退出 1）"
+    }
+  ],
+  "generated_at": "2026-10-24T20:46:00+08:00",
+  "unit_rules": {
+    "percent_default": "max=null 表示百分制（0-100）",
+    "non_percent": {
+      "Codeforces": "Elo 分，非百分制",
+      "AI-Coding-Daily-Total": "满分 80"
+    }
+  },
+  "selection_rules": {
+    "primary_source_type": "third-party",
+    "fallback": "无 third-party 时退回 vendor，并标 caveat=vendor-self-reported",
+    "kinds": {
+      "conflict": "compareToExisting=conflict，未裁决，UI 必须提示「存在未裁决冲突」",
+      "rounding": "值不同（取整/更精确值/不同 checkpoint），不是冲突",
+      "corroborated": "多源同值互证",
+      "single": "单源"
+    },
+    "missing": "未登记的基准一律显示「未上榜」，禁止填 0 或用默认值顶替",
+    "self_computed_excluded": "BenchLM-Capability / ModelDial-custom / Leaderboard.cn 综合分不可与标准基准并列"
+  },
+  "counts": {
+    "models": 35,
+    "conflict_benchmarks": 7,
+    "rounding_benchmarks": 4,
+    "corroborated_benchmarks": 1,
+    "vendor_only_benchmarks": 107,
+    "no_public_models": 7
+  },
+  "entries": [
+    {
+      "model": "claude-opus-5.5",
+      "benchmarks": {
+        "AA-Intelligence": {
+          "value": 58,
+          "max": null,
+          "effort": null,
+          "source_type": "third-party",
+          "url": "",
+          "origin": "baseline-2026-10-09",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 58,
+              "source_type": "third-party",
+              "effort": null,
+              "origin": "baseline-2026-10-09",
+              "url": "",
+              "source_label": "Artificial Analysis"
+            }
+          ]
+        },
+        "ARC-AGI-2": {
+          "value": 91.7,
+          "max": null,
+          "effort": null,
+          "source_type": "third-party",
+          "url": "https://benchlm.ai/api/data/benchmarks?model=claude-opus-5-5&format=csv",
+          "origin": "supplement-2026-10-12",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 91.7,
+              "source_type": "third-party",
+              "effort": null,
+              "origin": "supplement-2026-10-12",
+              "url": "https://benchlm.ai/api/data/benchmarks?model=claude-opus-5-5&format=csv"
+            }
+          ]
+        },
+        "BenchLM-Capability": {
+          "value": 86.4,
+          "max": null,
+          "effort": null,
+          "source_type": "third-party",
+          "url": "https://benchlm.ai/models/claude-opus-5-5",
+          "origin": "supplement-2026-10-12",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 86.4,
+              "source_type": "third-party",
+              "effort": null,
+              "origin": "supplement-2026-10-12",
+              "url": "https://benchlm.ai/models/claude-opus-5-5"
+            }
+          ],
+          "caveat": "non-standard-caliber",
+          "caveat_detail": "benchlm 自算综合能力分（218 模型池），不可与 AA-Intelligence 同轴比较"
+        },
+        "DeepSWE-1.1": {
+          "value": 74.2,
+          "max": null,
+          "effort": null,
+          "source_type": "vendor",
+          "url": "https://benchlm.ai/api/data/benchmarks?model=claude-opus-5-5&format=csv",
+          "origin": "supplement-2026-10-12",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 74.2,
+              "source_type": "vendor",
+              "effort": null,
+              "origin": "supplement-2026-10-12",
+              "url": "https://benchlm.ai/api/data/benchmarks?model=claude-opus-5-5&format=csv"
+            }
+          ],
+          "caveat": "vendor-self-reported"
+        },
+        "HLE-w-tools": {
+          "value": 67.7,
+          "max": null,
+          "effort": null,
+          "source_type": "vendor",
+          "url": "https://benchlm.ai/api/data/benchmarks?model=claude-opus-5-5&format=csv",
+          "origin": "supplement-2026-10-12",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 67.7,
+              "source_type": "vendor",
+              "effort": null,
+              "origin": "supplement-2026-10-12",
+              "url": "https://benchlm.ai/api/data/benchmarks?model=claude-opus-5-5&format=csv"
+            }
+          ],
+          "caveat": "vendor-self-reported"
+        },
+        "OSWorld-2.0": {
+          "value": 48.7,
+          "max": null,
+          "effort": null,
+          "source_type": "vendor",
+          "url": "https://benchlm.ai/api/data/benchmarks?model=claude-opus-5-5&format=csv",
+          "origin": "supplement-2026-10-12",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 48.7,
+              "source_type": "vendor",
+              "effort": null,
+              "origin": "supplement-2026-10-12",
+              "url": "https://benchlm.ai/api/data/benchmarks?model=claude-opus-5-5&format=csv"
+            }
+          ],
+          "caveat": "vendor-self-reported"
+        },
+        "SWE-bench-Pro": {
+          "value": 89.9,
+          "max": null,
+          "effort": null,
+          "source_type": "vendor",
+          "url": "https://benchlm.ai/api/data/benchmarks?model=claude-opus-5-5&format=csv",
+          "origin": "supplement-2026-10-12",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 89.9,
+              "source_type": "vendor",
+              "effort": null,
+              "origin": "supplement-2026-10-12",
+              "url": "https://benchlm.ai/api/data/benchmarks?model=claude-opus-5-5&format=csv"
+            }
+          ],
+          "caveat": "vendor-self-reported"
+        },
+        "Terminal-Bench-4.0": {
+          "value": 66.4,
+          "max": null,
+          "effort": "xhigh",
+          "source_type": "vendor",
+          "url": "https://benchlm.ai/api/data/benchmarks?model=claude-opus-5-5&format=csv",
+          "origin": "supplement-2026-10-12",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 66.4,
+              "source_type": "vendor",
+              "effort": "xhigh",
+              "origin": "supplement-2026-10-12",
+              "url": "https://benchlm.ai/api/data/benchmarks?model=claude-opus-5-5&format=csv"
+            },
+            {
+              "value": 66.4,
+              "source_type": "vendor",
+              "effort": null,
+              "origin": "baseline-2026-10-09",
+              "url": "",
+              "source_label": "anthropic.com"
+            }
+          ],
+          "caveat": "vendor-self-reported"
+        },
+        "Toolathlon-Verified": {
+          "value": 77.8,
+          "max": null,
+          "effort": null,
+          "source_type": "vendor",
+          "url": "https://benchlm.ai/api/data/benchmarks?model=claude-opus-5-5&format=csv",
+          "origin": "supplement-2026-10-12",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 77.8,
+              "source_type": "vendor",
+              "effort": null,
+              "origin": "supplement-2026-10-12",
+              "url": "https://benchlm.ai/api/data/benchmarks?model=claude-opus-5-5&format=csv"
+            }
+          ],
+          "caveat": "vendor-self-reported"
+        }
+      }
+    },
+    {
+      "model": "claude-sonnet-5.5",
+      "benchmarks": {
+        "AA-Intelligence": {
+          "value": 56,
+          "max": null,
+          "effort": null,
+          "source_type": "third-party",
+          "url": "",
+          "origin": "baseline-2026-10-09",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 56,
+              "source_type": "third-party",
+              "effort": null,
+              "origin": "baseline-2026-10-09",
+              "url": "",
+              "source_label": "Artificial Analysis"
+            }
+          ]
+        },
+        "Terminal-Bench-4.0": {
+          "value": 70.6,
+          "max": null,
+          "effort": null,
+          "source_type": "vendor",
+          "url": "",
+          "origin": "baseline-2026-10-09",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 70.6,
+              "source_type": "vendor",
+              "effort": null,
+              "origin": "baseline-2026-10-09",
+              "url": "",
+              "source_label": "anthropic.com"
+            }
+          ],
+          "caveat": "vendor-self-reported"
+        }
+      }
+    },
+    {
+      "model": "deepseek-v4-flash",
+      "alias_of": "deepseek-v4.1-flash",
+      "alias_note": "退役别名：官方文档 2026-10-18（api-docs.deepseek.com/quick_start/pricing 脚注 (1)）写明 deepseek-v4-flash 及其 -vision-exp 变体是 legacy names，对应模型已退役、请求由 DeepSeek-V4.1-Flash-1017 服务。本条的历史分数与来源保留作数据集溯源，但不作为独立身份参与匹配（lib/benchmarks.cjs 的 entryOf / dataCardIndex 会跳过带 alias_of 的条目）。身份归一的正本＝lib/carddata.cjs 的 MODEL_ALIASES。",
+      "benchmarks": {
+        "DeepSWE-1.1": {
+          "value": 54.4,
+          "max": null,
+          "effort": null,
+          "source_type": "vendor",
+          "url": "",
+          "origin": "baseline-2026-10-09",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 54.4,
+              "source_type": "vendor",
+              "effort": null,
+              "origin": "baseline-2026-10-09",
+              "url": "",
+              "source_label": "DeepSeek API Docs"
+            }
+          ],
+          "caveat": "vendor-self-reported"
+        },
+        "Terminal-Bench-2.1": {
+          "value": 82.7,
+          "max": null,
+          "effort": null,
+          "source_type": "vendor",
+          "url": "",
+          "origin": "baseline-2026-10-09",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 82.7,
+              "source_type": "vendor",
+              "effort": null,
+              "origin": "baseline-2026-10-09",
+              "url": "",
+              "source_label": "DeepSeek API Docs"
+            }
+          ],
+          "caveat": "vendor-self-reported"
+        }
+      }
+    },
+    {
+      "model": "deepseek-v4-pro",
+      "benchmarks": {
+        "AA-Intelligence": {
+          "value": 53,
+          "max": null,
+          "effort": null,
+          "source_type": "third-party",
+          "url": "https://www.orcarouter.ai/blog/deepseek-v4-pro-benchmark",
+          "origin": "baseline-2026-10-09",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 53,
+              "source_type": "third-party",
+              "effort": null,
+              "origin": "baseline-2026-10-09",
+              "url": "https://www.orcarouter.ai/blog/deepseek-v4-pro-benchmark"
+            }
+          ]
+        },
+        "DeepSWE-1.1": {
+          "value": 62.7,
+          "max": null,
+          "effort": null,
+          "source_type": "vendor",
+          "url": "https://www.orcarouter.ai/blog/deepseek-v4-pro-benchmark",
+          "origin": "baseline-2026-10-09",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 62.7,
+              "source_type": "vendor",
+              "effort": null,
+              "origin": "baseline-2026-10-09",
+              "url": "https://www.orcarouter.ai/blog/deepseek-v4-pro-benchmark"
+            }
+          ],
+          "caveat": "vendor-self-reported"
+        },
+        "Terminal-Bench-2.1": {
+          "value": 87.9,
+          "max": null,
+          "effort": null,
+          "source_type": "vendor",
+          "url": "https://www.orcarouter.ai/blog/deepseek-v4-pro-benchmark",
+          "origin": "baseline-2026-10-09",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 87.9,
+              "source_type": "vendor",
+              "effort": null,
+              "origin": "baseline-2026-10-09",
+              "url": "https://www.orcarouter.ai/blog/deepseek-v4-pro-benchmark"
+            }
+          ],
+          "caveat": "vendor-self-reported"
+        }
+      }
+    },
+    {
+      "model": "deepseek-v4.1-flash",
+      "benchmarks": {
+        "AA-Intelligence": {
+          "value": 39,
+          "max": null,
+          "effort": "max",
+          "source_type": "third-party",
+          "url": "https://artificialanalysis.ai/models/deepseek-v4-1-flash",
+          "origin": "supplement-2026-10-12",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 39,
+              "source_type": "third-party",
+              "effort": "max",
+              "origin": "supplement-2026-10-12",
+              "url": "https://artificialanalysis.ai/models/deepseek-v4-1-flash"
+            }
+          ]
+        },
+        "AutomationBench": {
+          "value": 54.8,
+          "max": null,
+          "effort": null,
+          "source_type": "vendor",
+          "url": "https://benchlm.ai/api/data/benchmarks?model=deepseek-v4-1-flash&format=csv",
+          "origin": "supplement-2026-10-12",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 54.8,
+              "source_type": "vendor",
+              "effort": null,
+              "origin": "supplement-2026-10-12",
+              "url": "https://benchlm.ai/api/data/benchmarks?model=deepseek-v4-1-flash&format=csv"
+            }
+          ],
+          "caveat": "vendor-self-reported"
+        },
+        "Codeforces": {
+          "value": 3471,
+          "max": null,
+          "effort": null,
+          "source_type": "vendor",
+          "url": "https://benchlm.ai/api/data/benchmarks?model=deepseek-v4-1-flash&format=csv",
+          "origin": "supplement-2026-10-12",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 3471,
+              "source_type": "vendor",
+              "effort": null,
+              "origin": "supplement-2026-10-12",
+              "url": "https://benchlm.ai/api/data/benchmarks?model=deepseek-v4-1-flash&format=csv"
+            }
+          ],
+          "caveat": "vendor-self-reported"
+        },
+        "CyberGym": {
+          "value": 88.1,
+          "max": null,
+          "effort": null,
+          "source_type": "vendor",
+          "url": "https://benchlm.ai/api/data/benchmarks?model=deepseek-v4-1-flash&format=csv",
+          "origin": "supplement-2026-10-12",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 88.1,
+              "source_type": "vendor",
+              "effort": null,
+              "origin": "supplement-2026-10-12",
+              "url": "https://benchlm.ai/api/data/benchmarks?model=deepseek-v4-1-flash&format=csv"
+            }
+          ],
+          "caveat": "vendor-self-reported"
+        },
+        "DeepSWE-1.1": {
+          "value": 74.2,
+          "max": null,
+          "effort": null,
+          "source_type": "vendor",
+          "url": "https://benchlm.ai/api/data/benchmarks?model=deepseek-v4-1-flash&format=csv",
+          "origin": "supplement-2026-10-12",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 74.2,
+              "source_type": "vendor",
+              "effort": null,
+              "origin": "supplement-2026-10-12",
+              "url": "https://benchlm.ai/api/data/benchmarks?model=deepseek-v4-1-flash&format=csv"
+            },
+            {
+              "value": 74.2,
+              "source_type": "vendor",
+              "effort": null,
+              "origin": "baseline-2026-10-09",
+              "url": "",
+              "source_label": "Hugging Face 模型卡"
+            }
+          ],
+          "caveat": "vendor-self-reported"
+        },
+        "GPQA-Diamond": {
+          "value": 90.9,
+          "max": null,
+          "effort": null,
+          "source_type": "vendor",
+          "url": "https://benchlm.ai/api/data/benchmarks?model=deepseek-v4-1-flash&format=csv",
+          "origin": "supplement-2026-10-12",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 90.9,
+              "source_type": "vendor",
+              "effort": null,
+              "origin": "supplement-2026-10-12",
+              "url": "https://benchlm.ai/api/data/benchmarks?model=deepseek-v4-1-flash&format=csv"
+            }
+          ],
+          "caveat": "vendor-self-reported"
+        },
+        "Terminal-Bench-2.1": {
+          "value": 90.6,
+          "max": null,
+          "effort": null,
+          "source_type": "vendor",
+          "url": "https://benchlm.ai/api/data/benchmarks?model=deepseek-v4-1-flash&format=csv",
+          "origin": "supplement-2026-10-12",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 90.6,
+              "source_type": "vendor",
+              "effort": null,
+              "origin": "supplement-2026-10-12",
+              "url": "https://benchlm.ai/api/data/benchmarks?model=deepseek-v4-1-flash&format=csv"
+            },
+            {
+              "value": 90.6,
+              "source_type": "vendor",
+              "effort": null,
+              "origin": "baseline-2026-10-09",
+              "url": "",
+              "source_label": "Hugging Face 模型卡"
+            }
+          ],
+          "caveat": "vendor-self-reported"
+        },
+        "Terminal-Bench-2.1(Vals)": {
+          "value": 74.5,
+          "max": null,
+          "effort": null,
+          "source_type": "third-party",
+          "url": "https://benchlm.ai/api/data/benchmarks?model=deepseek-v4-1-flash&format=csv",
+          "origin": "supplement-2026-10-12",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 74.5,
+              "source_type": "third-party",
+              "effort": null,
+              "origin": "supplement-2026-10-12",
+              "url": "https://benchlm.ai/api/data/benchmarks?model=deepseek-v4-1-flash&format=csv"
+            }
+          ]
+        },
+        "Terminal-Bench-4.0": {
+          "value": 31.2,
+          "max": null,
+          "effort": null,
+          "source_type": "vendor",
+          "url": "https://benchlm.ai/api/data/benchmarks?model=deepseek-v4-1-flash&format=csv",
+          "origin": "supplement-2026-10-12",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 31.2,
+              "source_type": "vendor",
+              "effort": null,
+              "origin": "supplement-2026-10-12",
+              "url": "https://benchlm.ai/api/data/benchmarks?model=deepseek-v4-1-flash&format=csv"
+            }
+          ],
+          "caveat": "vendor-self-reported"
+        }
+      }
+    },
+    {
+      "model": "deepseek-v4.1-flash-1017",
+      "benchmarks": {
+        "DeepSWE-1.1": {
+          "value": 77,
+          "max": null,
+          "effort": null,
+          "source_type": "vendor",
+          "url": "https://api-docs.deepseek.com/updates/ ; https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash-1017",
+          "origin": "baseline-2026-10-09",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 77,
+              "source_type": "vendor",
+              "effort": null,
+              "origin": "baseline-2026-10-09",
+              "url": "https://api-docs.deepseek.com/updates/ ; https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash-1017"
+            }
+          ],
+          "caveat": "vendor-self-reported"
+        },
+        "Terminal-Bench-2.1": {
+          "value": 90.6,
+          "max": null,
+          "effort": null,
+          "source_type": "vendor",
+          "url": "",
+          "pageDate": "上一 checkpoint（2026-10-09 采集，Hugging Face 模型卡（vendor 自报））",
+          "origin": "checkpoint-reuse-2026-10-17",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 90.6,
+              "source_type": "vendor",
+              "effort": null,
+              "origin": "checkpoint-reuse-2026-10-17",
+              "url": "",
+              "source_label": "DeepSeek-V4.1-Flash-1017"
+            }
+          ],
+          "caveat": "vendor-self-reported"
+        },
+        "Terminal-Bench-4.0": {
+          "value": 42.3,
+          "max": null,
+          "effort": null,
+          "source_type": "vendor",
+          "url": "https://api-docs.deepseek.com/updates/ ; https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash-1017",
+          "origin": "baseline-2026-10-09",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 42.3,
+              "source_type": "vendor",
+              "effort": null,
+              "origin": "baseline-2026-10-09",
+              "url": "https://api-docs.deepseek.com/updates/ ; https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash-1017"
+            }
+          ],
+          "caveat": "vendor-self-reported"
+        }
+      }
+    },
+    {
+      "model": "gemini-3.8-flash",
+      "benchmarks": {
+        "AA-Intelligence": {
+          "value": 41,
+          "max": null,
+          "effort": "high",
+          "source_type": "third-party",
+          "url": "https://artificialanalysis.ai/models/gemini-3-8-flash",
+          "origin": "supplement-2026-10-12",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 41,
+              "source_type": "third-party",
+              "effort": "high",
+              "origin": "supplement-2026-10-12",
+              "url": "https://artificialanalysis.ai/models/gemini-3-8-flash"
+            },
+            {
+              "value": 41,
+              "source_type": "third-party",
+              "effort": null,
+              "origin": "baseline-2026-10-09",
+              "url": "",
+              "source_label": "Artificial Analysis"
+            }
+          ]
+        },
+        "ARC-AGI-2": {
+          "value": 89.2,
+          "max": null,
+          "effort": null,
+          "source_type": "third-party",
+          "url": "https://benchlm.ai/api/data/benchmarks?model=gemini-3-8-flash&format=csv",
+          "origin": "supplement-2026-10-12",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 89.2,
+              "source_type": "third-party",
+              "effort": null,
+              "origin": "supplement-2026-10-12",
+              "url": "https://benchlm.ai/api/data/benchmarks?model=gemini-3-8-flash&format=csv"
+            }
+          ]
+        },
+        "DeepSWE-1.1": {
+          "value": 73.8,
+          "max": null,
+          "effort": null,
+          "source_type": "third-party",
+          "url": "https://benchlm.ai/api/data/benchmarks?model=gemini-3-8-flash&format=csv",
+          "origin": "supplement-2026-10-12",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 73.8,
+              "source_type": "third-party",
+              "effort": null,
+              "origin": "supplement-2026-10-12",
+              "url": "https://benchlm.ai/api/data/benchmarks?model=gemini-3-8-flash&format=csv"
+            }
+          ]
+        },
+        "GPQA-Diamond(Vals)": {
+          "value": 94.4,
+          "max": null,
+          "effort": null,
+          "source_type": "third-party",
+          "url": "https://benchlm.ai/api/data/benchmarks?model=gemini-3-8-flash&format=csv",
+          "origin": "supplement-2026-10-12",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 94.4,
+              "source_type": "third-party",
+              "effort": null,
+              "origin": "supplement-2026-10-12",
+              "url": "https://benchlm.ai/api/data/benchmarks?model=gemini-3-8-flash&format=csv"
+            }
+          ]
+        },
+        "HLE-Verified": {
+          "value": 54.9,
+          "max": null,
+          "effort": null,
+          "source_type": "vendor",
+          "url": "https://deepmind.google/models/gemini/flash",
+          "origin": "supplement-2026-10-12",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 54.9,
+              "source_type": "vendor",
+              "effort": null,
+              "origin": "supplement-2026-10-12",
+              "url": "https://deepmind.google/models/gemini/flash"
+            }
+          ],
+          "caveat": "vendor-self-reported"
+        },
+        "Harvey-Legal-Agent-Benchmark": {
+          "value": 10,
+          "max": null,
+          "effort": null,
+          "source_type": "vendor",
+          "url": "https://deepmind.google/models/gemini/flash",
+          "origin": "supplement-2026-10-12",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 10,
+              "source_type": "vendor",
+              "effort": null,
+              "origin": "supplement-2026-10-12",
+              "url": "https://deepmind.google/models/gemini/flash"
+            }
+          ],
+          "caveat": "vendor-self-reported"
+        },
+        "OSWorld-2.0": {
+          "value": 59,
+          "max": null,
+          "effort": null,
+          "source_type": "vendor",
+          "url": "https://benchlm.ai/api/data/benchmarks?model=gemini-3-8-flash&format=csv",
+          "origin": "supplement-2026-10-12",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 59,
+              "source_type": "vendor",
+              "effort": null,
+              "origin": "supplement-2026-10-12",
+              "url": "https://benchlm.ai/api/data/benchmarks?model=gemini-3-8-flash&format=csv"
+            }
+          ],
+          "caveat": "vendor-self-reported"
+        },
+        "SWE-bench(Vals)": {
+          "value": 80,
+          "max": null,
+          "effort": null,
+          "source_type": "third-party",
+          "url": "https://benchlm.ai/api/data/benchmarks?model=gemini-3-8-flash&format=csv",
+          "origin": "supplement-2026-10-12",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 80,
+              "source_type": "third-party",
+              "effort": null,
+              "origin": "supplement-2026-10-12",
+              "url": "https://benchlm.ai/api/data/benchmarks?model=gemini-3-8-flash&format=csv"
+            }
+          ]
+        },
+        "Terminal-Bench-2.1": {
+          "value": 89.4,
+          "max": null,
+          "effort": null,
+          "source_type": "vendor",
+          "url": "https://benchlm.ai/api/data/benchmarks?model=gemini-3-8-flash&format=csv",
+          "origin": "supplement-2026-10-12",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 89.4,
+              "source_type": "vendor",
+              "effort": null,
+              "origin": "supplement-2026-10-12",
+              "url": "https://benchlm.ai/api/data/benchmarks?model=gemini-3-8-flash&format=csv"
+            }
+          ],
+          "caveat": "vendor-self-reported"
+        },
+        "Terminal-Bench-2.1(Vals)": {
+          "value": 81.3,
+          "max": null,
+          "effort": null,
+          "source_type": "third-party",
+          "url": "https://benchlm.ai/api/data/benchmarks?model=gemini-3-8-flash&format=csv",
+          "origin": "supplement-2026-10-12",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 81.3,
+              "source_type": "third-party",
+              "effort": null,
+              "origin": "supplement-2026-10-12",
+              "url": "https://benchlm.ai/api/data/benchmarks?model=gemini-3-8-flash&format=csv"
+            }
+          ]
+        },
+        "Terminal-Bench-4.0": {
+          "value": 19.1,
+          "max": null,
+          "effort": null,
+          "source_type": "third-party",
+          "url": "",
+          "origin": "baseline-2026-10-09",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 19.1,
+              "source_type": "third-party",
+              "effort": null,
+              "origin": "baseline-2026-10-09",
+              "url": "",
+              "source_label": "OpenAI"
+            }
+          ]
+        },
+        "Vals-Finance-Agent-v2": {
+          "value": 61.4,
+          "max": null,
+          "effort": null,
+          "source_type": "vendor",
+          "url": "https://deepmind.google/models/gemini/flash",
+          "origin": "supplement-2026-10-12",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 61.4,
+              "source_type": "vendor",
+              "effort": null,
+              "origin": "supplement-2026-10-12",
+              "url": "https://deepmind.google/models/gemini/flash"
+            }
+          ],
+          "caveat": "vendor-self-reported"
+        }
+      }
+    },
+    {
+      "model": "gemini-4-argon",
+      "benchmarks": {
+        "AA-Intelligence": {
+          "value": 53,
+          "max": null,
+          "effort": null,
+          "source_type": "third-party",
+          "url": "https://apidog.com/blog/gemini-4-argon-benchmarks/",
+          "origin": "baseline-2026-10-09",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 53,
+              "source_type": "third-party",
+              "effort": null,
+              "origin": "baseline-2026-10-09",
+              "url": "https://apidog.com/blog/gemini-4-argon-benchmarks/"
+            }
+          ]
+        },
+        "DeepSWE-1.1": {
+          "value": 77.9,
+          "max": null,
+          "effort": null,
+          "source_type": "vendor",
+          "url": "https://deepmind.google/models/model-cards/gemini-4-argon/",
+          "origin": "baseline-2026-10-09",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 77.9,
+              "source_type": "vendor",
+              "effort": null,
+              "origin": "baseline-2026-10-09",
+              "url": "https://deepmind.google/models/model-cards/gemini-4-argon/"
+            }
+          ],
+          "caveat": "vendor-self-reported"
+        },
+        "FrontierSWE-v2": {
+          "value": 55,
+          "max": null,
+          "effort": null,
+          "source_type": "third-party",
+          "url": "https://apidog.com/blog/gemini-4-argon-benchmarks/",
+          "origin": "baseline-2026-10-09",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 55,
+              "source_type": "third-party",
+              "effort": null,
+              "origin": "baseline-2026-10-09",
+              "url": "https://apidog.com/blog/gemini-4-argon-benchmarks/"
+            }
+          ]
+        },
+        "Terminal-Bench-4.0": {
+          "value": 57.4,
+          "max": null,
+          "effort": null,
+          "source_type": "vendor",
+          "url": "https://deepmind.google/models/model-cards/gemini-4-argon/",
+          "origin": "baseline-2026-10-09",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 57.4,
+              "source_type": "vendor",
+              "effort": null,
+              "origin": "baseline-2026-10-09",
+              "url": "https://deepmind.google/models/model-cards/gemini-4-argon/"
+            }
+          ],
+          "caveat": "vendor-self-reported"
+        },
+        "Vals-Index": {
+          "value": 68.9,
+          "max": null,
+          "effort": null,
+          "source_type": "third-party",
+          "url": "https://apidog.com/blog/gemini-4-argon-benchmarks/",
+          "origin": "baseline-2026-10-09",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 68.9,
+              "source_type": "third-party",
+              "effort": null,
+              "origin": "baseline-2026-10-09",
+              "url": "https://apidog.com/blog/gemini-4-argon-benchmarks/"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "model": "gemini-pro-agent",
+      "benchmarks": {},
+      "no_public_score": true,
+      "reason": "无任何公开基准分（源 noPublicScore 名单登记；不套 gemini-3.1-pro）"
+    },
+    {
+      "model": "glm-5.1",
+      "benchmarks": {
+        "SWE-bench-Pro": {
+          "value": 58.4,
+          "max": null,
+          "effort": null,
+          "source_type": "vendor",
+          "url": "https://github.com/zai-org/GLM-5",
+          "origin": "baseline-2026-10-09",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 58.4,
+              "source_type": "vendor",
+              "effort": null,
+              "origin": "baseline-2026-10-09",
+              "url": "https://github.com/zai-org/GLM-5"
+            }
+          ],
+          "caveat": "vendor-self-reported"
+        },
+        "Terminal-Bench-2.1": {
+          "value": 62,
+          "max": null,
+          "effort": null,
+          "source_type": "vendor",
+          "url": "https://github.com/zai-org/GLM-5",
+          "origin": "baseline-2026-10-09",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 62,
+              "source_type": "vendor",
+              "effort": null,
+              "origin": "baseline-2026-10-09",
+              "url": "https://github.com/zai-org/GLM-5"
+            }
+          ],
+          "caveat": "vendor-self-reported"
+        }
+      }
+    },
+    {
+      "model": "glm-5.2",
+      "benchmarks": {
+        "AIME26": {
+          "value": 99.2,
+          "max": null,
+          "effort": null,
+          "source_type": "vendor",
+          "url": "https://benchlm.ai/api/data/benchmarks?model=glm-5-2&format=csv",
+          "origin": "supplement-2026-10-12",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 99.2,
+              "source_type": "vendor",
+              "effort": null,
+              "origin": "supplement-2026-10-12",
+              "url": "https://benchlm.ai/api/data/benchmarks?model=glm-5-2&format=csv"
+            }
+          ],
+          "caveat": "vendor-self-reported"
+        },
+        "Agents-Last-Exam": {
+          "value": 23.8,
+          "max": null,
+          "effort": null,
+          "source_type": "vendor",
+          "url": "https://www.edenai.co/post/glm-5-3-benchmark-vs-gpt-5-6-sol-claude-fable-5-gemini-3-1-pro",
+          "origin": "supplement-2026-10-12",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 23.8,
+              "source_type": "vendor",
+              "effort": null,
+              "origin": "supplement-2026-10-12",
+              "url": "https://www.edenai.co/post/glm-5-3-benchmark-vs-gpt-5-6-sol-claude-fable-5-gemini-3-1-pro"
+            }
+          ],
+          "caveat": "vendor-self-reported"
+        },
+        "AutomationBench": {
+          "value": 26.2,
+          "max": null,
+          "effort": null,
+          "source_type": "vendor",
+          "url": "https://z.ai/blog/glm-5.3-flash",
+          "origin": "supplement-2026-10-12",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 26.2,
+              "source_type": "vendor",
+              "effort": null,
+              "origin": "supplement-2026-10-12",
+              "url": "https://z.ai/blog/glm-5.3-flash"
+            }
+          ],
+          "caveat": "vendor-self-reported"
+        },
+        "CyberGym": {
+          "value": 77.2,
+          "max": null,
+          "effort": null,
+          "source_type": "vendor",
+          "url": "https://www.edenai.co/post/glm-5-3-benchmark-vs-gpt-5-6-sol-claude-fable-5-gemini-3-1-pro",
+          "origin": "supplement-2026-10-12",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 77.2,
+              "source_type": "vendor",
+              "effort": null,
+              "origin": "supplement-2026-10-12",
+              "url": "https://www.edenai.co/post/glm-5-3-benchmark-vs-gpt-5-6-sol-claude-fable-5-gemini-3-1-pro"
+            }
+          ],
+          "caveat": "vendor-self-reported"
+        },
+        "DeepSWE-1.1": {
+          "value": 46.2,
+          "max": null,
+          "effort": null,
+          "source_type": "vendor",
+          "url": "https://www.edenai.co/post/glm-5-3-benchmark-vs-gpt-5-6-sol-claude-fable-5-gemini-3-1-pro",
+          "origin": "supplement-2026-10-12",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 46.2,
+              "source_type": "vendor",
+              "effort": null,
+              "origin": "supplement-2026-10-12",
+              "url": "https://www.edenai.co/post/glm-5-3-benchmark-vs-gpt-5-6-sol-claude-fable-5-gemini-3-1-pro"
+            }
+          ],
+          "caveat": "vendor-self-reported"
+        },
+        "HLE-w-tools": {
+          "value": 54.7,
+          "max": null,
+          "effort": null,
+          "source_type": "vendor",
+          "url": "https://benchlm.ai/api/data/benchmarks?model=glm-5-2&format=csv",
+          "origin": "supplement-2026-10-12",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 54.7,
+              "source_type": "vendor",
+              "effort": null,
+              "origin": "supplement-2026-10-12",
+              "url": "https://benchlm.ai/api/data/benchmarks?model=glm-5-2&format=csv"
+            }
+          ],
+          "caveat": "vendor-self-reported"
+        },
+        "SWE-Marathon-1.1": {
+          "value": 19.4,
+          "max": null,
+          "effort": null,
+          "source_type": "vendor",
+          "url": "https://www.edenai.co/post/glm-5-3-benchmark-vs-gpt-5-6-sol-claude-fable-5-gemini-3-1-pro",
+          "origin": "supplement-2026-10-12",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 19.4,
+              "source_type": "vendor",
+              "effort": null,
+              "origin": "supplement-2026-10-12",
+              "url": "https://www.edenai.co/post/glm-5-3-benchmark-vs-gpt-5-6-sol-claude-fable-5-gemini-3-1-pro"
+            }
+          ],
+          "caveat": "vendor-self-reported"
+        },
+        "SWE-bench(Vals)": {
+          "value": 82.8,
+          "max": null,
+          "effort": null,
+          "source_type": "third-party",
+          "url": "https://benchlm.ai/api/data/benchmarks?model=glm-5-2&format=csv",
+          "origin": "supplement-2026-10-12",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 82.8,
+              "source_type": "third-party",
+              "effort": null,
+              "origin": "supplement-2026-10-12",
+              "url": "https://benchlm.ai/api/data/benchmarks?model=glm-5-2&format=csv"
+            }
+          ]
+        },
+        "SWE-bench-Pro": {
+          "value": 62.1,
+          "max": null,
+          "effort": null,
+          "source_type": "vendor",
+          "url": "https://benchlm.ai/api/data/benchmarks?model=glm-5-2&format=csv",
+          "origin": "supplement-2026-10-12",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 62.1,
+              "source_type": "vendor",
+              "effort": null,
+              "origin": "supplement-2026-10-12",
+              "url": "https://benchlm.ai/api/data/benchmarks?model=glm-5-2&format=csv"
+            },
+            {
+              "value": 62.1,
+              "source_type": "vendor",
+              "effort": null,
+              "origin": "baseline-2026-10-09",
+              "url": "https://github.com/zai-org/GLM-5"
+            }
+          ],
+          "caveat": "vendor-self-reported"
+        },
+        "Terminal-Bench-2.1": {
+          "value": 81,
+          "max": null,
+          "effort": null,
+          "source_type": "vendor",
+          "url": "https://benchlm.ai/api/data/benchmarks?model=glm-5-2&format=csv",
+          "origin": "supplement-2026-10-12",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 81,
+              "source_type": "vendor",
+              "effort": null,
+              "origin": "supplement-2026-10-12",
+              "url": "https://benchlm.ai/api/data/benchmarks?model=glm-5-2&format=csv"
+            },
+            {
+              "value": 81,
+              "source_type": "vendor",
+              "effort": null,
+              "origin": "baseline-2026-10-09",
+              "url": "https://github.com/zai-org/GLM-5"
+            }
+          ],
+          "caveat": "vendor-self-reported"
+        },
+        "Terminal-Bench-2.1(Vals)": {
+          "value": 67.8,
+          "max": null,
+          "effort": null,
+          "source_type": "third-party",
+          "url": "https://benchlm.ai/api/data/benchmarks?model=glm-5-2&format=csv",
+          "origin": "supplement-2026-10-12",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 67.8,
+              "source_type": "third-party",
+              "effort": null,
+              "origin": "supplement-2026-10-12",
+              "url": "https://benchlm.ai/api/data/benchmarks?model=glm-5-2&format=csv"
+            }
+          ]
+        },
+        "Terminal-Bench-3.0": {
+          "value": 4.59,
+          "max": null,
+          "effort": null,
+          "source_type": "third-party",
+          "url": "https://benchlm.ai/api/data/benchmarks?model=glm-5-2&format=csv",
+          "origin": "supplement-2026-10-12",
+          "kind": "rounding",
+          "candidates": [
+            {
+              "value": 4.6,
+              "source_type": "vendor",
+              "effort": null,
+              "origin": "supplement-2026-10-12",
+              "url": "https://www.edenai.co/post/glm-5-3-benchmark-vs-gpt-5-6-sol-claude-fable-5-gemini-3-1-pro"
+            },
+            {
+              "value": 4.59,
+              "source_type": "third-party",
+              "effort": null,
+              "origin": "supplement-2026-10-12",
+              "url": "https://benchlm.ai/api/data/benchmarks?model=glm-5-2&format=csv"
+            }
+          ],
+          "distinct_values": [
+            4.6,
+            4.59
+          ]
+        }
+      }
+    },
+    {
+      "model": "glm-5.3",
+      "benchmarks": {
+        "Agents-Last-Exam": {
+          "value": 28.5,
+          "max": null,
+          "effort": null,
+          "source_type": "vendor",
+          "url": "https://www.edenai.co/post/glm-5-3-benchmark-vs-gpt-5-6-sol-claude-fable-5-gemini-3-1-pro",
+          "origin": "supplement-2026-10-12",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 28.5,
+              "source_type": "vendor",
+              "effort": null,
+              "origin": "supplement-2026-10-12",
+              "url": "https://www.edenai.co/post/glm-5-3-benchmark-vs-gpt-5-6-sol-claude-fable-5-gemini-3-1-pro"
+            }
+          ],
+          "caveat": "vendor-self-reported"
+        },
+        "AutomationBench": {
+          "value": 48.2,
+          "max": null,
+          "effort": null,
+          "source_type": "vendor",
+          "url": "https://www.edenai.co/post/glm-5-3-benchmark-vs-gpt-5-6-sol-claude-fable-5-gemini-3-1-pro",
+          "origin": "supplement-2026-10-12",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 48.2,
+              "source_type": "vendor",
+              "effort": null,
+              "origin": "supplement-2026-10-12",
+              "url": "https://www.edenai.co/post/glm-5-3-benchmark-vs-gpt-5-6-sol-claude-fable-5-gemini-3-1-pro"
+            }
+          ],
+          "caveat": "vendor-self-reported"
+        },
+        "CyberGym": {
+          "value": 84.5,
+          "max": null,
+          "effort": null,
+          "source_type": "vendor",
+          "url": "https://www.edenai.co/post/glm-5-3-benchmark-vs-gpt-5-6-sol-claude-fable-5-gemini-3-1-pro",
+          "origin": "supplement-2026-10-12",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 84.5,
+              "source_type": "vendor",
+              "effort": null,
+              "origin": "supplement-2026-10-12",
+              "url": "https://www.edenai.co/post/glm-5-3-benchmark-vs-gpt-5-6-sol-claude-fable-5-gemini-3-1-pro"
+            }
+          ],
+          "caveat": "vendor-self-reported"
+        },
+        "DeepSWE-1.1": {
+          "value": 66.9,
+          "max": null,
+          "effort": null,
+          "source_type": "vendor",
+          "url": "https://www.edenai.co/post/glm-5-3-benchmark-vs-gpt-5-6-sol-claude-fable-5-gemini-3-1-pro",
+          "origin": "supplement-2026-10-12",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 66.9,
+              "source_type": "vendor",
+              "effort": null,
+              "origin": "supplement-2026-10-12",
+              "url": "https://www.edenai.co/post/glm-5-3-benchmark-vs-gpt-5-6-sol-claude-fable-5-gemini-3-1-pro"
+            },
+            {
+              "value": 66.9,
+              "source_type": "vendor",
+              "effort": null,
+              "origin": "baseline-2026-10-09",
+              "url": "",
+              "source_label": "z.ai"
+            }
+          ],
+          "caveat": "vendor-self-reported"
+        },
+        "FrontierSWE-v2": {
+          "value": 30.2,
+          "max": null,
+          "effort": null,
+          "source_type": "third-party",
+          "url": "https://benchlm.ai/api/data/benchmarks?model=glm-5-3&format=csv",
+          "origin": "supplement-2026-10-12",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 30.2,
+              "source_type": "third-party",
+              "effort": null,
+              "origin": "supplement-2026-10-12",
+              "url": "https://benchlm.ai/api/data/benchmarks?model=glm-5-3&format=csv"
+            }
+          ]
+        },
+        "HLE-w-tools": {
+          "value": 62.5,
+          "max": null,
+          "effort": null,
+          "source_type": "vendor",
+          "url": "https://benchlm.ai/api/data/benchmarks?model=glm-5-3&format=csv",
+          "origin": "supplement-2026-10-12",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 62.5,
+              "source_type": "vendor",
+              "effort": null,
+              "origin": "supplement-2026-10-12",
+              "url": "https://benchlm.ai/api/data/benchmarks?model=glm-5-3&format=csv"
+            }
+          ],
+          "caveat": "vendor-self-reported"
+        },
+        "NL2Repo": {
+          "value": 58,
+          "max": null,
+          "effort": null,
+          "source_type": "vendor",
+          "url": "https://benchlm.ai/api/data/benchmarks?model=glm-5-3&format=csv",
+          "origin": "supplement-2026-10-12",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 58,
+              "source_type": "vendor",
+              "effort": null,
+              "origin": "supplement-2026-10-12",
+              "url": "https://benchlm.ai/api/data/benchmarks?model=glm-5-3&format=csv"
+            }
+          ],
+          "caveat": "vendor-self-reported"
+        },
+        "SWE-Marathon-1.1": {
+          "value": 42.5,
+          "max": null,
+          "effort": null,
+          "source_type": "vendor",
+          "url": "https://www.edenai.co/post/glm-5-3-benchmark-vs-gpt-5-6-sol-claude-fable-5-gemini-3-1-pro",
+          "origin": "supplement-2026-10-12",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 42.5,
+              "source_type": "vendor",
+              "effort": null,
+              "origin": "supplement-2026-10-12",
+              "url": "https://www.edenai.co/post/glm-5-3-benchmark-vs-gpt-5-6-sol-claude-fable-5-gemini-3-1-pro"
+            },
+            {
+              "value": 42.5,
+              "source_type": "vendor",
+              "effort": null,
+              "origin": "supplement-2026-10-12",
+              "url": "https://benchlm.ai/api/data/benchmarks?model=glm-5-3&format=csv"
+            }
+          ],
+          "caveat": "vendor-self-reported"
+        },
+        "SWE-bench(Vals)": {
+          "value": 95.4,
+          "max": null,
+          "effort": null,
+          "source_type": "third-party",
+          "url": "https://benchlm.ai/api/data/benchmarks?model=glm-5-3&format=csv",
+          "origin": "supplement-2026-10-12",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 95.4,
+              "source_type": "third-party",
+              "effort": null,
+              "origin": "supplement-2026-10-12",
+              "url": "https://benchlm.ai/api/data/benchmarks?model=glm-5-3&format=csv"
+            }
+          ]
+        },
+        "Terminal-Bench-2.1": {
+          "value": 88.2,
+          "max": null,
+          "effort": null,
+          "source_type": "vendor",
+          "url": "https://benchlm.ai/api/data/benchmarks?model=glm-5-3&format=csv",
+          "origin": "supplement-2026-10-12",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 88.2,
+              "source_type": "vendor",
+              "effort": null,
+              "origin": "supplement-2026-10-12",
+              "url": "https://benchlm.ai/api/data/benchmarks?model=glm-5-3&format=csv"
+            },
+            {
+              "value": 88.2,
+              "source_type": "vendor",
+              "effort": null,
+              "origin": "baseline-2026-10-09",
+              "url": "",
+              "source_label": "z.ai"
+            }
+          ],
+          "caveat": "vendor-self-reported"
+        },
+        "Terminal-Bench-2.1(Vals)": {
+          "value": 71.5,
+          "max": null,
+          "effort": null,
+          "source_type": "third-party",
+          "url": "https://benchlm.ai/api/data/benchmarks?model=glm-5-3&format=csv",
+          "origin": "supplement-2026-10-12",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 71.5,
+              "source_type": "third-party",
+              "effort": null,
+              "origin": "supplement-2026-10-12",
+              "url": "https://benchlm.ai/api/data/benchmarks?model=glm-5-3&format=csv"
+            }
+          ]
+        },
+        "Terminal-Bench-3.0": {
+          "value": 28.3,
+          "max": null,
+          "effort": null,
+          "source_type": "vendor",
+          "url": "https://www.edenai.co/post/glm-5-3-benchmark-vs-gpt-5-6-sol-claude-fable-5-gemini-3-1-pro",
+          "origin": "supplement-2026-10-12",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 28.3,
+              "source_type": "vendor",
+              "effort": null,
+              "origin": "supplement-2026-10-12",
+              "url": "https://www.edenai.co/post/glm-5-3-benchmark-vs-gpt-5-6-sol-claude-fable-5-gemini-3-1-pro"
+            },
+            {
+              "value": 28.3,
+              "source_type": "vendor",
+              "effort": null,
+              "origin": "supplement-2026-10-12",
+              "url": "https://benchlm.ai/api/data/benchmarks?model=glm-5-3&format=csv"
+            }
+          ],
+          "caveat": "vendor-self-reported"
+        },
+        "Toolathlon-Verified": {
+          "value": 73,
+          "max": null,
+          "effort": null,
+          "source_type": "vendor",
+          "url": "https://benchlm.ai/api/data/benchmarks?model=glm-5-3&format=csv",
+          "origin": "supplement-2026-10-12",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 73,
+              "source_type": "vendor",
+              "effort": null,
+              "origin": "supplement-2026-10-12",
+              "url": "https://benchlm.ai/api/data/benchmarks?model=glm-5-3&format=csv"
+            }
+          ],
+          "caveat": "vendor-self-reported"
+        }
+      }
+    },
+    {
+      "model": "glm-5.3-flash",
+      "benchmarks": {
+        "AA-Intelligence": {
+          "value": 42,
+          "max": null,
+          "effort": null,
+          "source_type": "third-party",
+          "url": "https://artificialanalysis.ai/models/glm-5-3-flash",
+          "origin": "supplement-2026-10-12",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 42,
+              "source_type": "third-party",
+              "effort": null,
+              "origin": "supplement-2026-10-12",
+              "url": "https://artificialanalysis.ai/models/glm-5-3-flash"
+            },
+            {
+              "value": 42,
+              "source_type": "third-party",
+              "effort": null,
+              "origin": "baseline-2026-10-09",
+              "url": "",
+              "source_label": "Artificial Analysis"
+            }
+          ]
+        },
+        "AutomationBench": {
+          "value": 48.8,
+          "max": null,
+          "effort": null,
+          "source_type": "vendor",
+          "url": "https://benchlm.ai/api/data/benchmarks?model=glm-5-3-flash&format=csv",
+          "origin": "supplement-2026-10-12",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 48.8,
+              "source_type": "vendor",
+              "effort": null,
+              "origin": "supplement-2026-10-12",
+              "url": "https://benchlm.ai/api/data/benchmarks?model=glm-5-3-flash&format=csv"
+            }
+          ],
+          "caveat": "vendor-self-reported"
+        },
+        "DeepSWE-1.1": {
+          "value": 63.4,
+          "max": null,
+          "effort": null,
+          "source_type": "third-party",
+          "url": "",
+          "origin": "baseline-2026-10-09",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 63.4,
+              "source_type": "third-party",
+              "effort": null,
+              "origin": "baseline-2026-10-09",
+              "url": "",
+              "source_label": "AutoClaw Blog"
+            }
+          ]
+        },
+        "NL2Repo": {
+          "value": 56.3,
+          "max": null,
+          "effort": null,
+          "source_type": "vendor",
+          "url": "https://benchlm.ai/api/data/benchmarks?model=glm-5-3-flash&format=csv",
+          "origin": "supplement-2026-10-12",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 56.3,
+              "source_type": "vendor",
+              "effort": null,
+              "origin": "supplement-2026-10-12",
+              "url": "https://benchlm.ai/api/data/benchmarks?model=glm-5-3-flash&format=csv"
+            }
+          ],
+          "caveat": "vendor-self-reported"
+        },
+        "SWE-bench(Vals)": {
+          "value": 92,
+          "max": null,
+          "effort": null,
+          "source_type": "third-party",
+          "url": "https://benchlm.ai/api/data/benchmarks?model=glm-5-3-flash&format=csv",
+          "origin": "supplement-2026-10-12",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 92,
+              "source_type": "third-party",
+              "effort": null,
+              "origin": "supplement-2026-10-12",
+              "url": "https://benchlm.ai/api/data/benchmarks?model=glm-5-3-flash&format=csv"
+            }
+          ]
+        },
+        "Terminal-Bench-2.1": {
+          "value": 84.3,
+          "max": null,
+          "effort": null,
+          "source_type": "third-party",
+          "url": "",
+          "origin": "baseline-2026-10-09",
+          "kind": "corroborated",
+          "candidates": [
+            {
+              "value": 84.3,
+              "source_type": "vendor",
+              "effort": null,
+              "origin": "supplement-2026-10-12",
+              "url": "https://benchlm.ai/api/data/benchmarks?model=glm-5-3-flash&format=csv"
+            },
+            {
+              "value": 84.3,
+              "source_type": "third-party",
+              "effort": null,
+              "origin": "baseline-2026-10-09",
+              "url": "",
+              "source_label": "AutoClaw Blog"
+            }
+          ]
+        },
+        "Terminal-Bench-2.1(Vals)": {
+          "value": 62.9,
+          "max": null,
+          "effort": null,
+          "source_type": "third-party",
+          "url": "https://benchlm.ai/api/data/benchmarks?model=glm-5-3-flash&format=csv",
+          "origin": "supplement-2026-10-12",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 62.9,
+              "source_type": "third-party",
+              "effort": null,
+              "origin": "supplement-2026-10-12",
+              "url": "https://benchlm.ai/api/data/benchmarks?model=glm-5-3-flash&format=csv"
+            }
+          ]
+        },
+        "Toolathlon-Verified": {
+          "value": 78.4,
+          "max": null,
+          "effort": null,
+          "source_type": "vendor",
+          "url": "https://benchlm.ai/api/data/benchmarks?model=glm-5-3-flash&format=csv",
+          "origin": "supplement-2026-10-12",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 78.4,
+              "source_type": "vendor",
+              "effort": null,
+              "origin": "supplement-2026-10-12",
+              "url": "https://benchlm.ai/api/data/benchmarks?model=glm-5-3-flash&format=csv"
+            }
+          ],
+          "caveat": "vendor-self-reported"
+        }
+      }
+    },
+    {
+      "model": "glm-5v-turbo",
+      "benchmarks": {},
+      "no_public_score": true,
+      "reason": "无任何公开基准分（源 noPublicScore 名单登记）"
+    },
+    {
+      "model": "gpt-6-astra",
+      "benchmarks": {
+        "ARC-AGI-2": {
+          "value": 95,
+          "max": null,
+          "effort": null,
+          "source_type": "third-party",
+          "url": "https://benchlm.ai/api/data/benchmarks?model=gpt-6-astra&format=csv",
+          "origin": "supplement-2026-10-12",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 95,
+              "source_type": "third-party",
+              "effort": null,
+              "origin": "supplement-2026-10-12",
+              "url": "https://benchlm.ai/api/data/benchmarks?model=gpt-6-astra&format=csv"
+            }
+          ]
+        },
+        "ARC-AGI-3": {
+          "value": 62.71,
+          "max": null,
+          "effort": null,
+          "source_type": "third-party",
+          "url": "https://benchlm.ai/api/data/benchmarks?model=gpt-6-astra&format=csv",
+          "origin": "supplement-2026-10-12",
+          "kind": "conflict",
+          "candidates": [
+            {
+              "value": 62.71,
+              "source_type": "third-party",
+              "effort": null,
+              "origin": "supplement-2026-10-12",
+              "url": "https://benchlm.ai/api/data/benchmarks?model=gpt-6-astra&format=csv"
+            }
+          ]
+        },
+        "AutomationBench": {
+          "value": 41.4,
+          "max": null,
+          "effort": null,
+          "source_type": "vendor",
+          "url": "https://benchlm.ai/api/data/benchmarks?model=gpt-6-astra&format=csv",
+          "origin": "supplement-2026-10-12",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 41.4,
+              "source_type": "vendor",
+              "effort": null,
+              "origin": "supplement-2026-10-12",
+              "url": "https://benchlm.ai/api/data/benchmarks?model=gpt-6-astra&format=csv"
+            }
+          ],
+          "caveat": "vendor-self-reported"
+        },
+        "BenchLM-Capability": {
+          "value": 84.9,
+          "max": null,
+          "effort": null,
+          "source_type": "third-party",
+          "url": "https://benchlm.ai/models/gpt-6-astra",
+          "origin": "supplement-2026-10-12",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 84.9,
+              "source_type": "third-party",
+              "effort": null,
+              "origin": "supplement-2026-10-12",
+              "url": "https://benchlm.ai/models/gpt-6-astra"
+            }
+          ],
+          "caveat": "non-standard-caliber",
+          "caveat_detail": "benchlm 自算综合能力分（218 模型池），不可与 AA-Intelligence 同轴比较"
+        },
+        "DeepSWE-1.1": {
+          "value": 74.1,
+          "max": null,
+          "effort": null,
+          "source_type": "vendor",
+          "url": "https://benchlm.ai/api/data/benchmarks?model=gpt-6-astra&format=csv",
+          "origin": "supplement-2026-10-12",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 74.1,
+              "source_type": "vendor",
+              "effort": null,
+              "origin": "supplement-2026-10-12",
+              "url": "https://benchlm.ai/api/data/benchmarks?model=gpt-6-astra&format=csv"
+            }
+          ],
+          "caveat": "vendor-self-reported"
+        },
+        "ExploitBench": {
+          "value": 100,
+          "max": null,
+          "effort": null,
+          "source_type": "vendor",
+          "url": "https://benchlm.ai/api/data/benchmarks?model=gpt-6-astra&format=csv",
+          "origin": "supplement-2026-10-12",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 100,
+              "source_type": "vendor",
+              "effort": null,
+              "origin": "supplement-2026-10-12",
+              "url": "https://benchlm.ai/api/data/benchmarks?model=gpt-6-astra&format=csv"
+            }
+          ],
+          "caveat": "vendor-self-reported"
+        },
+        "FrontierMath-v2-Tier-4": {
+          "value": 97.6,
+          "max": null,
+          "effort": null,
+          "source_type": "vendor",
+          "url": "https://benchlm.ai/api/data/benchmarks?model=gpt-6-astra&format=csv",
+          "origin": "supplement-2026-10-12",
+          "kind": "conflict",
+          "candidates": [
+            {
+              "value": 97.6,
+              "source_type": "vendor",
+              "effort": null,
+              "origin": "supplement-2026-10-12",
+              "url": "https://benchlm.ai/api/data/benchmarks?model=gpt-6-astra&format=csv"
+            }
+          ],
+          "caveat": "vendor-self-reported"
+        },
+        "GPQA-Diamond": {
+          "value": 96,
+          "max": null,
+          "effort": null,
+          "source_type": "vendor",
+          "url": "https://benchlm.ai/api/data/benchmarks?model=gpt-6-astra&format=csv",
+          "origin": "supplement-2026-10-12",
+          "kind": "conflict",
+          "candidates": [
+            {
+              "value": 96,
+              "source_type": "vendor",
+              "effort": null,
+              "origin": "supplement-2026-10-12",
+              "url": "https://benchlm.ai/api/data/benchmarks?model=gpt-6-astra&format=csv"
+            }
+          ],
+          "caveat": "vendor-self-reported"
+        },
+        "OSWorld-2.0": {
+          "value": 72.6,
+          "max": null,
+          "effort": null,
+          "source_type": "vendor",
+          "url": "https://benchlm.ai/api/data/benchmarks?model=gpt-6-astra&format=csv",
+          "origin": "supplement-2026-10-12",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 72.6,
+              "source_type": "vendor",
+              "effort": null,
+              "origin": "supplement-2026-10-12",
+              "url": "https://benchlm.ai/api/data/benchmarks?model=gpt-6-astra&format=csv"
+            }
+          ],
+          "caveat": "vendor-self-reported"
+        },
+        "Terminal-Bench-2.1(Vals)": {
+          "value": 87.3,
+          "max": null,
+          "effort": null,
+          "source_type": "third-party",
+          "url": "https://benchlm.ai/api/data/benchmarks?model=gpt-6-astra&format=csv",
+          "origin": "supplement-2026-10-12",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 87.3,
+              "source_type": "third-party",
+              "effort": null,
+              "origin": "supplement-2026-10-12",
+              "url": "https://benchlm.ai/api/data/benchmarks?model=gpt-6-astra&format=csv"
+            }
+          ]
+        },
+        "Terminal-Bench-4.0": {
+          "value": 57.9,
+          "max": null,
+          "effort": null,
+          "source_type": "vendor",
+          "url": "https://benchlm.ai/api/data/benchmarks?model=gpt-6-astra&format=csv",
+          "origin": "supplement-2026-10-12",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 57.9,
+              "source_type": "vendor",
+              "effort": null,
+              "origin": "supplement-2026-10-12",
+              "url": "https://benchlm.ai/api/data/benchmarks?model=gpt-6-astra&format=csv"
+            }
+          ],
+          "caveat": "vendor-self-reported"
+        }
+      }
+    },
+    {
+      "model": "gpt-6-luna",
+      "benchmarks": {
+        "DeepSWE-1.1": {
+          "value": 66.6,
+          "max": null,
+          "effort": null,
+          "source_type": "third-party",
+          "url": "",
+          "origin": "baseline-2026-10-09",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 66.6,
+              "source_type": "third-party",
+              "effort": null,
+              "origin": "baseline-2026-10-09",
+              "url": "",
+              "source_label": "anthropic.com +1"
+            }
+          ]
+        },
+        "Terminal-Bench-4.0": {
+          "value": 16.4,
+          "max": null,
+          "effort": null,
+          "source_type": "third-party",
+          "url": "",
+          "origin": "baseline-2026-10-09",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 16.4,
+              "source_type": "third-party",
+              "effort": null,
+              "origin": "baseline-2026-10-09",
+              "url": "",
+              "source_label": "anthropic.com"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "model": "gpt-6.1-sol",
+      "benchmarks": {
+        "AA-Intelligence": {
+          "value": 52,
+          "max": null,
+          "effort": null,
+          "source_type": "third-party",
+          "url": "",
+          "origin": "baseline-2026-10-09",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 52,
+              "source_type": "third-party",
+              "effort": null,
+              "origin": "baseline-2026-10-09",
+              "url": "",
+              "source_label": "Artificial Analysis"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "model": "hy3",
+      "benchmarks": {
+        "DeepSWE-1.1": {
+          "value": 28,
+          "max": null,
+          "effort": null,
+          "source_type": "vendor",
+          "url": "",
+          "origin": "baseline-2026-10-09",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 28,
+              "source_type": "vendor",
+              "effort": null,
+              "origin": "baseline-2026-10-09",
+              "url": "",
+              "source_label": "Hy4 preview 模型卡"
+            }
+          ],
+          "caveat": "vendor-self-reported"
+        },
+        "GPQA-Diamond": {
+          "value": 87.2,
+          "max": null,
+          "effort": null,
+          "source_type": "vendor",
+          "url": "https://benchlm.ai/api/data/benchmarks?model=hy3-preview&format=csv",
+          "origin": "supplement-2026-10-12",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 87.2,
+              "source_type": "vendor",
+              "effort": null,
+              "origin": "supplement-2026-10-12",
+              "url": "https://benchlm.ai/api/data/benchmarks?model=hy3-preview&format=csv"
+            }
+          ],
+          "caveat": "vendor-self-reported"
+        },
+        "SWE-bench-Verified": {
+          "value": 74.4,
+          "max": null,
+          "effort": null,
+          "source_type": "vendor",
+          "url": "https://benchlm.ai/api/data/benchmarks?model=hy3-preview&format=csv",
+          "origin": "supplement-2026-10-12",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 74.4,
+              "source_type": "vendor",
+              "effort": null,
+              "origin": "supplement-2026-10-12",
+              "url": "https://benchlm.ai/api/data/benchmarks?model=hy3-preview&format=csv"
+            }
+          ],
+          "caveat": "vendor-self-reported"
+        },
+        "Terminal-Bench-2.0": {
+          "value": 54.4,
+          "max": null,
+          "effort": null,
+          "source_type": "vendor",
+          "url": "https://benchlm.ai/api/data/benchmarks?model=hy3-preview&format=csv",
+          "origin": "supplement-2026-10-12",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 54.4,
+              "source_type": "vendor",
+              "effort": null,
+              "origin": "supplement-2026-10-12",
+              "url": "https://benchlm.ai/api/data/benchmarks?model=hy3-preview&format=csv"
+            }
+          ],
+          "caveat": "vendor-self-reported"
+        },
+        "Terminal-Bench-2.1": {
+          "value": 70.8,
+          "max": null,
+          "effort": null,
+          "source_type": "vendor",
+          "url": "",
+          "origin": "baseline-2026-10-09",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 70.8,
+              "source_type": "vendor",
+              "effort": null,
+              "origin": "baseline-2026-10-09",
+              "url": "",
+              "source_label": "Hy4 preview 模型卡"
+            }
+          ],
+          "caveat": "vendor-self-reported"
+        }
+      }
+    },
+    {
+      "model": "hy3-b",
+      "benchmarks": {},
+      "no_public_score": true,
+      "reason": "无任何公开基准分（BenchLM 未收录；hy3-b 是 hy3 的内部分流尾，身份并入 hy3，分数取 hy3 那条）"
+    },
+    {
+      "model": "hy4-preview-f",
+      "benchmarks": {
+        "DeepSWE-1.1": {
+          "value": 64.3,
+          "max": null,
+          "effort": null,
+          "source_type": "vendor",
+          "url": "https://benchlm.ai/api/data/benchmarks?model=hy4-preview&format=csv",
+          "origin": "supplement-2026-10-12",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 64.3,
+              "source_type": "vendor",
+              "effort": null,
+              "origin": "supplement-2026-10-12",
+              "url": "https://benchlm.ai/api/data/benchmarks?model=hy4-preview&format=csv"
+            },
+            {
+              "value": 64.3,
+              "source_type": "vendor",
+              "effort": null,
+              "origin": "baseline-2026-10-09",
+              "url": "",
+              "source_label": "Hugging Face 模型卡"
+            }
+          ],
+          "caveat": "vendor-self-reported"
+        },
+        "GPQA-Diamond": {
+          "value": 92.3,
+          "max": null,
+          "effort": null,
+          "source_type": "vendor",
+          "url": "https://benchlm.ai/api/data/benchmarks?model=hy4-preview&format=csv",
+          "origin": "supplement-2026-10-12",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 92.3,
+              "source_type": "vendor",
+              "effort": null,
+              "origin": "supplement-2026-10-12",
+              "url": "https://benchlm.ai/api/data/benchmarks?model=hy4-preview&format=csv"
+            }
+          ],
+          "caveat": "vendor-self-reported"
+        },
+        "SWE-Marathon": {
+          "value": 31.9,
+          "max": null,
+          "effort": null,
+          "source_type": "vendor",
+          "url": "https://benchlm.ai/api/data/benchmarks?model=hy4-preview&format=csv",
+          "origin": "supplement-2026-10-12",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 31.9,
+              "source_type": "vendor",
+              "effort": null,
+              "origin": "supplement-2026-10-12",
+              "url": "https://benchlm.ai/api/data/benchmarks?model=hy4-preview&format=csv"
+            }
+          ],
+          "caveat": "vendor-self-reported"
+        },
+        "SWE-bench-Pro": {
+          "value": 65.7,
+          "max": null,
+          "effort": null,
+          "source_type": "vendor",
+          "url": "https://benchlm.ai/api/data/benchmarks?model=hy4-preview&format=csv",
+          "origin": "supplement-2026-10-12",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 65.7,
+              "source_type": "vendor",
+              "effort": null,
+              "origin": "supplement-2026-10-12",
+              "url": "https://benchlm.ai/api/data/benchmarks?model=hy4-preview&format=csv"
+            }
+          ],
+          "caveat": "vendor-self-reported"
+        },
+        "Terminal-Bench-2.1": {
+          "value": 85.4,
+          "max": null,
+          "effort": null,
+          "source_type": "vendor",
+          "url": "https://benchlm.ai/api/data/benchmarks?model=hy4-preview&format=csv",
+          "origin": "supplement-2026-10-12",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 85.4,
+              "source_type": "vendor",
+              "effort": null,
+              "origin": "supplement-2026-10-12",
+              "url": "https://benchlm.ai/api/data/benchmarks?model=hy4-preview&format=csv"
+            },
+            {
+              "value": 85.4,
+              "source_type": "vendor",
+              "effort": null,
+              "origin": "baseline-2026-10-09",
+              "url": "",
+              "source_label": "Hugging Face 模型卡"
+            }
+          ],
+          "caveat": "vendor-self-reported"
+        },
+        "Terminal-Bench-2.1(Vals)": {
+          "value": 55.1,
+          "max": null,
+          "effort": null,
+          "source_type": "third-party",
+          "url": "https://benchlm.ai/api/data/benchmarks?model=hy4-preview&format=csv",
+          "origin": "supplement-2026-10-12",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 55.1,
+              "source_type": "third-party",
+              "effort": null,
+              "origin": "supplement-2026-10-12",
+              "url": "https://benchlm.ai/api/data/benchmarks?model=hy4-preview&format=csv"
+            }
+          ]
+        },
+        "Toolathlon-Verified": {
+          "value": 74.1,
+          "max": null,
+          "effort": null,
+          "source_type": "vendor",
+          "url": "https://benchlm.ai/api/data/benchmarks?model=hy4-preview&format=csv",
+          "origin": "supplement-2026-10-12",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 74.1,
+              "source_type": "vendor",
+              "effort": null,
+              "origin": "supplement-2026-10-12",
+              "url": "https://benchlm.ai/api/data/benchmarks?model=hy4-preview&format=csv"
+            }
+          ],
+          "caveat": "vendor-self-reported"
+        }
+      }
+    },
+    {
+      "model": "kimi-k2.6",
+      "benchmarks": {},
+      "no_public_score": true,
+      "reason": "无任何公开基准分（源 noPublicScore 名单登记）"
+    },
+    {
+      "model": "kimi-k2.7",
+      "benchmarks": {
+        "SWE-bench": {
+          "value": 78.2,
+          "max": null,
+          "effort": null,
+          "source_type": "third-party",
+          "url": "https://www.vals.ai/models/kimi_kimi-k2.7-code",
+          "origin": "baseline-2026-10-09",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 78.2,
+              "source_type": "third-party",
+              "effort": null,
+              "origin": "baseline-2026-10-09",
+              "url": "https://www.vals.ai/models/kimi_kimi-k2.7-code"
+            }
+          ]
+        },
+        "Terminal-Bench-2.1": {
+          "value": 67.04,
+          "max": null,
+          "effort": null,
+          "source_type": "third-party",
+          "url": "https://www.vals.ai/models/kimi_kimi-k2.7-code",
+          "origin": "baseline-2026-10-09",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 67.04,
+              "source_type": "third-party",
+              "effort": null,
+              "origin": "baseline-2026-10-09",
+              "url": "https://www.vals.ai/models/kimi_kimi-k2.7-code"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "model": "kimi-k2.8-preview",
+      "benchmarks": {},
+      "no_public_score": true,
+      "reason": "无任何公开基准分（源 noPublicScore 名单登记）"
+    },
+    {
+      "model": "kimi-k3",
+      "benchmarks": {
+        "AutomationBench": {
+          "value": 30.8,
+          "max": null,
+          "effort": null,
+          "source_type": "vendor",
+          "url": "https://benchlm.ai/api/data/benchmarks?model=kimi-k3&format=csv",
+          "origin": "supplement-2026-10-12",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 30.8,
+              "source_type": "vendor",
+              "effort": null,
+              "origin": "supplement-2026-10-12",
+              "url": "https://benchlm.ai/api/data/benchmarks?model=kimi-k3&format=csv"
+            }
+          ],
+          "caveat": "vendor-self-reported"
+        },
+        "DeepSWE-1.1": {
+          "value": 67.5,
+          "max": null,
+          "effort": null,
+          "source_type": "vendor",
+          "url": "https://benchlm.ai/api/data/benchmarks?model=kimi-k3&format=csv",
+          "origin": "supplement-2026-10-12",
+          "kind": "conflict",
+          "candidates": [
+            {
+              "value": 67.5,
+              "source_type": "vendor",
+              "effort": null,
+              "origin": "supplement-2026-10-12",
+              "url": "https://benchlm.ai/api/data/benchmarks?model=kimi-k3&format=csv"
+            },
+            {
+              "value": 67.5,
+              "source_type": "vendor",
+              "effort": null,
+              "origin": "baseline-2026-10-09",
+              "url": "",
+              "source_label": "GitHub"
+            }
+          ],
+          "caveat": "vendor-self-reported"
+        },
+        "GPQA-Diamond": {
+          "value": 93.5,
+          "max": null,
+          "effort": null,
+          "source_type": "vendor",
+          "url": "https://benchlm.ai/api/data/benchmarks?model=kimi-k3&format=csv",
+          "origin": "supplement-2026-10-12",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 93.5,
+              "source_type": "vendor",
+              "effort": null,
+              "origin": "supplement-2026-10-12",
+              "url": "https://benchlm.ai/api/data/benchmarks?model=kimi-k3&format=csv"
+            }
+          ],
+          "caveat": "vendor-self-reported"
+        },
+        "HLE": {
+          "value": 56,
+          "max": null,
+          "effort": null,
+          "source_type": "vendor",
+          "url": "https://benchlm.ai/api/data/benchmarks?model=kimi-k3&format=csv",
+          "origin": "supplement-2026-10-12",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 56,
+              "source_type": "vendor",
+              "effort": null,
+              "origin": "supplement-2026-10-12",
+              "url": "https://benchlm.ai/api/data/benchmarks?model=kimi-k3&format=csv"
+            }
+          ],
+          "caveat": "vendor-self-reported"
+        },
+        "SWE-bench(Vals)": {
+          "value": 93.4,
+          "max": null,
+          "effort": null,
+          "source_type": "third-party",
+          "url": "https://benchlm.ai/api/data/benchmarks?model=kimi-k3&format=csv",
+          "origin": "supplement-2026-10-12",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 93.4,
+              "source_type": "third-party",
+              "effort": null,
+              "origin": "supplement-2026-10-12",
+              "url": "https://benchlm.ai/api/data/benchmarks?model=kimi-k3&format=csv"
+            }
+          ]
+        },
+        "Terminal-Bench-2.1": {
+          "value": 88.3,
+          "max": null,
+          "effort": null,
+          "source_type": "vendor",
+          "url": "https://benchlm.ai/api/data/benchmarks?model=kimi-k3&format=csv",
+          "origin": "supplement-2026-10-12",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 88.3,
+              "source_type": "vendor",
+              "effort": null,
+              "origin": "supplement-2026-10-12",
+              "url": "https://benchlm.ai/api/data/benchmarks?model=kimi-k3&format=csv"
+            },
+            {
+              "value": 88.3,
+              "source_type": "vendor",
+              "effort": null,
+              "origin": "baseline-2026-10-09",
+              "url": "",
+              "source_label": "GitHub"
+            }
+          ],
+          "caveat": "vendor-self-reported"
+        },
+        "Terminal-Bench-2.1(Vals)": {
+          "value": 80.9,
+          "max": null,
+          "effort": null,
+          "source_type": "third-party",
+          "url": "https://benchlm.ai/api/data/benchmarks?model=kimi-k3&format=csv",
+          "origin": "supplement-2026-10-12",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 80.9,
+              "source_type": "third-party",
+              "effort": null,
+              "origin": "supplement-2026-10-12",
+              "url": "https://benchlm.ai/api/data/benchmarks?model=kimi-k3&format=csv"
+            }
+          ]
+        },
+        "Toolathlon-Verified": {
+          "value": 73.2,
+          "max": null,
+          "effort": null,
+          "source_type": "vendor",
+          "url": "https://benchlm.ai/api/data/benchmarks?model=kimi-k3&format=csv",
+          "origin": "supplement-2026-10-12",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 73.2,
+              "source_type": "vendor",
+              "effort": null,
+              "origin": "supplement-2026-10-12",
+              "url": "https://benchlm.ai/api/data/benchmarks?model=kimi-k3&format=csv"
+            }
+          ],
+          "caveat": "vendor-self-reported"
+        }
+      }
+    },
+    {
+      "model": "kimi-k3.1-pro",
+      "benchmarks": {
+        "AA-Intelligence": {
+          "value": 55,
+          "max": null,
+          "effort": null,
+          "source_type": "third-party",
+          "url": "https://artificialanalysis.ai/articles/kimi-k3-1-pro-launch-benchmarks",
+          "origin": "increment-20261024",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 55,
+              "source_type": "third-party",
+              "effort": null,
+              "origin": "increment-20261024",
+              "url": "https://artificialanalysis.ai/articles/kimi-k3-1-pro-launch-benchmarks",
+              "source_label": "Artificial Analysis"
+            }
+          ]
+        },
+        "HLE": {
+          "value": 52,
+          "max": null,
+          "effort": null,
+          "source_type": "third-party",
+          "url": "https://artificialanalysis.ai/articles/kimi-k3-1-pro-launch-benchmarks",
+          "origin": "increment-20261024",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 52,
+              "source_type": "third-party",
+              "effort": null,
+              "origin": "increment-20261024",
+              "url": "https://artificialanalysis.ai/articles/kimi-k3-1-pro-launch-benchmarks",
+              "source_label": "Artificial Analysis"
+            }
+          ]
+        },
+        "SciCode": {
+          "value": 61,
+          "max": null,
+          "effort": null,
+          "source_type": "third-party",
+          "url": "https://artificialanalysis.ai/articles/kimi-k3-1-pro-launch-benchmarks",
+          "origin": "increment-20261024",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 61,
+              "source_type": "third-party",
+              "effort": null,
+              "origin": "increment-20261024",
+              "url": "https://artificialanalysis.ai/articles/kimi-k3-1-pro-launch-benchmarks",
+              "source_label": "Artificial Analysis"
+            }
+          ]
+        },
+        "Terminal-Bench-4.0": {
+          "value": 67,
+          "max": null,
+          "effort": null,
+          "source_type": "third-party",
+          "url": "https://artificialanalysis.ai/articles/kimi-k3-1-pro-launch-benchmarks",
+          "origin": "increment-20261024",
+          "kind": "conflict",
+          "candidates": [
+            {
+              "value": 67,
+              "source_type": "third-party",
+              "effort": null,
+              "origin": "increment-20261024",
+              "url": "https://artificialanalysis.ai/articles/kimi-k3-1-pro-launch-benchmarks",
+              "source_label": "Artificial Analysis"
+            },
+            {
+              "value": 65.7,
+              "source_type": "vendor",
+              "effort": null,
+              "origin": "increment-20261024",
+              "url": "https://www.kimi.ai/blog/kimi-k3-1-pro",
+              "source_label": "Kimi 官方博客"
+            }
+          ],
+          "distinct_values": [
+            67,
+            65.7
+          ]
+        }
+      }
+    },
+    {
+      "model": "LongCat-2.5-Preview",
+      "benchmarks": {
+        "AI-Coding-Daily-Total": {
+          "value": 46.65,
+          "max": 80,
+          "effort": null,
+          "source_type": "third-party",
+          "url": "https://aicodingdaily.com/model/longcat-2-5-preview",
+          "origin": "supplement-2026-10-12",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 46.65,
+              "source_type": "third-party",
+              "effort": null,
+              "origin": "supplement-2026-10-12",
+              "url": "https://aicodingdaily.com/model/longcat-2-5-preview"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "model": "mimo-v2.6-flash",
+      "benchmarks": {
+        "Agents-Last-Exam": {
+          "value": 27.6,
+          "max": null,
+          "effort": null,
+          "source_type": "vendor",
+          "url": "https://benchlm.ai/api/data/benchmarks?model=mimo-v2-6-flash&format=csv",
+          "origin": "supplement-2026-10-12",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 27.6,
+              "source_type": "vendor",
+              "effort": null,
+              "origin": "supplement-2026-10-12",
+              "url": "https://benchlm.ai/api/data/benchmarks?model=mimo-v2-6-flash&format=csv"
+            }
+          ],
+          "caveat": "vendor-self-reported"
+        },
+        "AutomationBench-1.0.6": {
+          "value": 52.3,
+          "max": null,
+          "effort": null,
+          "source_type": "vendor",
+          "url": "https://myclaw.ai/zh-CN/blog/mimo-v2-6",
+          "origin": "supplement-2026-10-12",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 52.3,
+              "source_type": "vendor",
+              "effort": null,
+              "origin": "supplement-2026-10-12",
+              "url": "https://myclaw.ai/zh-CN/blog/mimo-v2-6"
+            }
+          ],
+          "caveat": "vendor-self-reported"
+        },
+        "CyberGym": {
+          "value": 95.1,
+          "max": null,
+          "effort": null,
+          "source_type": "vendor",
+          "url": "https://benchlm.ai/api/data/benchmarks?model=mimo-v2-6-flash&format=csv",
+          "origin": "supplement-2026-10-12",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 95.1,
+              "source_type": "vendor",
+              "effort": null,
+              "origin": "supplement-2026-10-12",
+              "url": "https://benchlm.ai/api/data/benchmarks?model=mimo-v2-6-flash&format=csv"
+            }
+          ],
+          "caveat": "vendor-self-reported"
+        },
+        "DeepSWE-1.1": {
+          "value": 67.9,
+          "max": null,
+          "effort": null,
+          "source_type": "vendor",
+          "url": "https://myclaw.ai/zh-CN/blog/mimo-v2-6",
+          "origin": "supplement-2026-10-12",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 67.9,
+              "source_type": "vendor",
+              "effort": null,
+              "origin": "supplement-2026-10-12",
+              "url": "https://myclaw.ai/zh-CN/blog/mimo-v2-6"
+            },
+            {
+              "value": 67.9,
+              "source_type": "vendor",
+              "effort": null,
+              "origin": "supplement-2026-10-12",
+              "url": "https://benchlm.ai/api/data/benchmarks?model=mimo-v2-6-flash&format=csv"
+            }
+          ],
+          "caveat": "vendor-self-reported"
+        },
+        "JobBench": {
+          "value": 61.2,
+          "max": null,
+          "effort": null,
+          "source_type": "vendor",
+          "url": "https://benchlm.ai/api/data/benchmarks?model=mimo-v2-6-flash&format=csv",
+          "origin": "supplement-2026-10-12",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 61.2,
+              "source_type": "vendor",
+              "effort": null,
+              "origin": "supplement-2026-10-12",
+              "url": "https://benchlm.ai/api/data/benchmarks?model=mimo-v2-6-flash&format=csv"
+            }
+          ],
+          "caveat": "vendor-self-reported"
+        },
+        "OSWorld-Verified": {
+          "value": 80.8,
+          "max": null,
+          "effort": null,
+          "source_type": "vendor",
+          "url": "https://myclaw.ai/zh-CN/blog/mimo-v2-6",
+          "origin": "supplement-2026-10-12",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 80.8,
+              "source_type": "vendor",
+              "effort": null,
+              "origin": "supplement-2026-10-12",
+              "url": "https://myclaw.ai/zh-CN/blog/mimo-v2-6"
+            }
+          ],
+          "caveat": "vendor-self-reported"
+        },
+        "Terminal-Bench-2.1": {
+          "value": 87.6,
+          "max": null,
+          "effort": null,
+          "source_type": "vendor",
+          "url": "https://benchlm.ai/api/data/benchmarks?model=mimo-v2-6-flash&format=csv",
+          "origin": "supplement-2026-10-12",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 87.6,
+              "source_type": "vendor",
+              "effort": null,
+              "origin": "supplement-2026-10-12",
+              "url": "https://benchlm.ai/api/data/benchmarks?model=mimo-v2-6-flash&format=csv"
+            },
+            {
+              "value": 87.6,
+              "source_type": "vendor",
+              "effort": null,
+              "origin": "baseline-2026-10-09",
+              "url": "",
+              "source_label": "Hugging Face 模型卡"
+            }
+          ],
+          "caveat": "vendor-self-reported"
+        },
+        "Terminal-Bench-4.0": {
+          "value": 28.8,
+          "max": null,
+          "effort": null,
+          "source_type": "vendor",
+          "url": "https://benchlm.ai/api/data/benchmarks?model=mimo-v2-6-flash&format=csv",
+          "origin": "supplement-2026-10-12",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 28.8,
+              "source_type": "vendor",
+              "effort": null,
+              "origin": "supplement-2026-10-12",
+              "url": "https://benchlm.ai/api/data/benchmarks?model=mimo-v2-6-flash&format=csv"
+            },
+            {
+              "value": 28.8,
+              "source_type": "vendor",
+              "effort": null,
+              "origin": "baseline-2026-10-09",
+              "url": "",
+              "source_label": "Hugging Face 模型卡"
+            }
+          ],
+          "caveat": "vendor-self-reported"
+        },
+        "Toolathlon-Verified": {
+          "value": 73.6,
+          "max": null,
+          "effort": null,
+          "source_type": "vendor",
+          "url": "https://myclaw.ai/zh-CN/blog/mimo-v2-6",
+          "origin": "supplement-2026-10-12",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 73.6,
+              "source_type": "vendor",
+              "effort": null,
+              "origin": "supplement-2026-10-12",
+              "url": "https://myclaw.ai/zh-CN/blog/mimo-v2-6"
+            }
+          ],
+          "caveat": "vendor-self-reported"
+        }
+      }
+    },
+    {
+      "model": "mimo-v2.6-pro",
+      "benchmarks": {
+        "AA-Intelligence": {
+          "value": 46,
+          "max": null,
+          "effort": null,
+          "source_type": "third-party",
+          "url": "https://artificialanalysis.ai/models/mimo-v2-6-pro",
+          "origin": "supplement-2026-10-12",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 46,
+              "source_type": "third-party",
+              "effort": null,
+              "origin": "supplement-2026-10-12",
+              "url": "https://artificialanalysis.ai/models/mimo-v2-6-pro"
+            }
+          ]
+        },
+        "AA-Intelligence(vendor-claimed)": {
+          "value": 46.32,
+          "max": null,
+          "effort": null,
+          "source_type": "vendor",
+          "url": "https://mimo.mi.com/models/zh-CN/mimo-v2.6-pro",
+          "origin": "supplement-2026-10-12",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 46.32,
+              "source_type": "vendor",
+              "effort": null,
+              "origin": "supplement-2026-10-12",
+              "url": "https://mimo.mi.com/models/zh-CN/mimo-v2.6-pro"
+            }
+          ],
+          "caveat": "vendor-self-reported"
+        },
+        "Agents-Last-Exam": {
+          "value": 31.6,
+          "max": null,
+          "effort": null,
+          "source_type": "vendor",
+          "url": "https://benchlm.ai/api/data/benchmarks?model=mimo-v2-6-pro&format=csv",
+          "origin": "supplement-2026-10-12",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 31.6,
+              "source_type": "vendor",
+              "effort": null,
+              "origin": "supplement-2026-10-12",
+              "url": "https://benchlm.ai/api/data/benchmarks?model=mimo-v2-6-pro&format=csv"
+            }
+          ],
+          "caveat": "vendor-self-reported"
+        },
+        "AutomationBench-1.0.6": {
+          "value": 53.1,
+          "max": null,
+          "effort": null,
+          "source_type": "vendor",
+          "url": "https://myclaw.ai/zh-CN/blog/mimo-v2-6",
+          "origin": "supplement-2026-10-12",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 53.1,
+              "source_type": "vendor",
+              "effort": null,
+              "origin": "supplement-2026-10-12",
+              "url": "https://myclaw.ai/zh-CN/blog/mimo-v2-6"
+            }
+          ],
+          "caveat": "vendor-self-reported"
+        },
+        "CyberGym": {
+          "value": 94,
+          "max": null,
+          "effort": null,
+          "source_type": "vendor",
+          "url": "https://benchlm.ai/api/data/benchmarks?model=mimo-v2-6-pro&format=csv",
+          "origin": "supplement-2026-10-12",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 94,
+              "source_type": "vendor",
+              "effort": null,
+              "origin": "supplement-2026-10-12",
+              "url": "https://benchlm.ai/api/data/benchmarks?model=mimo-v2-6-pro&format=csv"
+            }
+          ],
+          "caveat": "vendor-self-reported"
+        },
+        "DeepSWE-1.1": {
+          "value": 71.9,
+          "max": null,
+          "effort": null,
+          "source_type": "vendor",
+          "url": "https://myclaw.ai/zh-CN/blog/mimo-v2-6",
+          "origin": "supplement-2026-10-12",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 71.9,
+              "source_type": "vendor",
+              "effort": null,
+              "origin": "supplement-2026-10-12",
+              "url": "https://myclaw.ai/zh-CN/blog/mimo-v2-6"
+            },
+            {
+              "value": 71.9,
+              "source_type": "vendor",
+              "effort": null,
+              "origin": "supplement-2026-10-12",
+              "url": "https://benchlm.ai/api/data/benchmarks?model=mimo-v2-6-pro&format=csv"
+            }
+          ],
+          "caveat": "vendor-self-reported"
+        },
+        "JobBench": {
+          "value": 62,
+          "max": null,
+          "effort": null,
+          "source_type": "vendor",
+          "url": "https://benchlm.ai/api/data/benchmarks?model=mimo-v2-6-pro&format=csv",
+          "origin": "supplement-2026-10-12",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 62,
+              "source_type": "vendor",
+              "effort": null,
+              "origin": "supplement-2026-10-12",
+              "url": "https://benchlm.ai/api/data/benchmarks?model=mimo-v2-6-pro&format=csv"
+            }
+          ],
+          "caveat": "vendor-self-reported"
+        },
+        "OSWorld-Verified": {
+          "value": 82,
+          "max": null,
+          "effort": null,
+          "source_type": "vendor",
+          "url": "https://myclaw.ai/zh-CN/blog/mimo-v2-6",
+          "origin": "supplement-2026-10-12",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 82,
+              "source_type": "vendor",
+              "effort": null,
+              "origin": "supplement-2026-10-12",
+              "url": "https://myclaw.ai/zh-CN/blog/mimo-v2-6"
+            }
+          ],
+          "caveat": "vendor-self-reported"
+        },
+        "Terminal-Bench-2.1": {
+          "value": 89.9,
+          "max": null,
+          "effort": null,
+          "source_type": "vendor",
+          "url": "https://benchlm.ai/api/data/benchmarks?model=mimo-v2-6-pro&format=csv",
+          "origin": "supplement-2026-10-12",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 89.9,
+              "source_type": "vendor",
+              "effort": null,
+              "origin": "supplement-2026-10-12",
+              "url": "https://benchlm.ai/api/data/benchmarks?model=mimo-v2-6-pro&format=csv"
+            },
+            {
+              "value": 89.9,
+              "source_type": "vendor",
+              "effort": null,
+              "origin": "baseline-2026-10-09",
+              "url": "https://huggingface.co/XiaomiMiMo/MiMo-V2.6-Pro-RL/raw/main/README.md"
+            }
+          ],
+          "caveat": "vendor-self-reported"
+        },
+        "Terminal-Bench-4.0": {
+          "value": 34.9,
+          "max": null,
+          "effort": null,
+          "source_type": "vendor",
+          "url": "https://benchlm.ai/api/data/benchmarks?model=mimo-v2-6-pro&format=csv",
+          "origin": "supplement-2026-10-12",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 34.9,
+              "source_type": "vendor",
+              "effort": null,
+              "origin": "supplement-2026-10-12",
+              "url": "https://benchlm.ai/api/data/benchmarks?model=mimo-v2-6-pro&format=csv"
+            }
+          ],
+          "caveat": "vendor-self-reported"
+        },
+        "Toolathlon-Verified": {
+          "value": 76.9,
+          "max": null,
+          "effort": null,
+          "source_type": "vendor",
+          "url": "https://myclaw.ai/zh-CN/blog/mimo-v2-6",
+          "origin": "supplement-2026-10-12",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 76.9,
+              "source_type": "vendor",
+              "effort": null,
+              "origin": "supplement-2026-10-12",
+              "url": "https://myclaw.ai/zh-CN/blog/mimo-v2-6"
+            }
+          ],
+          "caveat": "vendor-self-reported"
+        }
+      }
+    },
+    {
+      "model": "minimax-m3",
+      "benchmarks": {
+        "SWE-bench-Pro": {
+          "value": 59,
+          "max": null,
+          "effort": null,
+          "source_type": "vendor",
+          "url": "",
+          "origin": "baseline-2026-10-09",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 59,
+              "source_type": "vendor",
+              "effort": null,
+              "origin": "baseline-2026-10-09",
+              "url": "",
+              "source_label": "MiniMax"
+            }
+          ],
+          "caveat": "vendor-self-reported"
+        },
+        "Terminal-Bench-2.1": {
+          "value": 66,
+          "max": null,
+          "effort": null,
+          "source_type": "vendor",
+          "url": "",
+          "origin": "baseline-2026-10-09",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 66,
+              "source_type": "vendor",
+              "effort": null,
+              "origin": "baseline-2026-10-09",
+              "url": "",
+              "source_label": "MiniMax"
+            }
+          ],
+          "caveat": "vendor-self-reported"
+        }
+      }
+    },
+    {
+      "model": "MiniMax-M3.1-Flash-Preview",
+      "benchmarks": {
+        "ModelDial-custom": {
+          "value": 69.6,
+          "max": null,
+          "effort": null,
+          "source_type": "third-party",
+          "url": "（沿用已有文件 public-benchmarks-20261009.json 的既有条目）",
+          "origin": "supplement-2026-10-12",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 69.6,
+              "source_type": "third-party",
+              "effort": null,
+              "origin": "supplement-2026-10-12",
+              "url": "（沿用已有文件 public-benchmarks-20261009.json 的既有条目）"
+            },
+            {
+              "value": 69.6,
+              "source_type": "third-party",
+              "effort": null,
+              "origin": "baseline-2026-10-09",
+              "url": "",
+              "source_label": "modeldial.com"
+            }
+          ],
+          "caveat": "non-standard-caliber",
+          "caveat_detail": "第三方自定义口径，不可与标准基准并列比较"
+        }
+      },
+      "no_standard_score": true,
+      "reason": "10-09 之后仍无公开标准基准分（三处独立确认）；库内仅一条 ModelDial-custom 自定义口径"
+    },
+    {
+      "model": "qwen3.8-flash",
+      "benchmarks": {
+        "AA-Intelligence": {
+          "value": 40,
+          "max": null,
+          "effort": null,
+          "source_type": "third-party",
+          "url": "",
+          "origin": "baseline-2026-10-09",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 40,
+              "source_type": "third-party",
+              "effort": null,
+              "origin": "baseline-2026-10-09",
+              "url": "",
+              "source_label": "NanoGPT"
+            }
+          ]
+        },
+        "Leaderboard.cn-综合分": {
+          "value": 84.4,
+          "max": null,
+          "effort": null,
+          "source_type": "third-party",
+          "url": "https://leaderboard.cn/models/qwen3.8-flash-next",
+          "origin": "supplement-2026-10-12",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 84.4,
+              "source_type": "third-party",
+              "effort": null,
+              "origin": "supplement-2026-10-12",
+              "url": "https://leaderboard.cn/models/qwen3.8-flash-next"
+            }
+          ],
+          "caveat": "non-standard-caliber",
+          "caveat_detail": "该站自算综合分，非标准基准"
+        }
+      }
+    },
+    {
+      "model": "qwen3.8-max",
+      "benchmarks": {
+        "FrontierSWE-v2": {
+          "value": 15.8,
+          "max": null,
+          "effort": null,
+          "source_type": "third-party",
+          "url": "https://benchlm.ai/models/qwen3-8-max",
+          "origin": "supplement-2026-10-12",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 15.8,
+              "source_type": "third-party",
+              "effort": null,
+              "origin": "supplement-2026-10-12",
+              "url": "https://benchlm.ai/models/qwen3-8-max"
+            }
+          ]
+        },
+        "GPQA-Diamond": {
+          "value": 92.6,
+          "max": null,
+          "effort": null,
+          "source_type": "vendor",
+          "url": "https://sinoaihub.com/comparisons/qwen38-max-vs-qwen38-flash/",
+          "origin": "supplement-2026-10-12",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 92.6,
+              "source_type": "vendor",
+              "effort": null,
+              "origin": "supplement-2026-10-12",
+              "url": "https://sinoaihub.com/comparisons/qwen38-max-vs-qwen38-flash/"
+            }
+          ],
+          "caveat": "vendor-self-reported"
+        },
+        "HLE": {
+          "value": 43.6,
+          "max": null,
+          "effort": null,
+          "source_type": "vendor",
+          "url": "https://sinoaihub.com/comparisons/qwen38-max-vs-qwen38-flash/",
+          "origin": "supplement-2026-10-12",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 43.6,
+              "source_type": "vendor",
+              "effort": null,
+              "origin": "supplement-2026-10-12",
+              "url": "https://sinoaihub.com/comparisons/qwen38-max-vs-qwen38-flash/"
+            }
+          ],
+          "caveat": "vendor-self-reported"
+        },
+        "LiveCodeBench(Vals)": {
+          "value": 87.9,
+          "max": null,
+          "effort": null,
+          "source_type": "third-party",
+          "url": "https://benchlm.ai/models/qwen3-8-max",
+          "origin": "supplement-2026-10-12",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 87.9,
+              "source_type": "third-party",
+              "effort": null,
+              "origin": "supplement-2026-10-12",
+              "url": "https://benchlm.ai/models/qwen3-8-max"
+            }
+          ]
+        },
+        "MRCR-v2-256K": {
+          "value": 92.9,
+          "max": null,
+          "effort": null,
+          "source_type": "vendor",
+          "url": "https://sinoaihub.com/comparisons/qwen38-max-vs-qwen38-flash/",
+          "origin": "supplement-2026-10-12",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 92.9,
+              "source_type": "vendor",
+              "effort": null,
+              "origin": "supplement-2026-10-12",
+              "url": "https://sinoaihub.com/comparisons/qwen38-max-vs-qwen38-flash/"
+            }
+          ],
+          "caveat": "vendor-self-reported"
+        },
+        "PaperBench": {
+          "value": 93,
+          "max": null,
+          "effort": null,
+          "source_type": "vendor",
+          "url": "https://developer.aliyun.com/article/1760260",
+          "origin": "supplement-2026-10-12",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 93,
+              "source_type": "vendor",
+              "effort": null,
+              "origin": "supplement-2026-10-12",
+              "url": "https://developer.aliyun.com/article/1760260"
+            }
+          ],
+          "caveat": "vendor-self-reported"
+        },
+        "SWE-bench-Pro": {
+          "value": 67.7,
+          "max": null,
+          "effort": null,
+          "source_type": "vendor",
+          "url": "https://sinoaihub.com/comparisons/qwen38-max-vs-qwen38-flash/",
+          "origin": "supplement-2026-10-12",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 67.7,
+              "source_type": "vendor",
+              "effort": null,
+              "origin": "supplement-2026-10-12",
+              "url": "https://sinoaihub.com/comparisons/qwen38-max-vs-qwen38-flash/"
+            }
+          ],
+          "caveat": "vendor-self-reported"
+        },
+        "Terminal-Bench-2.1": {
+          "value": 88.8,
+          "max": null,
+          "effort": null,
+          "source_type": "third-party",
+          "url": "",
+          "origin": "baseline-2026-10-09",
+          "kind": "conflict",
+          "candidates": [
+            {
+              "value": 86.6,
+              "source_type": "vendor",
+              "effort": null,
+              "origin": "supplement-2026-10-12",
+              "url": "https://sinoaihub.com/comparisons/qwen38-max-vs-qwen38-flash/"
+            },
+            {
+              "value": 88.8,
+              "source_type": "third-party",
+              "effort": null,
+              "origin": "baseline-2026-10-09",
+              "url": "",
+              "source_label": "The Model Gap"
+            }
+          ],
+          "distinct_values": [
+            86.6,
+            88.8
+          ]
+        }
+      }
+    },
+    {
+      "model": "sensenova-6.8-flash-lite",
+      "benchmarks": {},
+      "no_public_score": true,
+      "reason": "无任何公开基准分（BenchLM 404；官方模型页无数值）"
+    },
+    {
+      "model": "space-bunny",
+      "benchmarks": {},
+      "no_public_score": true,
+      "reason": "无任何公开基准分（源 noPublicScore 名单登记）"
+    },
+    {
+      "model": "step-5-preview",
+      "benchmarks": {
+        "AA-Intelligence": {
+          "value": 44,
+          "max": null,
+          "effort": null,
+          "source_type": "third-party",
+          "url": "",
+          "origin": "baseline-2026-10-09",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 44,
+              "source_type": "third-party",
+              "effort": null,
+              "origin": "baseline-2026-10-09",
+              "url": "",
+              "source_label": "Artificial Analysis"
+            }
+          ]
+        },
+        "AA-LCR": {
+          "value": 88,
+          "max": null,
+          "effort": null,
+          "source_type": "third-party",
+          "url": "",
+          "origin": "baseline-2026-10-09",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 88,
+              "source_type": "third-party",
+              "effort": null,
+              "origin": "baseline-2026-10-09",
+              "url": "",
+              "source_label": "Artificial Analysis"
+            }
+          ]
+        },
+        "AutomationBench": {
+          "value": 51,
+          "max": null,
+          "effort": null,
+          "source_type": "third-party",
+          "url": "",
+          "origin": "baseline-2026-10-09",
+          "kind": "conflict",
+          "candidates": [
+            {
+              "value": 44,
+              "source_type": "vendor",
+              "effort": null,
+              "origin": "supplement-2026-10-12",
+              "url": "https://benchlm.ai/api/data/benchmarks?model=step-5-preview&format=csv"
+            },
+            {
+              "value": 51,
+              "source_type": "third-party",
+              "effort": null,
+              "origin": "baseline-2026-10-09",
+              "url": "",
+              "source_label": "Artificial Analysis"
+            }
+          ],
+          "distinct_values": [
+            44,
+            51
+          ]
+        },
+        "Code Migration": {
+          "value": 38.98,
+          "max": null,
+          "effort": null,
+          "source_type": "third-party",
+          "url": "",
+          "origin": "baseline-2026-10-09",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 38.98,
+              "source_type": "third-party",
+              "effort": null,
+              "origin": "baseline-2026-10-09",
+              "url": "",
+              "source_label": "Vals AI"
+            }
+          ]
+        },
+        "CyberGym": {
+          "value": 84.7,
+          "max": null,
+          "effort": null,
+          "source_type": "vendor",
+          "url": "https://benchlm.ai/api/data/benchmarks?model=step-5-preview&format=csv",
+          "origin": "supplement-2026-10-12",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 84.7,
+              "source_type": "vendor",
+              "effort": null,
+              "origin": "supplement-2026-10-12",
+              "url": "https://benchlm.ai/api/data/benchmarks?model=step-5-preview&format=csv"
+            }
+          ],
+          "caveat": "vendor-self-reported"
+        },
+        "DeepSWE-1.1": {
+          "value": 67.7,
+          "max": null,
+          "effort": null,
+          "source_type": "vendor",
+          "url": "https://benchlm.ai/api/data/benchmarks?model=step-5-preview&format=csv",
+          "origin": "supplement-2026-10-12",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 67.7,
+              "source_type": "vendor",
+              "effort": null,
+              "origin": "supplement-2026-10-12",
+              "url": "https://benchlm.ai/api/data/benchmarks?model=step-5-preview&format=csv"
+            },
+            {
+              "value": 67.7,
+              "source_type": "vendor",
+              "effort": null,
+              "origin": "baseline-2026-10-09",
+              "url": "https://huggingface.co/SHSLab/Step-5-Preview-BF16"
+            }
+          ],
+          "caveat": "vendor-self-reported"
+        },
+        "GPQA-Diamond": {
+          "value": 93.5,
+          "max": null,
+          "effort": null,
+          "source_type": "vendor",
+          "url": "https://benchlm.ai/api/data/benchmarks?model=step-5-preview&format=csv",
+          "origin": "supplement-2026-10-12",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 93.5,
+              "source_type": "vendor",
+              "effort": null,
+              "origin": "supplement-2026-10-12",
+              "url": "https://benchlm.ai/api/data/benchmarks?model=step-5-preview&format=csv"
+            }
+          ],
+          "caveat": "vendor-self-reported"
+        },
+        "HLE": {
+          "value": 46,
+          "max": null,
+          "effort": null,
+          "source_type": "third-party",
+          "url": "",
+          "origin": "baseline-2026-10-09",
+          "kind": "rounding",
+          "candidates": [
+            {
+              "value": 46.5,
+              "source_type": "vendor",
+              "effort": null,
+              "origin": "supplement-2026-10-12",
+              "url": "https://benchlm.ai/api/data/benchmarks?model=step-5-preview&format=csv"
+            },
+            {
+              "value": 46,
+              "source_type": "third-party",
+              "effort": null,
+              "origin": "baseline-2026-10-09",
+              "url": "",
+              "source_label": "Artificial Analysis"
+            }
+          ],
+          "distinct_values": [
+            46.5,
+            46
+          ]
+        },
+        "SciCode": {
+          "value": 59,
+          "max": null,
+          "effort": null,
+          "source_type": "third-party",
+          "url": "",
+          "origin": "baseline-2026-10-09",
+          "kind": "rounding",
+          "candidates": [
+            {
+              "value": 58.9,
+              "source_type": "vendor",
+              "effort": null,
+              "origin": "supplement-2026-10-12",
+              "url": "https://benchlm.ai/api/data/benchmarks?model=step-5-preview&format=csv"
+            },
+            {
+              "value": 59,
+              "source_type": "third-party",
+              "effort": null,
+              "origin": "baseline-2026-10-09",
+              "url": "",
+              "source_label": "Artificial Analysis"
+            }
+          ],
+          "distinct_values": [
+            58.9,
+            59
+          ]
+        },
+        "Terminal-Bench-2.1": {
+          "value": 85,
+          "max": null,
+          "effort": null,
+          "source_type": "vendor",
+          "url": "https://benchlm.ai/api/data/benchmarks?model=step-5-preview&format=csv",
+          "origin": "supplement-2026-10-12",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 85,
+              "source_type": "vendor",
+              "effort": null,
+              "origin": "supplement-2026-10-12",
+              "url": "https://benchlm.ai/api/data/benchmarks?model=step-5-preview&format=csv"
+            },
+            {
+              "value": 85,
+              "source_type": "vendor",
+              "effort": null,
+              "origin": "baseline-2026-10-09",
+              "url": "https://huggingface.co/SHSLab/Step-5-Preview-BF16"
+            }
+          ],
+          "caveat": "vendor-self-reported"
+        },
+        "Terminal-Bench-4.0": {
+          "value": 33,
+          "max": null,
+          "effort": null,
+          "source_type": "third-party",
+          "url": "",
+          "origin": "baseline-2026-10-09",
+          "kind": "rounding",
+          "candidates": [
+            {
+              "value": 33.3,
+              "source_type": "vendor",
+              "effort": null,
+              "origin": "supplement-2026-10-12",
+              "url": "https://benchlm.ai/api/data/benchmarks?model=step-5-preview&format=csv"
+            },
+            {
+              "value": 33,
+              "source_type": "third-party",
+              "effort": null,
+              "origin": "baseline-2026-10-09",
+              "url": "",
+              "source_label": "Artificial Analysis"
+            },
+            {
+              "value": 31.82,
+              "source_type": "third-party",
+              "effort": null,
+              "origin": "baseline-2026-10-09",
+              "url": "",
+              "source_label": "Vals AI"
+            }
+          ],
+          "distinct_values": [
+            33.3,
+            33,
+            31.82
+          ]
+        },
+        "Toolathlon-Verified": {
+          "value": 74.1,
+          "max": null,
+          "effort": null,
+          "source_type": "vendor",
+          "url": "https://benchlm.ai/api/data/benchmarks?model=step-5-preview&format=csv",
+          "origin": "supplement-2026-10-12",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 74.1,
+              "source_type": "vendor",
+              "effort": null,
+              "origin": "supplement-2026-10-12",
+              "url": "https://benchlm.ai/api/data/benchmarks?model=step-5-preview&format=csv"
+            }
+          ],
+          "caveat": "vendor-self-reported"
+        }
+      }
+    }
+  ]
+}

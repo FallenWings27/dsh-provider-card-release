@@ -20,6 +20,7 @@
     "src/i18n/*.json",
     "src/icon.svg",
     "seed/**",
+    "showcase/*.png",
     "cordis.patch.yml",
     "LICENSE",
     "ASSET_LICENSE.md",

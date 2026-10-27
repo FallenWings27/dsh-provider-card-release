@@ -5,33 +5,33 @@
       "assetId": "ec28effb-cfd8-4a95-b608-ac74475e6df1",
       "posterAssetId": "ec28effb-cfd8-4a95-b608-ac74475e6df1",
       "mediaType": "image",
-      "fit": "cover",
-      "objectPosition": "center 20%",
-      "updatedAt": "2026-10-24T11:36:04.052Z"
+      "fit": "contain",
+      "objectPosition": "center",
+      "updatedAt": "2026-10-26T16:37:13.000Z"
     },
     "default#recover#hud": {
       "assetId": "ec28effb-cfd8-4a95-b608-ac74475e6df1",
       "posterAssetId": "ec28effb-cfd8-4a95-b608-ac74475e6df1",
       "mediaType": "image",
-      "fit": "cover",
-      "objectPosition": "center 20%",
-      "updatedAt": "2026-10-24T11:36:04.052Z"
+      "fit": "contain",
+      "objectPosition": "center",
+      "updatedAt": "2026-10-26T16:37:13.000Z"
     },
     "default#summon#hud": {
       "assetId": "ec28effb-cfd8-4a95-b608-ac74475e6df1",
       "posterAssetId": "ec28effb-cfd8-4a95-b608-ac74475e6df1",
       "mediaType": "image",
-      "fit": "cover",
-      "objectPosition": "center 20%",
-      "updatedAt": "2026-10-24T11:36:04.052Z"
+      "fit": "contain",
+      "objectPosition": "center",
+      "updatedAt": "2026-10-26T16:37:13.000Z"
     },
     "default#warning#hud": {
       "assetId": "ec28effb-cfd8-4a95-b608-ac74475e6df1",
       "posterAssetId": "ec28effb-cfd8-4a95-b608-ac74475e6df1",
       "mediaType": "image",
-      "fit": "cover",
-      "objectPosition": "center 20%",
-      "updatedAt": "2026-10-24T11:36:04.052Z"
+      "fit": "contain",
+      "objectPosition": "center",
+      "updatedAt": "2026-10-26T16:37:13.000Z"
     },
     "card:gemini-3-8-flash#idle#hud": {
       "assetId": "2d9f197c-6988-4dbb-beca-41def1e61918",
@@ -363,47 +363,7 @@
       "loop": true,
       "muted": true
     },
-    "card:gpt-6-astra#idle#hud": {
-      "assetId": "f280aa92-f7e3-4af1-92ee-af40f5b94914",
-      "mediaType": "video",
-      "fit": "cover",
-      "objectPosition": "center 20%",
-      "updatedAt": "2026-10-24T12:26:20.438Z",
-      "posterAssetId": "1e4d410e-78de-4036-90f7-df3ba2445c61",
-      "loop": true,
-      "muted": true
-    },
-    "card:gpt-6-luna#idle#hud": {
-      "assetId": "f280aa92-f7e3-4af1-92ee-af40f5b94914",
-      "mediaType": "video",
-      "fit": "cover",
-      "objectPosition": "center 20%",
-      "updatedAt": "2026-10-24T12:26:20.438Z",
-      "posterAssetId": "1e4d410e-78de-4036-90f7-df3ba2445c61",
-      "loop": true,
-      "muted": true
-    },
     "card:gpt-6-1-sol#summon#hud": {
-      "assetId": "f280aa92-f7e3-4af1-92ee-af40f5b94914",
-      "mediaType": "video",
-      "fit": "cover",
-      "objectPosition": "center 20%",
-      "updatedAt": "2026-10-24T12:26:20.438Z",
-      "posterAssetId": "1e4d410e-78de-4036-90f7-df3ba2445c61",
-      "loop": true,
-      "muted": true
-    },
-    "card:gpt-6-astra#summon#hud": {
-      "assetId": "f280aa92-f7e3-4af1-92ee-af40f5b94914",
-      "mediaType": "video",
-      "fit": "cover",
-      "objectPosition": "center 20%",
-      "updatedAt": "2026-10-24T12:26:20.438Z",
-      "posterAssetId": "1e4d410e-78de-4036-90f7-df3ba2445c61",
-      "loop": true,
-      "muted": true
-    },
-    "card:gpt-6-luna#summon#hud": {
       "assetId": "f280aa92-f7e3-4af1-92ee-af40f5b94914",
       "mediaType": "video",
       "fit": "cover",
@@ -768,46 +728,64 @@
       "updatedAt": "2026-10-24T00:47:10.215Z"
     },
     "form:openai/astra#idle#hud": {
-      "assetId": "1e4d410e-78de-4036-90f7-df3ba2445c61",
-      "mediaType": "image",
+      "mediaType": "video",
       "fit": "cover",
       "objectPosition": "center 20%",
-      "updatedAt": "2026-10-24T00:47:10.215Z"
+      "loop": true,
+      "muted": true,
+      "assetId": "4f91d6b2-7a08-4e53-b2c9-1d6e8f04a3c7",
+      "posterAssetId": "7c3e1a90-4b62-4d18-9f05-2a6d8e47b1c3",
+      "updatedAt": "2026-10-27T02:30:00.000Z"
     },
     "form:openai/astra#summon#hud": {
-      "assetId": "1e4d410e-78de-4036-90f7-df3ba2445c61",
-      "mediaType": "image",
+      "mediaType": "video",
       "fit": "cover",
       "objectPosition": "center 20%",
-      "updatedAt": "2026-10-24T00:47:10.215Z"
+      "loop": true,
+      "muted": true,
+      "assetId": "4f91d6b2-7a08-4e53-b2c9-1d6e8f04a3c7",
+      "posterAssetId": "7c3e1a90-4b62-4d18-9f05-2a6d8e47b1c3",
+      "updatedAt": "2026-10-27T02:30:00.000Z"
     },
     "form:openai/luna#idle#hud": {
-      "assetId": "1e4d410e-78de-4036-90f7-df3ba2445c61",
-      "mediaType": "image",
+      "mediaType": "video",
       "fit": "cover",
       "objectPosition": "center 20%",
-      "updatedAt": "2026-10-24T00:47:10.215Z"
+      "loop": true,
+      "muted": true,
+      "assetId": "9a2c5e78-1d64-4f0b-95a3-7e18b6d04c29",
+      "posterAssetId": "b5d94f27-8e31-4c6a-a0d2-6f19c3e85a74",
+      "updatedAt": "2026-10-27T02:30:00.000Z"
     },
     "form:openai/luna#summon#hud": {
-      "assetId": "1e4d410e-78de-4036-90f7-df3ba2445c61",
-      "mediaType": "image",
+      "mediaType": "video",
       "fit": "cover",
       "objectPosition": "center 20%",
-      "updatedAt": "2026-10-24T00:47:10.215Z"
+      "loop": true,
+      "muted": true,
+      "assetId": "9a2c5e78-1d64-4f0b-95a3-7e18b6d04c29",
+      "posterAssetId": "b5d94f27-8e31-4c6a-a0d2-6f19c3e85a74",
+      "updatedAt": "2026-10-27T02:30:00.000Z"
     },
     "form:openai/sol#idle#hud": {
-      "assetId": "1e4d410e-78de-4036-90f7-df3ba2445c61",
-      "mediaType": "image",
+      "mediaType": "video",
       "fit": "cover",
       "objectPosition": "center 20%",
-      "updatedAt": "2026-10-24T00:47:10.215Z"
+      "loop": true,
+      "muted": true,
+      "assetId": "f280aa92-f7e3-4af1-92ee-af40f5b94914",
+      "posterAssetId": "1e4d410e-78de-4036-90f7-df3ba2445c61",
+      "updatedAt": "2026-10-27T02:30:00.000Z"
     },
     "form:openai/sol#summon#hud": {
-      "assetId": "1e4d410e-78de-4036-90f7-df3ba2445c61",
-      "mediaType": "image",
+      "mediaType": "video",
       "fit": "cover",
       "objectPosition": "center 20%",
-      "updatedAt": "2026-10-24T00:47:10.215Z"
+      "loop": true,
+      "muted": true,
+      "assetId": "f280aa92-f7e3-4af1-92ee-af40f5b94914",
+      "posterAssetId": "1e4d410e-78de-4036-90f7-df3ba2445c61",
+      "updatedAt": "2026-10-27T02:30:00.000Z"
     },
     "form:qwen/max#idle#hud": {
       "assetId": "54b40ad0-ce69-4849-b78e-a4b06c90bbaa",
@@ -1138,6 +1116,68 @@
       "fit": "cover",
       "objectPosition": "center 20%",
       "updatedAt": "2026-10-25T18:08:28.809Z"
+    },
+    "form:openai/astra#recover#hud": {
+      "mediaType": "image",
+      "fit": "cover",
+      "objectPosition": "center 20%",
+      "assetId": "7c3e1a90-4b62-4d18-9f05-2a6d8e47b1c3",
+      "updatedAt": "2026-10-27T02:30:00.000Z"
+    },
+    "form:openai/astra#warning#hud": {
+      "mediaType": "image",
+      "fit": "cover",
+      "objectPosition": "center 20%",
+      "assetId": "7c3e1a90-4b62-4d18-9f05-2a6d8e47b1c3",
+      "updatedAt": "2026-10-27T02:30:00.000Z"
+    },
+    "form:openai/luna#recover#hud": {
+      "mediaType": "image",
+      "fit": "cover",
+      "objectPosition": "center 20%",
+      "assetId": "b5d94f27-8e31-4c6a-a0d2-6f19c3e85a74",
+      "updatedAt": "2026-10-27T02:30:00.000Z"
+    },
+    "form:openai/luna#warning#hud": {
+      "mediaType": "image",
+      "fit": "cover",
+      "objectPosition": "center 20%",
+      "assetId": "b5d94f27-8e31-4c6a-a0d2-6f19c3e85a74",
+      "updatedAt": "2026-10-27T02:30:00.000Z"
+    },
+    "form:openai/terra#idle#hud": {
+      "mediaType": "video",
+      "fit": "cover",
+      "objectPosition": "center 20%",
+      "loop": true,
+      "muted": true,
+      "assetId": "c6b07d43-5e92-4a18-8f36-0d2a9c71e4b5",
+      "posterAssetId": "e2a86c15-3f47-4b90-8d61-9c04f7a2e5b8",
+      "updatedAt": "2026-10-27T02:30:00.000Z"
+    },
+    "form:openai/terra#summon#hud": {
+      "mediaType": "video",
+      "fit": "cover",
+      "objectPosition": "center 20%",
+      "loop": true,
+      "muted": true,
+      "assetId": "c6b07d43-5e92-4a18-8f36-0d2a9c71e4b5",
+      "posterAssetId": "e2a86c15-3f47-4b90-8d61-9c04f7a2e5b8",
+      "updatedAt": "2026-10-27T02:30:00.000Z"
+    },
+    "form:openai/terra#recover#hud": {
+      "mediaType": "image",
+      "fit": "cover",
+      "objectPosition": "center 20%",
+      "assetId": "e2a86c15-3f47-4b90-8d61-9c04f7a2e5b8",
+      "updatedAt": "2026-10-27T02:30:00.000Z"
+    },
+    "form:openai/terra#warning#hud": {
+      "mediaType": "image",
+      "fit": "cover",
+      "objectPosition": "center 20%",
+      "assetId": "e2a86c15-3f47-4b90-8d61-9c04f7a2e5b8",
+      "updatedAt": "2026-10-27T02:30:00.000Z"
     }
   }
 }

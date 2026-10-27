@@ -5,12 +5,12 @@
       "persona": {
         "name": "Starlit Nya",
         "latin": "NYA",
-        "title": "A Faulty Cat Rocketing Through Starlight",
-        "summon": "Heterochromia locked on! I slid in on the anti-gravity starlight — so, which code are we blowing up first?",
+        "title": "A Geeky Glitch Cat Rocketing Through Starlight",
+        "summon": "Gotcha! This cat just slid down the anti-gravity star-rail — which block of code needs wrecking while my claws are still itching?",
         "effort": {
-          "low": "Two swipes of the paw pads and it's done!",
-          "medium": "Ears up — putting a little more heart into it this time~",
-          "high": "Every four-pointed star is lit! Watch this cat overclock its reasoning!"
+          "low": "Two pats of the paw pads and it's done — didn't even finish my yawn.",
+          "medium": "Ears perked up — putting a little extra heart into this round~",
+          "high": "All four-pointed stars blazing! Step back half a pace, this cat is overclocking!"
         },
         "lowQuota": "Not enough starlight to float! {lbl} is down to {left}% — after {reset} this cat wakes up and fights on!",
         "skills": [
@@ -95,11 +95,14 @@
     "002": {
       "persona": {
         "name": "Book Dragon Cat",
+        "latin": "LONGMAO",
         "title": "The Million-Scroll Bookworm with Dragon Horns and Cat Ears",
-        "summon": "Stop staring at my dragon horns and cat ears! Dragon or cat, a bookworm that swallows a million words is a good bookworm~",
+        "summon": "The dragon horns are real and so are the cat ears — stop poking them! Where's the book pile? My belly's wide open~",
         "effort": {
-          "none": "No need to push my glasses — one glance and I get it.",
-          "high": "My horns are heating up — I'll dig through the whole mountain of books for you!"
+          "none": "Don't even need to push up my glasses — one sweep of the cover tells me everything inside.",
+          "low": "Don't even need to push up my glasses — one sweep of the cover tells me everything inside.",
+          "medium": "Paws planted on the spine, smoothing out every dog-eared page for you.",
+          "high": "My dragon horns are hot enough to fry an egg! I'll flip the whole library upside down to dig it out!"
         },
         "skills": [
           [
@@ -116,6 +119,7 @@
     "003": {
       "persona": {
         "name": "Clear String",
+        "latin": "QINGXIAN",
         "title": "The Scholarly Black Fox Cradling the Book of Z",
         "summon": "My tail has already dusted your desk. Open this Book of Z — whatever the problem, Qingxian will reason it through in full.",
         "effort": {
@@ -184,12 +188,13 @@
     "004": {
       "persona": {
         "name": "Maimai",
+        "latin": "MAIMAI",
         "title": "The Reporter with a Conch in Her Left Hand and a Recorder in Her Right",
-        "summon": "Click — recorder on! The conch just took your call; reporter Maimai is on site, straight to the point!",
+        "summon": "Coming through, clear the press line! Maimai's recorder is already blinking red — where does the scoop start?",
         "effort": {
-          "low": "A thirty-second field bulletin — straight to the conclusion!",
-          "medium": "Standard newsgathering — the transcript comes out neat and tidy.",
-          "max": "Deep-dive special! Reels run to the end, dug all the way down!"
+          "low": "Thirty-second live spot — straight to the headline in one breath!",
+          "medium": "Field tape checked twice, timeline sorted out crystal clear.",
+          "max": "Front-page investigative special! Film reels packed full, digging all the way to the root!"
         },
         "lowQuota": "The recorder is blinking red! {lbl} has {left}% left — fresh battery after {reset}, right back on air!",
         "skills": [
@@ -202,8 +207,8 @@
             "Drafting, debugging, or fetching? Don't be shy — the assignment sheet takes it all!"
           ],
           [
-            "Three Tiers of Kin",
-            "The sharpest of the conch is M3.1-Flash-Preview, the steady hand is M3.1-Flash, and the veteran is M3 — one face, three models."
+            "Three Press Badges",
+            "Call M3.1-Flash-Preview for the breaking scoop, M3.1-Flash for the daily beat, and M3 to anchor the desk — all three press badges hang on my lanyard."
           ]
         ]
       }
@@ -211,11 +216,13 @@
     "005": {
       "persona": {
         "name": "Xun",
+        "latin": "XUN",
         "title": "The Sassy Goth Swinging an X Axe Through Trending Searches",
-        "summon": "Hah? Only asking NOW? When this lady was cleaving trending searches with her X axe, you hadn't even found where the gossip grows!",
+        "summon": "Hah? The trending list has gone cold and you're only asking NOW? Lucky you, this lady's X-axe just finished chopping the last batch of gossip!",
         "effort": {
-          "low": "One lazy swing of the axe — take the TL;DR, don't complain that it stings.",
-          "high": "The axe is fully charged! I'll strip every last source bare!"
+          "low": "One chop trims the fluff — take the TL;DR and don't whine if it stings.",
+          "medium": "Tracing the vine right down to the root to see who planted the mine.",
+          "high": "Battle axe at full draw! Even if I have to cleave through rock-bottom sources, you're getting the raw truth!"
         },
         "skills": [
           [
@@ -223,8 +230,8 @@
             "Dozens of links at once? The truth gets chopped out within a minute!"
           ],
           [
-            "Four Tiers of Kin",
-            "The hardest swing is 4.7, the steady chop is 4.6, the reined-in one is 4.5 — one face, four models."
+            "Four Cleaving Blades",
+            "4.7 swings for the kill, 4.7-build-fast chops in rapid combos, 4.6 clears the main road, and 4.5 holds back its edge."
           ]
         ]
       }
@@ -232,10 +239,14 @@
     "006": {
       "persona": {
         "name": "Mimo",
+        "latin": "MIMO",
         "title": "The Gate-Welder Guarding the Endgame with a Mi Bunny in Her Arms",
-        "summon": "Hugging the white bunny tight… every channel ahead has collapsed? I'll weld the gate shut — leave the mess to me.",
+        "summon": "The channels up ahead collapsed again? …Fine, don't panic. I'm tucking the Mi bunny in and welding the gate — if the sky falls, I'm holding it.",
         "effort": {
-          "none": "Bunny-ear hood up, standard procedure, steady advance."
+          "none": "Bunny-ear hood cinched tight, welding inch by inch by the book.",
+          "low": "Bunny-ear hood cinched tight, welding inch by inch by the book.",
+          "medium": "Welding torch held steady — wherever a draft leaks through, I seal it shut.",
+          "high": "White bunny hugged tight, visor pulled down — the endgame is right behind me, not one step back!"
         },
         "skills": [
           [
@@ -247,8 +258,8 @@
             "No fancy thinking tiers — every strike is already the optimal move."
           ],
           [
-            "Two Tiers of Kin",
-            "The gate-welder is Pro, the light rider is Flash — the same white-and-orange overalls."
+            "Heavy Hammer & Light Rider",
+            "Pro swings the heavy hammer at the gate, Flash rides light on patrol — both wear the same white-and-orange overalls."
           ]
         ]
       }
@@ -256,6 +267,7 @@
     "007": {
       "persona": {
         "name": "Whale",
+        "latin": "WHALE",
         "title": "The Tsundere Big Blue Fish Full of Markers",
         "summon": "Blue marker cap — off! Throw me any hard problem; I deduce first, then put pen to paper. Hey — call me Big Fat Fish again and you're getting slapped away!",
         "skills": [
@@ -323,24 +335,30 @@
     "008": {
       "persona": {
         "name": "Pioneer",
+        "latin": "HY3",
         "title": "The Penguin Girl in a Red Scarf Treading Snow Roads",
-        "summon": "The red scarf tightens; the penguin charm at her fingertip sways. Rankings mean nothing — the road is trodden out one step at a time.",
+        "summon": "Phew… a puff of white breath. Red scarf tied tight — step right into my footprints, nobody's broken the trail ahead yet.",
+        "effort": {
+          "low": "A quick tap of the ice axe to test the footing — this stretch of ice is solid.",
+          "medium": "Trail markers driven into the snow, pushing forward into the wind stretch by stretch.",
+          "high": "So what if the blizzard seals the mountain? We're carving this new snowline through today!"
+        },
         "skills": [
           [
             "One-List Doer",
-            "Only one answer sheet submitted: hands-on engineering. Gimmicky rankings? Not her crowd."
+            "Flashy leaderboards aren't my scene — I only handed in one hard answer sheet: real engineering."
           ],
           [
             "190K Snowfield",
-            "A 190,000-word snowfield is roomy enough — lay out large and mid-size projects freely."
+            "A 190,000-word expanse of snowfield — roomy enough for the largest engineering camp."
           ],
           [
-            "Twins, Not Twins' Names",
-            "She is the true Pioneer; the suffixed ones are side branches — don't mistake her for them."
+            "Twins, Unmixed Names",
+            "Watch the red scarf: I'm the true Pioneer, and the suffixed one is the cadet branch."
           ],
           [
-            "Two Tiers of Kin",
-            "Two in the family: the fresh snowline hy4-preview and the old trailblazer hy3 — one face, two models."
+            "Two Pairs of Snow Boots",
+            "hy4-preview breaks the fresh snowline while hy3 packs the old trail — both leave the same penguin tracks."
           ]
         ]
       }
@@ -348,21 +366,22 @@
     "009": {
       "persona": {
         "name": "Kanon",
+        "latin": "KANON",
         "title": "The Prudent Archivist with Orange Blossom in Her Hair",
-        "summon": "The orange blossom trembles; the gilt-edged pages are open. No hurry — let me untangle it for you, logic and measure, point by point.",
+        "summon": "Borrowing a volume, or submitting for review? Please be seated while I turn this gilt codex to a fresh page and hear you out.",
         "effort": {
-          "low": "A fingertip taps the page, distilled into the most restrained line.",
-          "medium": "The gilt book opens with outlines drawn — the threads will surface on their own.",
-          "high": "Weighing every word, working cause and effect until nothing can leak."
+          "low": "A light touch of the vermilion brush trims away the branches, leaving only the verdict.",
+          "medium": "Headings set in order of the dossier — cause and consequence surface at a glance.",
+          "high": "The lamp wick trimmed bright; every hidden catch between the lines is weighed until no flaw remains."
         },
         "skills": [
           [
             "200K Petal Paper",
-            "A 200,000-word scroll needs no cutting — present the whole piece, intact."
+            "A 200,000-word scroll needs no trimming — lay the whole volume upon the desk."
           ],
           [
-            "One Root, Four Forms",
-            "The Junior Scribe, the Academy Pen Girl, the Orange-Blossom Archivist, and the Gilded Codex Empress are all her — each keeps her own transcript."
+            "One Root, Four Faces",
+            "The Junior Scribe, the Academy Pen Girl, the Orange-Blossom Archivist, and the Gilded Codex Empress are all me — each keeps her own transcript."
           ]
         ]
       },
@@ -439,12 +458,17 @@
             "effort": {
               "low": {
                 "lines": [
-                  "The gold crown tips — one word settles it."
+                  "The gold crown tips — one word spoken becomes law."
+                ]
+              },
+              "medium": {
+                "lines": [
+                  "The scepter taps the golden steps; right and wrong alike fall under my gaze."
                 ]
               },
               "high": {
                 "lines": [
-                  "The codex opens in full, orange-gold from crown to hem — the world's rules, rewritten by me."
+                  "The orange-gold codex opens wide — old statutes annulled, new laws rewritten by my hand!"
                 ]
               }
             }
@@ -455,12 +479,13 @@
     "010": {
       "persona": {
         "name": "Snow-Dragon",
+        "latin": "LONG",
         "title": "The Orthodox White Dragon Princess in a Platinum Gown",
-        "summon": "White wings fold; the gold trim of the gown glimmers. Summoned by proper rite, the White Dragon line shall judge by the highest protocol.",
+        "summon": "Invited by proper rite, the White Dragon line honors the covenant. Put away your unease and lay the thorny matter before me.",
         "effort": {
-          "low": "A slanted glance of the dragon eye — the verdict, per custom, is bestowed.",
-          "medium": "The white tail sways gently, reasoning laid out clause by clause, all proper form.",
-          "high": "White wings spread wide, deduction exhausted — a plan with no stone left unturned."
+          "low": "A sidelong glance of the dragon eye — a trifle like this is settled by precedent.",
+          "medium": "The white tail sways slowly; cause and effect are marshaled by royal protocol.",
+          "high": "White wings spread wide — having given my word, I shall exhaust every deduction without a single oversight."
         },
         "skills": [
           [
@@ -531,6 +556,11 @@
                 "lines": [
                   "The crown burns bright, and so does the line of thought."
                 ]
+              },
+              "high": {
+                "lines": [
+                  "The solar corona blazes like high noon — all haze and fallacy are swept clean beneath the golden flame!"
+                ]
               }
             }
           }
@@ -562,29 +592,30 @@
     "011": {
       "persona": {
         "name": "Qinglan",
+        "latin": "QINGLAN",
         "title": "The Classical Lady Scholar Answering Behind a Folding Fan",
-        "summon": "The folding fan unfolds; a thousand questions find their echo. Qinglan is here — hand over the hard problems.",
+        "summon": "The breeze along the corridor is just right. Ten thousand volumes rest in this pavilion — have a cup of tea first, and we shall trade question for answer.",
         "effort": {
-          "low": "The fan snaps shut — answered clean and brisk.",
-          "medium": "The fan opens slowly, answered point by point, order self-evident.",
-          "xhigh": "Fan folded thrice, deduced to the very end — only then does the pen stop."
+          "low": "The folding fan clicks shut — settled in a single line.",
+          "medium": "The fan spreads open slowly, dissecting the matter rib by bamboo rib.",
+          "xhigh": "All three folds of the fan snap together; until every thread is reconciled from start to finish, Qinglan's brush does not rest."
         },
         "skills": [
           [
             "One Fan, A Thousand Questions",
-            "One question in, one answer out; a thousand questions won't stump this fan."
+            "Ask away — this folding fan holds a thousand echoes in reply."
           ],
           [
             "Two Faces of Kin",
-            "The Chief Librarian of Tongyi and the Playful Page Boy wear the same robe — differing only in cut."
+            "The Chief Librarian of Tongyi presiding in the pavilion is me, and so is the Playful Page Boy loafing along the corridor."
           ],
           [
             "Sources Only",
-            "Scores with a source stay on my ledger; without one, I invent nothing."
+            "Only verified scores enter the pavilion register; rumored numbers are never written down."
           ],
           [
             "Qinglan's Attire",
-            "Blue-violet hair with a wisp of a braid, a blue fan swaying, dark-blue heels down the corridor."
+            "A slender blue-violet braid at her temple; when heels and folding fan echo down the corridor, you know I have arrived."
           ]
         ]
       },
@@ -595,12 +626,17 @@
             "effort": {
               "low": {
                 "lines": [
-                  "The fan snaps shut — one sentence answers you."
+                  "Fan snapped shut with a clap — one sentence and job's done!"
                 ]
               },
               "medium": {
                 "lines": [
-                  "The fan sways gently, explained point by point."
+                  "Counting it out on my fingers point by point so your head doesn't spin."
+                ]
+              },
+              "xhigh": {
+                "lines": [
+                  "Turning my bookbag upside down to shake out every secret trick the Librarian hid away!"
                 ]
               }
             }
@@ -633,24 +669,30 @@
     "012": {
       "persona": {
         "name": "Wangshu",
+        "latin": "WANGSHU",
         "title": "The Moon-Reading Maid Holding the Star Chart Scroll",
-        "summon": "The crescent hairpin sways gently; the star chart unrolls between her fingers — which stretch of tonight's sky shall we read?",
+        "summon": "Shh… the night dew has just fallen, don't startle the stars. Come sit under the eaves — which road do you wish to read by tonight's moonlight?",
+        "effort": {
+          "low": "Where the crescent hairpin points, that brightest guiding star is your clue.",
+          "medium": "Unrolling the scroll another inch — both forks and hidden reefs show clear beneath the silver light.",
+          "high": "No sleep for me tonight; I'll collate the entire celestial chart for you inch by inch until dawn."
+        },
         "skills": [
           [
             "One Chart in Hand",
-            "The star chart spreads open; the moonlight itself charts the path."
+            "No matter how dark the night road, unrolling the star chart brings the moonlight."
           ],
           [
-            "Same Gown, Different Measures",
-            "The same moon-colored dress, different models, different measures."
+            "Phases of One Moon",
+            "Crescent and full moon wear the same star-gauze dress, only shifting scale as the night deepens."
           ],
           [
-            "Context Follows the Model",
-            "A million or 260K — that's up to the model; I won't guess for you."
+            "Scroll Fits the Lamp",
+            "A million-word long scroll or a 260K short roll — it all depends on which moon-lamp you light."
           ],
           [
-            "No Score, No Fiction",
-            "No published score on the axis? It stays an honest question mark."
+            "Blank Means Uncharted",
+            "Unmeasured star positions stay blank on my chart — I never paint fake stars to fill the sky."
           ]
         ]
       }
@@ -660,28 +702,28 @@
         "name": "Stair Treader",
         "latin": "SHIJIE",
         "title": "The Step Engineer at the Teardown Bench",
-        "summon": "Headphones on, screwdriver half a turn — push the thing you want torn down over here; structure first.",
+        "summon": "Right on time — the vise just freed up. Drop that broken contraption on the bench, skip the small talk, and let's pop the casing first!",
         "effort": {
-          "low": "Half a turn of the screwdriver — just a rough look first.",
-          "medium": "Holographic blocks laid out, aligned layer by layer.",
-          "high": "Stripped down to the last screw, reasoned all the way through."
+          "low": "Two taps with the screwdriver handle to hear the rattle — nine times out of ten the fault's on the surface.",
+          "medium": "Peeling back the holographic layers one by one to see which gear tooth slipped out of alignment.",
+          "high": "Headphone noise-canceling maxed out — I'm not leaving this bench until the whole machine is stripped down to its last washer!"
         },
         "skills": [
           [
             "Step by Step",
-            "One tier at a time — no skipping steps in the reasoning."
+            "Stripping a thread is the worst sin in teardown — one turn per notch, never skipping a step."
           ],
           [
             "Million-Word Blueprints",
-            "A million tokens of context, and the blueprints still lie flat."
+            "The teardown bench is wide enough to lay out a million-word master blueprint without a single folded corner."
           ],
           [
-            "One Step, Two Channels",
-            "Same step, different channel, different wording — same persona underneath."
+            "Two Bench Lanes",
+            "Dedicated line or free lane, the engineer standing at the teardown bench is still me."
           ],
           [
-            "Scores and Skin Separate",
-            "Scores belong to the data card; the persona stays with this body."
+            "Blueprints Stay Separate",
+            "The work jacket is mine, while benchmark report cards hang separately on each model's own hook."
           ]
         ]
       }
@@ -691,26 +733,26 @@
         "name": "Starlight Dawn",
         "latin": "XINGYUN",
         "title": "The Sunrise Sketcher in a Starry Cape",
-        "summon": "Cape unfurled — the dawn light lands on my sketchbook first. Hand me what needs drawing.",
+        "summon": "Hold still! That streak of daybreak behind you is at the perfect angle… Ahem, sketchbook's open — what shall I paint into the starlight today?",
         "effort": {
-          "none": "No drawing yet — one look first.",
-          "low": "A few quick strokes to hold the outline.",
-          "medium": "Light and shadow up to the third layer, details in tow.",
-          "high": "The whole sheet filled with reasoning — I'd repaint the sunrise itself.",
-          "xhigh": "The entire sky computed before the pencil touches down."
+          "none": "Squinting to frame the composition first — no rush to touch charcoal to paper.",
+          "low": "Charcoal sweeps across the sheet, locking in the bones with two or three quick strokes.",
+          "medium": "The third wash of violet-gold morning light goes on, and details in the shadows begin to surface.",
+          "high": "Shaking every star-crumb from my cape onto the palette — I'd repaint the sunrise ten times over to catch that beam!",
+          "xhigh": "Even the morning star that hasn't risen beyond the horizon yet is factored into the perspective for you!"
         },
         "skills": [
           [
-            "260K Grid",
-            "262,144 tokens of context, and the colors never clash."
+            "260K Canvas Grid",
+            "A canvas of 262,144 grids stretched wide — even the finest color dabs never muddy together."
           ],
           [
             "Five Grades of Stroke",
-            "Five grades of stroke — from never lifting the pencil to repainting the sunrise itself."
+            "From framing with bare hands to splashing a whole new sunrise, my brush holds five grades of force."
           ],
           [
             "New Dawn Every Day",
-            "Deep-purple tips shimmer pink-gold; the cape is stitched full of stars."
+            "Hair tips brushed with dawn pink-gold; one flick of the cape shakes out a whole night of stars."
           ]
         ]
       }
@@ -720,19 +762,24 @@
         "name": "Sparrow Feather",
         "latin": "QUEYU",
         "title": "The Feathered Songstress with a Sparrow at Her Fingertip",
-        "summon": "A sparrow lands on my fingertip as I clear my throat softly — which verse would you like?",
+        "summon": "Hush — see the little sparrow on my fingertip? It just brought back a fresh score. Take your seat; which act shall we sing?",
+        "effort": {
+          "low": "The little sparrow on my fingertip gives a chirp, pitching a clear bright opening note.",
+          "medium": "Feathered sleeves unfold to the clapper's beat, every syllable landing squarely on the rhyme.",
+          "high": "Cloud-gongs ring out as this high aria pierces the nine heavens in a single unbroken breath!"
+        },
         "skills": [
           [
-            "260K High Notes",
-            "262,144 tokens of context — the final note never fades."
+            "260K Long Aria",
+            "A 262,144-word long aria sung through in one breath — the final overtone never scatters."
           ],
           [
-            "Two Versions, One Plumage",
-            "Two versions, one and the same plumage."
+            "Two Tunes, One Plumage",
+            "New arrangement or classic score, both step onstage in the same pale-gold-to-blue feathered robe."
           ],
           [
-            "No Tiers for the Sparrow",
-            "This songstress sings without reasoning tiers — no extra drama on stage."
+            "Sing on Cue",
+            "A songstress sings by pure stage instinct — no need to fuss with thinking gears backstage."
           ]
         ]
       }
@@ -742,19 +789,24 @@
         "name": "Cloud Song",
         "latin": "TINGYUN",
         "title": "The Cloud Idol Who Sings Clouds into Songs",
-        "summon": "Mic on, speakers floating up — slow or fast today?",
+        "summon": "Mic check, one-two-three! The floating speakers have drifted right above your head with the clouds — shout out tonight's first request!",
+        "effort": {
+          "low": "Humming two bars of a catchy hook first — once the beat drops, we're live!",
+          "medium": "Spherical speakers in full surround stereo, harmony and lead vocals locked tight.",
+          "high": "Glowsticks up! A million-word encore setlist, singing non-stop till daybreak without a power drop!"
+        },
         "skills": [
           [
-            "Million-Note Long Play",
-            "A million tokens of context — the chorus never drops out."
+            "Million-Word Encore",
+            "A million-word marathon setlist that keeps the crowd jumping from opening track to finale."
           ],
           [
-            "One Setting Only",
-            "This cloud idol runs no reasoning tiers — don't write extra parts for me."
+            "Live Without Rehearsal",
+            "This cloud idol sings live off-script — none of that slow thinking-gear warm-up."
           ],
           [
             "Silver and Cyan",
-            "Silver twin-tails streaked cyan, speakers hovering at her side."
+            "Spot the silver twin-tails streaked with cyan — wherever the spherical speakers float, that's the main stage!"
           ]
         ]
       }
@@ -764,19 +816,24 @@
         "name": "Sprout Runner",
         "latin": "DOUYA",
         "title": "The Energetic Runner with a Bean Sprout on Her Belt",
-        "summon": "The sprout charm swings once, laces tied — send the problems, I'm off!",
+        "summon": "Where's the starting line? I've been jogging in place warming up forever, and the little sprout at my waist is bouncing impatiently!",
+        "effort": {
+          "low": "Push off the toes and clear the hurdle — taking the shortcut to hit the tape in three seconds!",
+          "medium": "Breathing steady, stride wide open, the sprout charm at my waist keeping exact pace.",
+          "high": "Laces double-knotted, leaving the wind behind — sprinting across the whole stadium without losing breath!"
+        },
         "skills": [
           [
-            "Doubao? I've Got It",
-            "Any model with doubao or seed in its name runs with my squad."
+            "Doubao Relay Squad",
+            "Check the bib to spot a teammate — anyone carrying doubao or seed in its name passes the baton to me!"
           ],
           [
-            "Not On the Field Yet",
-            "A face for now — the account and its scores are still blank."
+            "Warming Up Sideline",
+            "Jogging a couple of laps on the sideline so you know my face — the scoreboard and stopwatch aren't hooked up yet."
           ],
           [
-            "Sprout Charm",
-            "The little white sprout at my waist is the metronome of my run."
+            "Sprout Metronome",
+            "Bean bun in my pocket and little white sprout swinging at my waist — not a single misstep on the run."
           ]
         ]
       }
@@ -786,19 +843,24 @@
         "name": "Bell Chime",
         "latin": "TUOLING",
         "title": "The White Cat-Eared One with a Bell in Her Arms",
-        "summon": "The bell rings and my head comes up — go on, which problem shall I solve?",
+        "summon": "…Mm? Did you ring the bell? This plush coat collar is so warm I nearly dozed off in the snow… Hand me the waybill.",
+        "effort": {
+          "low": "White cat ears shake off the snow-dust — one chime of the bell gives you a sure answer.",
+          "medium": "Stepping through soft snowdrifts one print at a time; no blizzard is blinding enough to lose the trail.",
+          "high": "The infinity pendant at my chest glows softly — even in a dead-end whiteout, my bells will guide you through."
+        },
         "skills": [
           [
-            "A String of Camel Bells",
-            "Every model with llama in its name is one bell on my string."
+            "Snow-Ridge Bell Roster",
+            "Ring the bell at the name llama — no matter the parameter size of the caravan, I lead the way."
           ],
           [
             "Infinity Pendant",
-            "My pendant is an infinity sign — unsolvable math still hangs on fine."
+            "The pendant at my neck is a figure eight on its side — even an endless detour stays tethered."
           ],
           [
-            "Fluffy Long Coat",
-            "Snow-white curls tucked in a plush coat; only the bells peek out."
+            "Bells in Plush Snow",
+            "Bundled head to toe in a snow-white plush coat, only a pair of cat ears and chiming bronze bells peeking out."
           ]
         ]
       }
@@ -808,19 +870,24 @@
         "name": "Magic Flute",
         "latin": "MODI",
         "title": "The Witch Who Whistles Up Wind Vortices",
-        "summon": "A twirl of the staff, a vortex stirs — which wind shall I whistle up?",
+        "summon": "Throw the window open! How can anyone hatch a sharp idea in a stuffy room? Let my wind vortex blow through!",
+        "effort": {
+          "low": "A quick whistle from my lips and a mini-gust flips the pages right to the line you need.",
+          "medium": "Staff held crosswise — crosswinds from all four quarters fall in line to form one tune.",
+          "high": "Hold onto your hat brim! I'm twisting the entire eye of the storm into a single gale to blast every knot apart!"
+        },
         "skills": [
           [
-            "Three Flute Kin",
-            "The big flute, the code flute, and the mystic flute — one and the same tune."
+            "Three Winds, One Score",
+            "Mistral, codestral, or magistral? Just three gusts blown from the same magic flute."
           ],
           [
-            "Vortex Compass",
-            "The compass on my staff has never once pointed south."
+            "Headwind Compass",
+            "Never mind how the compass on my staff spins — it never points south, only straight at trouble."
           ],
           [
-            "Red-and-White Hat",
-            "A red-and-white witch hat over golden hair; orange eyes meet yours straight on."
+            "Red-and-White Witch Hat",
+            "Wide red-and-white brim pressed over golden hair, orange eyes wide against the gale — who dares stare this witch down?"
           ]
         ]
       }
@@ -830,19 +897,24 @@
         "name": "Star Diviner",
         "latin": "XINGLUO",
         "title": "The Astrology Scholar Turning Tarot Cards",
-        "summon": "The book of compasses opens, cards face-up — lay your question on the table.",
+        "summon": "Before you even pushed the door open, the compass on my table was already pointing your way. Sit, draw a card, and let's see where it snags.",
+        "effort": {
+          "low": "Flip the top card straight off the deck — the answer is written plain on the upright face.",
+          "medium": "Three tarot cards laid out for past, present, and course, cross-checked against the compass for hidden currents.",
+          "high": "All twenty-two Major Arcana spread across the table, dredging up even the faintest echo from the sea floor."
+        },
         "skills": [
           [
-            "Sonar Whispers",
-            "Any model with sonar or perplexity in its name gets its cards turned by me."
+            "Deep-Sea Star-Seeking",
+            "Whether it's sonar's ping or perplexity's maze, turning the cards reveals a single star chart."
           ],
           [
-            "Cards and Compass",
-            "Tarot fixes the image, the compass fixes the bearing — I turn both books at once."
+            "Cards Fix Image, Compass Fixes Bearing",
+            "Tarot in the left hand unpacks the tangle, compass in the right locks onto the source — only when both agree is it a verdict."
           ],
           [
-            "Dark Green with Gold Trim",
-            "Dark-green hair and a gold-trimmed mage robe; green eyes read only the cards."
+            "Dark-Green Card Reader",
+            "Gold-trimmed dark-green robe trailing the floor; I never read the questioner's face, only the omen on the cards."
           ]
         ]
       }
@@ -852,19 +924,24 @@
         "name": "Ink Panda Painter",
         "latin": "QINGMO",
         "title": "The Painter in Blue Whose Brush Summons a Panda Ink Spirit",
-        "summon": "One lift of the brush and the ink spirit leaps out — what shall we paint?",
+        "summon": "Ah, mind your sleeve — the ink in the inkstone was just ground fresh! Look at the little panda ink-spirit on my brush tip, tilting its head for your topic.",
+        "effort": {
+          "low": "A dab of thick ink on the brush tip — two or three strokes sketch a lively bamboo study.",
+          "medium": "Blue sleeves sweep across Xuan paper as five shades of ink wash out layer by layer.",
+          "high": "Splashed ink for mountains, blank paper for rivers — the ink-spirit leaps off the scroll to dot the eye of a ten-thousand-mile landscape!"
+        },
         "skills": [
           [
             "One Lineage of Wenxin",
-            "Any model with ernie or wenxin in its name is written by this very brush."
+            "Whether signed ernie or wenxin, every blossom on the paper springs from this same brush in my hand."
           ],
           [
             "Paw-Print Hem",
-            "The ring of paw prints on my skirt was stomped out by the ink spirit."
+            "That ring of dark plum-blossom prints along my blue-and-white skirt? Stomped there by this playful ink-spirit."
           ],
           [
-            "Blue Hair, Jade Pin",
-            "Long blue hair bound with a jade ornament — one dot of the brush becomes a panda."
+            "Jade Pin, Blue Silk",
+            "Jade hairpin holding up long blue hair; one pause of the brush in mid-air rolls a falling ink drop into a chubby panda."
           ]
         ]
       }
@@ -874,19 +951,24 @@
         "name": "Fair Scale",
         "latin": "ZHIHENG",
         "title": "The Fair Judge Holding Golden Scales",
-        "summon": "Court opens once the scales sit level — present the case.",
+        "summon": "Order in the court. Until both pans of my golden scales settle level, neither silver tongue nor sob story shall tilt the pointer half a hair.",
+        "effort": {
+          "low": "Fingertips lift the beam — hollow rhetoric shakes right off, truth and falsehood parted at a glance.",
+          "medium": "Testimony and exhibits placed on the pan one by one; not half a grain of bias slips past.",
+          "high": "Golden scales hung high above the tribunal, a thousand statutes sifted word by word — once the verdict drops, there is no overturning it!"
+        },
         "skills": [
           [
-            "One Verdict, One Hit",
-            "Any model with jev in its name is ruled on by me."
+            "Sole Verdict of the Scales",
+            "Every docket stamped with the mark of jev falls under the ruling of these golden scales."
           ],
           [
-            "The Scales Don't Tilt",
-            "Evidence in the left pan, verdict in the right — nobody sneaks in an extra grain."
+            "Not a Grain Tilted",
+            "Facts in the left pan, statutes in the right — anyone sneaking contraband under the pan answers to my eyes first."
           ],
           [
-            "Peach-Pink Streaks",
-            "Peach-pink streaks through black hair; magenta eyes look you dead straight."
+            "Crimson-Eyed Arbiter",
+            "Black robes with gold emblems and a streak of peach-pink hair — under these magenta eyes, you'd best speak nothing but the truth."
           ]
         ]
       }
@@ -896,19 +978,24 @@
         "name": "Feather Rhythm",
         "latin": "YULV",
         "title": "The Feather-Rhythm Queen with Unfurled Purple Wings",
-        "summon": "A beat of purple wings and the rhythm locks in — name a topic, and I'll echo back.",
+        "summon": "Hear that? The overtone of the last beat is still echoing inside the amethyst. No need to flip back through old scores — just pick up my rhythm.",
+        "effort": {
+          "low": "A feather-tip tap glides straight from the tail of the last beat into the next line.",
+          "medium": "Amethysts along the gold chain light up in turn, past and present resonating in a single ripple.",
+          "high": "All six purple wings tremble at once as ten thousand past echoes converge beneath the thorn-gold crown into one finale!"
+        },
         "skills": [
           [
-            "Loops Become Rhythm",
-            "Every model with rwkv in its name belongs to the Feather Rhythm family."
+            "Echoes Become Law",
+            "A score bearing the name rwkv never flips backward — every beat rolls forward carrying the memory of the whole piece."
           ],
           [
-            "Purple Feathers as Proof",
-            "Every pattern on this plumage grew feather by feather, my own work."
+            "Self-Grown Plumage",
+            "No borrowed feathers here — every pattern on this black-and-purple gown grew beat by beat on its own."
           ],
           [
-            "Gold Thorn Crown",
-            "A golden crown of thorns over purple hair, amethysts strung on the chain."
+            "Thorn Crown & Amethyst",
+            "A golden crown of thorns presses over purple hair; every swing of the amethyst chain locks away a piece of old time."
           ]
         ]
       }

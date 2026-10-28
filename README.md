@@ -27,9 +27,28 @@
 
 ## 安装
 
-本插件是 DSH 宿主的 bundle 插件，不从 npm 安装。包名带 `@local/` 作用域，`package.json` 里写着 `"private": true`，那条只拦 `npm publish`，不拦 git 克隆和推送。发布仓的仓名（`dsh-role-card-release`）和包名（`@local/dsh-provider-card`）不一样，是历史原因：仓里放成品，包名是宿主识别 bundle 用的 id。这个 id 不能改，它同时写在 `package.json` 的 `name`、`cordis.patch.yml` 的 `name` 和 `index.js` 的 `TAG` 里，三处必须一致。
+本插件是 DSH 宿主的 bundle 插件，2026-10-28 起已发布到 npm。现在有两条取包路径，**包 id 不同，只能装一份**——宿主按 `package.json` 的 `name` 认 bundle，装两份会注册成两个插件、同一位置弹两张卡。
 
-包里有什么（`package.json` 的 `files` 白名单覆盖下面全部）：
+| 路径 | 包 id | 内容 | 适合 |
+|---|---|---|---|
+| npm（推荐） | `@mirai27/dsh-provider-card` | 只有代码，约 2 MB，当前 `latest` = `0.1.1` | 只要功能，素材自己在设置页传 |
+| 本仓 | `@local/dsh-provider-card` | 含 `seed/` 首装素材库（393 件立绘/CG/视频），约 535 MiB | 要开箱就带素材 |
+
+id 为什么有两套：本仓的 `@local/` 是历史包名（仓里放成品，包名只是宿主识别 bundle 用的 id）；npm 首发时按 npm scope 用了 `@mirai27/`。**改 id 必须五处一起改**——`package.json` 的 `name`、`cordis.patch.yml` 的 `name:`、`index.js` 的 `TAG`、`src/client.js` 里的模块 id 与 locale 路径，改漏一处插件就装不起来。
+
+### 走 npm（只发代码）
+
+```bash
+npm install @mirai27/dsh-provider-card@0.1.1 --prefix <PLUGIN_PARENT>
+```
+
+装完的目录是 `<PLUGIN_PARENT>/node_modules/@mirai27/dsh-provider-card`（宿主每次启动都要读它，`<PLUGIN_PARENT>` 放稳定位置，别放临时目录）。然后照下面第 2–4 步登记，把 `@local/dsh-provider-card` 换成 `@mirai27/dsh-provider-card`、`<PLUGIN_DIR>` 换成上面那个目录。
+
+npm 包不含 `seed/`，所以首装是空素材库：要么把本仓的 `seed/` 拷进这个目录再重启（播种完即可删），要么在设置页「CG 配图」里自己上传。
+
+### 走本仓（含素材）
+
+包里有什么（`package.json` 的 `files` 白名单覆盖下面全部；`seed/` 只在本仓，npm 包里没有）：
 
 ```
 index.js                宿主半体（ESM，导出 apply）
@@ -44,7 +63,7 @@ showcase/families.png   家族立绘总览图
 cordis.patch.yml        宿主注册 patch
 ```
 
-装机四步。profile 目录指 `<DSH_HOME>/profiles/<名字>`，web 宿主一般是 `web`。
+本仓装法四步（走 npm 的话，第 2–4 步相同，只把包 id 与路径换成 npm 那套）。profile 目录指 `<DSH_HOME>/profiles/<名字>`，web 宿主一般是 `web`。
 
 1. 把仓库取到一个稳定目录。宿主每次启动都要读它，别放临时目录。
 
@@ -67,7 +86,7 @@ cordis.patch.yml        宿主注册 patch
 
 4. 重启宿主（`dsh web`），刷新页面。设置页的插件列表里出现「角色卡」，模型选择器的座位上出现卡面，就算装好了。
 
-更新：在 `<PLUGIN_DIR>` 里 `git pull --ff-only`，然后重启宿主。
+更新：npm 装法重跑一次 `npm install @mirai27/dsh-provider-card@latest --prefix <PLUGIN_PARENT>`；本仓装法在 `<PLUGIN_DIR>` 里 `git pull --ff-only`。两种都要重启宿主。npm 不允许重发同一版本，所以每次更新版本号都会变，`latest` 总是指向最新一次发布。
 
 `src/locale/` 里只放语言字典。宿主解析插件元信息时会把那个目录里的每个 `.json` 都当语言字典，文件名必须像语言 id（`en.json`、`zh-CN.json`），否则设置页报「包元信息错误：… must use a language id as its filename」。界面英译表放在 `src/i18n/`，插件自己按路径读。
 

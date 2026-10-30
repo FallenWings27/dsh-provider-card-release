@@ -1,15 +1,27 @@
 {
-  "name": "@local/dsh-provider-card",
-  "version": "0.1.0",
-  "private": true,
-  "type": "module",
-  "description": "切换模型时在会话输入框旁展示一张角色卡",
+  "name": "@mirai27/dsh-provider-card",
+  "version": "0.1.2",
+  "description": "DSH 插件：切换模型时在会话输入框旁展示一张角色卡",
+  "keywords": [
+    "dsh",
+    "deepseek-harness",
+    "cordis",
+    "plugin",
+    "bundle",
+    "role-card",
+    "character-card",
+    "model-picker"
+  ],
   "license": "MIT",
+  "author": "FallenWings27",
+  "type": "module",
+  "main": "index.js",
   "exports": {
     ".": "./index.js",
     "./client": "./src/client.js",
     "./locale/*.json": "./src/locale/*.json",
-    "./icon": "./src/icon.svg"
+    "./icon": "./src/icon.svg",
+    "./package.json": "./package.json"
   },
   "files": [
     "index.js",
@@ -19,13 +31,24 @@
     "src/locale/*.json",
     "src/i18n/*.json",
     "src/icon.svg",
-    "seed/**",
     "showcase/*.png",
     "cordis.patch.yml",
     "LICENSE",
     "ASSET_LICENSE.md",
     "README.md"
   ],
+  "engines": {
+    "node": ">=20"
+  },
+  "repository": "github:FallenWings27/dsh-provider-card-release",
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build:client": "node scripts/build-client.cjs",
+    "test:publish": "node --test tests/publish.test.cjs tests/publish-content.test.cjs",
+    "prepublishOnly": "npm run test:publish"
+  },
   "dsh": {
     "bundle": {
       "patch": "./cordis.patch.yml"

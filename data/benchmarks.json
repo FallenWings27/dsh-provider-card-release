@@ -15,9 +15,9 @@
     {
       "file": "public-benchmarks-20261009.json",
       "locator": "本机路径见 scripts/export-benchmarks.cjs 的 SOURCES[*].path（该文件是导出正本，发布包不含本机绝对路径）",
-      "sha256": "6DC020D0BC858B2D0D1407F787EB4E964B52F7DDEBD0C2E9E64F2E4083DCD4B1",
-      "records": 58,
-      "latestCollected": "2026-10-17",
+      "sha256": "8D4E18FFDC88A46545AC92A218E29900F3F0B83EDF1F3011CD0EA43B66F99A4C",
+      "records": 94,
+      "latestCollected": "2026-10-28",
       "role": "基线源：用户贴出的公开成绩汇总（只读，未改动）。2026-10-24 起它的记录已固化在 SEED 基座里，只作身份/字节核验，不再重复合并（重复合并会产生重复候选）"
     },
     {
@@ -29,7 +29,7 @@
       "role": "增量源：SEED 基座之后新采集的分数（只许新增模型；与基座同名 ⇒ 退出 1）"
     }
   ],
-  "generated_at": "2026-10-24T20:46:00+08:00",
+  "generated_at": "2026-10-30T21:20:00+08:00",
   "unit_rules": {
     "percent_default": "max=null 表示百分制（0-100）",
     "non_percent": {
@@ -50,12 +50,12 @@
     "self_computed_excluded": "BenchLM-Capability / ModelDial-custom / Leaderboard.cn 综合分不可与标准基准并列"
   },
   "counts": {
-    "models": 35,
+    "models": 37,
     "conflict_benchmarks": 7,
     "rounding_benchmarks": 4,
     "corroborated_benchmarks": 1,
     "vendor_only_benchmarks": 107,
-    "no_public_models": 7
+    "no_public_models": 9
   },
   "entries": [
     {
@@ -2596,6 +2596,12 @@
       }
     },
     {
+      "model": "ling-3.1-flash",
+      "benchmarks": {},
+      "no_public_score": true,
+      "reason": "无任何具名公开基准分（2026-10-30 查证：官方站 ant-ling.com 与开发者文档 developer.ant-ling.com/zh-CN/docs/models/ling/ 只有 560B/激活 25B、256K 上下文等参数与营销文案；3.1 未开源——开源的是 Ling-3.0-flash-VL，其分数不可移用）"
+    },
+    {
       "model": "LongCat-2.5-Preview",
       "benchmarks": {
         "AI-Coding-Daily-Total": {
@@ -3645,6 +3651,12 @@
           "caveat": "vendor-self-reported"
         }
       }
+    },
+    {
+      "model": "u2-flash",
+      "benchmarks": {},
+      "no_public_score": true,
+      "reason": "无任何具名公开基准分（2026-10-30 查证：官方页 unisound.com/u2 仅有未具名的分类自评分——Long Context 70 / Knowledge & Reasoning 87.9 / Instruction Following 77.3 / Agentic Capacity 75 与 72.9 / Claw 76.9，对比线 GLM-5.1、DeepSeek-V4-Flash(High)、Hy3 Preview、MiniMax M2.x；按 selection_rules.self_computed_excluded 这类厂商自定义口径不得与标准基准并列）"
     }
   ]
 }

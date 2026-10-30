@@ -630,6 +630,7 @@
     {
       "provider": "wbhub-cn",
       "model": "deepseek-v4.1-flash",
+      "timeRule": "deepseek-peak",
       "c": [
         "#6fd3ff",
         "#3b6fd4"

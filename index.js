@@ -37,7 +37,7 @@ const publicSpeedDoc = require('./data/speed-public.json');
 const fs = nodeFs.promises;
 
  
-const TAG = '[@local/dsh-provider-card]';
+const TAG = '[@mirai27/dsh-provider-card]';
 
  
 function dataRoot() {

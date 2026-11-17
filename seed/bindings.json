@@ -1,6 +1,10 @@
 {
   "version": 1,
   "bindings": {
+    "model:test-provider/test-model#idle#hud": {
+      "assetId": "0be21e6f-0489-4b8c-986a-c38bc4bed1c5",
+      "updatedAt": "2026-10-15T17:34:29.571Z"
+    },
     "default#idle#hud": {
       "assetId": "ec28effb-cfd8-4a95-b608-ac74475e6df1",
       "posterAssetId": "ec28effb-cfd8-4a95-b608-ac74475e6df1",
@@ -34,14 +38,15 @@
       "updatedAt": "2026-10-26T16:37:13.000Z"
     },
     "card:gemini-3-8-flash#idle#hud": {
-      "assetId": "2d9f197c-6988-4dbb-beca-41def1e61918",
+      "assetId": "bc695692-e086-4888-b11a-b4def4c1795f",
       "posterAssetId": "01f24ff1-19dc-445d-87e2-48796af98d75",
       "mediaType": "video",
       "fit": "cover",
       "objectPosition": "center 20%",
-      "updatedAt": "2026-10-24T12:26:20.438Z",
       "loop": true,
-      "muted": true
+      "muted": true,
+      "loopStart": 4.25,
+      "updatedAt": "2026-11-17T05:42:27.000Z"
     },
     "card:gemini-3-8-flash#recover#hud": {
       "assetId": "01f24ff1-19dc-445d-87e2-48796af98d75",
@@ -52,14 +57,15 @@
       "updatedAt": "2026-10-23T22:13:52.360Z"
     },
     "card:gemini-3-8-flash#summon#hud": {
-      "assetId": "2d9f197c-6988-4dbb-beca-41def1e61918",
+      "assetId": "bc695692-e086-4888-b11a-b4def4c1795f",
       "posterAssetId": "01f24ff1-19dc-445d-87e2-48796af98d75",
       "mediaType": "video",
       "fit": "cover",
       "objectPosition": "center 20%",
-      "updatedAt": "2026-10-24T12:26:20.438Z",
       "loop": true,
-      "muted": true
+      "muted": true,
+      "loopStart": 4.25,
+      "updatedAt": "2026-11-17T05:42:27.000Z"
     },
     "card:gemini-3-8-flash#warning#hud": {
       "assetId": "01f24ff1-19dc-445d-87e2-48796af98d75",
@@ -74,10 +80,11 @@
       "mediaType": "video",
       "fit": "cover",
       "objectPosition": "center 20%",
-      "updatedAt": "2026-10-24T12:26:20.438Z",
+      "updatedAt": "2026-11-15T04:40:10.000Z",
       "posterAssetId": "81fc46ff-2b78-49c2-9c00-63084f306fbb",
       "loop": true,
-      "muted": true
+      "muted": true,
+      "loopStart": 6.5
     },
     "card:grok-4-6#recover#hud": {
       "assetId": "1be6e6ab-bad7-4b15-9c9c-f1dd07d0f481",
@@ -88,10 +95,11 @@
       "mediaType": "video",
       "fit": "cover",
       "objectPosition": "center 20%",
-      "updatedAt": "2026-10-24T12:26:20.438Z",
+      "updatedAt": "2026-11-15T04:40:10.000Z",
       "posterAssetId": "81fc46ff-2b78-49c2-9c00-63084f306fbb",
       "loop": true,
-      "muted": true
+      "muted": true,
+      "loopStart": 6.5
     },
     "card:grok-4-6#warning#hud": {
       "assetId": "974bf4db-31f1-4a05-9743-5463559ea557",
@@ -102,10 +110,11 @@
       "mediaType": "video",
       "fit": "cover",
       "objectPosition": "center 20%",
-      "updatedAt": "2026-10-24T12:26:20.438Z",
+      "updatedAt": "2026-11-15T04:40:10.000Z",
       "posterAssetId": "ef19347b-84c2-4f89-b8ab-77dcc2c69f4f",
       "loop": true,
-      "muted": true
+      "muted": true,
+      "loopStart": 6.5
     },
     "card:longcat-2-5-preview#recover#hud": {
       "assetId": "b6188a5b-d8eb-4022-890d-98ffc993fc0f",
@@ -116,10 +125,11 @@
       "mediaType": "video",
       "fit": "cover",
       "objectPosition": "center 20%",
-      "updatedAt": "2026-10-24T12:26:20.438Z",
+      "updatedAt": "2026-11-15T04:40:10.000Z",
       "posterAssetId": "ef19347b-84c2-4f89-b8ab-77dcc2c69f4f",
       "loop": true,
-      "muted": true
+      "muted": true,
+      "loopStart": 6.5
     },
     "card:longcat-2-5-preview#warning#hud": {
       "assetId": "5fdf6da6-afb5-4a16-b25c-2a4fdfc33adb",
@@ -130,10 +140,11 @@
       "mediaType": "video",
       "fit": "cover",
       "objectPosition": "center 20%",
-      "updatedAt": "2026-10-24T12:26:20.438Z",
+      "updatedAt": "2026-11-15T04:40:10.000Z",
       "posterAssetId": "3818b839-3f6f-4ea1-90ad-e8c2c48bbcdd",
       "loop": true,
-      "muted": true
+      "muted": true,
+      "loopStart": 6.5
     },
     "card:minimax-m3-1-flash-preview#recover#hud": {
       "assetId": "8de86acd-50ea-42d7-9924-487986140ac0",
@@ -144,10 +155,11 @@
       "mediaType": "video",
       "fit": "cover",
       "objectPosition": "center 20%",
-      "updatedAt": "2026-10-24T12:26:20.438Z",
+      "updatedAt": "2026-11-15T04:40:10.000Z",
       "posterAssetId": "3818b839-3f6f-4ea1-90ad-e8c2c48bbcdd",
       "loop": true,
-      "muted": true
+      "muted": true,
+      "loopStart": 6.5
     },
     "card:minimax-m3-1-flash-preview#warning#hud": {
       "assetId": "e3c3a221-540d-4dc2-bf02-3d1bd698bc38",
@@ -161,7 +173,8 @@
       "objectPosition": "center 20%",
       "loop": true,
       "muted": true,
-      "updatedAt": "2026-10-24T12:26:20.438Z"
+      "updatedAt": "2026-11-15T04:40:10.000Z",
+      "loopStart": 5.8333
     },
     "card:deepseek-v4-1-flash#recover#hud": {
       "assetId": "60655ff8-6658-4eba-a549-1cfb46342ff4",
@@ -179,7 +192,8 @@
       "objectPosition": "center 20%",
       "loop": true,
       "muted": true,
-      "updatedAt": "2026-10-24T12:26:20.438Z"
+      "updatedAt": "2026-11-15T04:40:10.000Z",
+      "loopStart": 5.8333
     },
     "card:deepseek-v4-1-flash#warning#hud": {
       "assetId": "60655ff8-6658-4eba-a549-1cfb46342ff4",
@@ -194,10 +208,11 @@
       "mediaType": "video",
       "fit": "cover",
       "objectPosition": "center 20%",
-      "updatedAt": "2026-10-24T12:26:20.438Z",
+      "updatedAt": "2026-11-15T04:40:10.000Z",
       "posterAssetId": "b6c3614f-4d8f-4058-a495-46bed417d4d6",
       "loop": true,
-      "muted": true
+      "muted": true,
+      "loopStart": 6.5
     },
     "card:hy3#recover#hud": {
       "assetId": "1de91f11-412a-410c-8684-ab8155185f0b",
@@ -208,10 +223,11 @@
       "mediaType": "video",
       "fit": "cover",
       "objectPosition": "center 20%",
-      "updatedAt": "2026-10-24T12:26:20.438Z",
+      "updatedAt": "2026-11-15T04:40:10.000Z",
       "posterAssetId": "b6c3614f-4d8f-4058-a495-46bed417d4d6",
       "loop": true,
-      "muted": true
+      "muted": true,
+      "loopStart": 6.5
     },
     "card:hy3#warning#hud": {
       "assetId": "da349606-4e3f-4bc2-95b5-288b1d374ae2",
@@ -222,10 +238,11 @@
       "mediaType": "video",
       "fit": "cover",
       "objectPosition": "center 20%",
-      "updatedAt": "2026-10-24T12:26:20.438Z",
+      "updatedAt": "2026-11-15T04:40:10.000Z",
       "posterAssetId": "3158007e-e4cd-486c-9cbe-70234c6f2168",
       "loop": true,
-      "muted": true
+      "muted": true,
+      "loopStart": 6.5
     },
     "card:mimo-v2-6-flash#recover#hud": {
       "assetId": "9ef8db4f-5d6f-4a8f-9765-99c115cdffca",
@@ -236,10 +253,11 @@
       "mediaType": "video",
       "fit": "cover",
       "objectPosition": "center 20%",
-      "updatedAt": "2026-10-24T12:26:20.438Z",
+      "updatedAt": "2026-11-15T04:40:10.000Z",
       "posterAssetId": "3158007e-e4cd-486c-9cbe-70234c6f2168",
       "loop": true,
-      "muted": true
+      "muted": true,
+      "loopStart": 6.5
     },
     "card:mimo-v2-6-flash#warning#hud": {
       "assetId": "af096853-a879-488f-844c-306eeb0f2d7c",
@@ -250,10 +268,11 @@
       "mediaType": "video",
       "fit": "cover",
       "objectPosition": "center 20%",
-      "updatedAt": "2026-10-24T12:26:20.438Z",
+      "updatedAt": "2026-11-15T04:40:10.000Z",
       "posterAssetId": "25c22ed0-3b2d-4c1f-98af-40b912558398",
       "loop": true,
-      "muted": true
+      "muted": true,
+      "loopStart": 6.5
     },
     "card:glm-5-3-flash#recover#hud": {
       "assetId": "6fdbc857-ce32-4eb3-a4f3-8a112eb5efb8",
@@ -268,10 +287,11 @@
       "mediaType": "video",
       "fit": "cover",
       "objectPosition": "center 20%",
-      "updatedAt": "2026-10-24T12:26:20.438Z",
+      "updatedAt": "2026-11-15T04:40:10.000Z",
       "posterAssetId": "25c22ed0-3b2d-4c1f-98af-40b912558398",
       "loop": true,
-      "muted": true
+      "muted": true,
+      "loopStart": 6.5
     },
     "card:glm-5-3-flash#warning#hud": {
       "assetId": "6fdbc857-ce32-4eb3-a4f3-8a112eb5efb8",
@@ -289,7 +309,8 @@
       "objectPosition": "center 20%",
       "loop": true,
       "muted": true,
-      "updatedAt": "2026-10-24T12:26:20.438Z"
+      "updatedAt": "2026-11-15T04:40:10.000Z",
+      "loopStart": 5.8333
     },
     "model:wbhub-cn/deepseek-v4.1-flash#recover#hud": {
       "assetId": "60655ff8-6658-4eba-a549-1cfb46342ff4",
@@ -307,7 +328,8 @@
       "objectPosition": "center 20%",
       "loop": true,
       "muted": true,
-      "updatedAt": "2026-10-24T12:26:20.438Z"
+      "updatedAt": "2026-11-15T04:40:10.000Z",
+      "loopStart": 5.8333
     },
     "model:wbhub-cn/deepseek-v4.1-flash#warning#hud": {
       "assetId": "60655ff8-6658-4eba-a549-1cfb46342ff4",
@@ -325,7 +347,8 @@
       "objectPosition": "center 20%",
       "loop": true,
       "muted": true,
-      "updatedAt": "2026-10-24T12:26:20.438Z"
+      "updatedAt": "2026-11-15T04:40:10.000Z",
+      "loopStart": 5.8333
     },
     "model:wbhub-intl/deepseek-v4.1-flash#recover#hud": {
       "assetId": "60655ff8-6658-4eba-a549-1cfb46342ff4",
@@ -343,7 +366,8 @@
       "objectPosition": "center 20%",
       "loop": true,
       "muted": true,
-      "updatedAt": "2026-10-24T12:26:20.438Z"
+      "updatedAt": "2026-11-15T04:40:10.000Z",
+      "loopStart": 5.8333
     },
     "model:wbhub-intl/deepseek-v4.1-flash#warning#hud": {
       "assetId": "60655ff8-6658-4eba-a549-1cfb46342ff4",
@@ -358,20 +382,22 @@
       "mediaType": "video",
       "fit": "cover",
       "objectPosition": "center 20%",
-      "updatedAt": "2026-10-24T12:26:20.438Z",
+      "updatedAt": "2026-11-15T04:40:10.000Z",
       "posterAssetId": "1e4d410e-78de-4036-90f7-df3ba2445c61",
       "loop": true,
-      "muted": true
+      "muted": true,
+      "loopStart": 6.5
     },
     "card:gpt-6-1-sol#summon#hud": {
       "assetId": "f280aa92-f7e3-4af1-92ee-af40f5b94914",
       "mediaType": "video",
       "fit": "cover",
       "objectPosition": "center 20%",
-      "updatedAt": "2026-10-24T12:26:20.438Z",
+      "updatedAt": "2026-11-15T04:40:10.000Z",
       "posterAssetId": "1e4d410e-78de-4036-90f7-df3ba2445c61",
       "loop": true,
-      "muted": true
+      "muted": true,
+      "loopStart": 6.5
     },
     "card:gpt-6-1-sol#warning#hud": {
       "assetId": "f8079cbb-80aa-4338-b820-9872688918eb",
@@ -402,20 +428,22 @@
       "mediaType": "video",
       "fit": "cover",
       "objectPosition": "center 20%",
-      "updatedAt": "2026-10-24T12:26:20.438Z",
+      "updatedAt": "2026-11-15T04:40:10.000Z",
       "posterAssetId": "81fc46ff-2b78-49c2-9c00-63084f306fbb",
       "loop": true,
-      "muted": true
+      "muted": true,
+      "loopStart": 6.5
     },
     "card:grok-4-7#summon#hud": {
       "assetId": "013257f6-7709-4292-bed5-aaa9a275377f",
       "mediaType": "video",
       "fit": "cover",
       "objectPosition": "center 20%",
-      "updatedAt": "2026-10-24T12:26:20.438Z",
+      "updatedAt": "2026-11-15T04:40:10.000Z",
       "posterAssetId": "81fc46ff-2b78-49c2-9c00-63084f306fbb",
       "loop": true,
-      "muted": true
+      "muted": true,
+      "loopStart": 6.5
     },
     "card:grok-4-7#warning#hud": {
       "assetId": "974bf4db-31f1-4a05-9743-5463559ea557",
@@ -431,8 +459,9 @@
       "fit": "cover",
       "loop": true,
       "muted": true,
-      "updatedAt": "2026-10-24T12:26:20.438Z",
-      "objectPosition": "center 20%"
+      "updatedAt": "2026-11-15T04:40:10.000Z",
+      "objectPosition": "center 20%",
+      "loopStart": 6.5
     },
     "card:kimi-k3#summon#hud": {
       "assetId": "e811a527-c145-42bd-8883-25d7375a1fb0",
@@ -440,8 +469,9 @@
       "fit": "cover",
       "loop": true,
       "muted": true,
-      "updatedAt": "2026-10-24T12:26:20.438Z",
-      "objectPosition": "center 20%"
+      "updatedAt": "2026-11-15T04:40:10.000Z",
+      "objectPosition": "center 20%",
+      "loopStart": 6.5
     },
     "card:step-5-preview#idle#hud": {
       "assetId": "10a8c2e0-4cba-45ae-b137-7b310958058a",
@@ -449,8 +479,9 @@
       "fit": "cover",
       "loop": true,
       "muted": true,
-      "updatedAt": "2026-10-24T12:26:20.438Z",
-      "objectPosition": "center 20%"
+      "updatedAt": "2026-11-15T04:40:10.000Z",
+      "objectPosition": "center 20%",
+      "loopStart": 6.5
     },
     "card:step-5-preview#summon#hud": {
       "assetId": "10a8c2e0-4cba-45ae-b137-7b310958058a",
@@ -458,8 +489,9 @@
       "fit": "cover",
       "loop": true,
       "muted": true,
-      "updatedAt": "2026-10-24T12:26:20.438Z",
-      "objectPosition": "center 20%"
+      "updatedAt": "2026-11-15T04:40:10.000Z",
+      "objectPosition": "center 20%",
+      "loopStart": 6.5
     },
     "card:sensenova-6-8-flash-lite#idle#hud": {
       "assetId": "f68fca41-4916-416e-b2be-ed3a7f4984a3",
@@ -467,8 +499,9 @@
       "fit": "cover",
       "loop": true,
       "muted": true,
-      "updatedAt": "2026-10-24T12:26:20.438Z",
-      "objectPosition": "center 20%"
+      "updatedAt": "2026-11-15T04:40:10.000Z",
+      "objectPosition": "center 20%",
+      "loopStart": 6.5
     },
     "card:sensenova-6-8-flash-lite#summon#hud": {
       "assetId": "f68fca41-4916-416e-b2be-ed3a7f4984a3",
@@ -476,8 +509,9 @@
       "fit": "cover",
       "loop": true,
       "muted": true,
-      "updatedAt": "2026-10-24T12:26:20.438Z",
-      "objectPosition": "center 20%"
+      "updatedAt": "2026-11-15T04:40:10.000Z",
+      "objectPosition": "center 20%",
+      "loopStart": 6.5
     },
     "card:inclusionai-ling-3-1-flash#idle#hud": {
       "assetId": "cf931678-73a0-453e-a4a6-3608831445dd",
@@ -485,8 +519,9 @@
       "fit": "cover",
       "loop": true,
       "muted": true,
-      "updatedAt": "2026-10-24T12:26:20.438Z",
-      "objectPosition": "center 20%"
+      "updatedAt": "2026-11-15T04:40:10.000Z",
+      "objectPosition": "center 20%",
+      "loopStart": 6.5
     },
     "card:inclusionai-ling-3-1-flash#summon#hud": {
       "assetId": "cf931678-73a0-453e-a4a6-3608831445dd",
@@ -494,8 +529,9 @@
       "fit": "cover",
       "loop": true,
       "muted": true,
-      "updatedAt": "2026-10-24T12:26:20.438Z",
-      "objectPosition": "center 20%"
+      "updatedAt": "2026-11-15T04:40:10.000Z",
+      "objectPosition": "center 20%",
+      "loopStart": 6.5
     },
     "card:u2-flash#idle#hud": {
       "assetId": "f309cff2-630e-4bdd-a1c1-d0c512997d3a",
@@ -503,8 +539,9 @@
       "fit": "cover",
       "loop": true,
       "muted": true,
-      "updatedAt": "2026-10-24T12:26:20.438Z",
-      "objectPosition": "center 20%"
+      "updatedAt": "2026-11-15T04:40:10.000Z",
+      "objectPosition": "center 20%",
+      "loopStart": 6.5
     },
     "card:u2-flash#summon#hud": {
       "assetId": "f309cff2-630e-4bdd-a1c1-d0c512997d3a",
@@ -512,8 +549,9 @@
       "fit": "cover",
       "loop": true,
       "muted": true,
-      "updatedAt": "2026-10-24T12:26:20.438Z",
-      "objectPosition": "center 20%"
+      "updatedAt": "2026-11-15T04:40:10.000Z",
+      "objectPosition": "center 20%",
+      "loopStart": 6.5
     },
     "form:anthropic/haiku#summon#hud": {
       "assetId": "822f83f4-c391-4f90-862e-3c5772637000",
@@ -523,7 +561,8 @@
       "objectPosition": "center 20%",
       "loop": true,
       "muted": true,
-      "updatedAt": "2026-10-24T12:26:20.438Z"
+      "updatedAt": "2026-11-15T04:40:10.000Z",
+      "loopStart": 5.8333
     },
     "form:anthropic/sonnet#summon#hud": {
       "assetId": "bde9122e-2638-4b41-99bd-935556030da6",
@@ -533,7 +572,8 @@
       "objectPosition": "center 20%",
       "loop": true,
       "muted": true,
-      "updatedAt": "2026-10-24T12:26:20.438Z"
+      "updatedAt": "2026-11-15T04:40:10.000Z",
+      "loopStart": 5.8333
     },
     "form:anthropic/fable#summon#hud": {
       "assetId": "a95248f8-009d-4963-a6ce-d7b54cca781b",
@@ -543,7 +583,8 @@
       "objectPosition": "center 20%",
       "loop": true,
       "muted": true,
-      "updatedAt": "2026-10-24T12:26:20.438Z"
+      "updatedAt": "2026-11-15T04:40:10.000Z",
+      "loopStart": 5.8333
     },
     "form:anthropic/opus#summon#hud": {
       "assetId": "f3bc3089-4ed5-4464-bb7e-29e522851963",
@@ -553,7 +594,8 @@
       "objectPosition": "center 20%",
       "loop": true,
       "muted": true,
-      "updatedAt": "2026-10-24T12:26:20.438Z"
+      "updatedAt": "2026-11-15T04:40:10.000Z",
+      "loopStart": 5.8333
     },
     "form:deepseek/pro#summon#hud": {
       "assetId": "3969671d-1c0e-4aaf-ba10-5b1b5448c7d7",
@@ -563,7 +605,8 @@
       "objectPosition": "center 20%",
       "loop": true,
       "muted": true,
-      "updatedAt": "2026-10-24T12:26:20.438Z"
+      "updatedAt": "2026-11-15T04:40:10.000Z",
+      "loopStart": 5.8333
     },
     "form:deepseek/flash#summon#hud": {
       "assetId": "338aea47-5d99-4985-98da-112574a2b648",
@@ -573,7 +616,8 @@
       "objectPosition": "center 20%",
       "loop": true,
       "muted": true,
-      "updatedAt": "2026-10-24T12:26:20.438Z"
+      "updatedAt": "2026-11-15T04:40:10.000Z",
+      "loopStart": 5.8333
     },
     "form:glm/flagship#summon#hud": {
       "assetId": "8291afcb-9223-45a9-87e6-94a2ef5487d4",
@@ -583,7 +627,8 @@
       "objectPosition": "center 20%",
       "loop": true,
       "muted": true,
-      "updatedAt": "2026-10-24T12:26:20.438Z"
+      "updatedAt": "2026-11-15T04:40:10.000Z",
+      "loopStart": 5.8333
     },
     "form:glm/flash#summon#hud": {
       "assetId": "012d66cc-0da9-46a6-9f7e-1dc93e089c93",
@@ -600,7 +645,8 @@
       "objectPosition": "center 20%",
       "loop": true,
       "muted": true,
-      "updatedAt": "2026-10-24T12:26:20.438Z"
+      "updatedAt": "2026-11-15T04:40:10.000Z",
+      "loopStart": 5.8333
     },
     "form:anthropic/haiku#idle#hud": {
       "assetId": "822f83f4-c391-4f90-862e-3c5772637000",
@@ -610,7 +656,8 @@
       "objectPosition": "center 20%",
       "loop": true,
       "muted": true,
-      "updatedAt": "2026-10-24T12:26:20.438Z"
+      "updatedAt": "2026-11-15T04:40:10.000Z",
+      "loopStart": 5.8333
     },
     "form:anthropic/sonnet#idle#hud": {
       "assetId": "bde9122e-2638-4b41-99bd-935556030da6",
@@ -620,7 +667,8 @@
       "objectPosition": "center 20%",
       "loop": true,
       "muted": true,
-      "updatedAt": "2026-10-24T12:26:20.438Z"
+      "updatedAt": "2026-11-15T04:40:10.000Z",
+      "loopStart": 5.8333
     },
     "form:anthropic/fable#idle#hud": {
       "assetId": "a95248f8-009d-4963-a6ce-d7b54cca781b",
@@ -630,7 +678,8 @@
       "objectPosition": "center 20%",
       "loop": true,
       "muted": true,
-      "updatedAt": "2026-10-24T12:26:20.438Z"
+      "updatedAt": "2026-11-15T04:40:10.000Z",
+      "loopStart": 5.8333
     },
     "form:anthropic/opus#idle#hud": {
       "assetId": "f3bc3089-4ed5-4464-bb7e-29e522851963",
@@ -640,7 +689,8 @@
       "objectPosition": "center 20%",
       "loop": true,
       "muted": true,
-      "updatedAt": "2026-10-24T12:26:20.438Z"
+      "updatedAt": "2026-11-15T04:40:10.000Z",
+      "loopStart": 5.8333
     },
     "form:deepseek/pro#idle#hud": {
       "assetId": "3969671d-1c0e-4aaf-ba10-5b1b5448c7d7",
@@ -650,7 +700,8 @@
       "objectPosition": "center 20%",
       "loop": true,
       "muted": true,
-      "updatedAt": "2026-10-24T12:26:20.438Z"
+      "updatedAt": "2026-11-15T04:40:10.000Z",
+      "loopStart": 5.8333
     },
     "form:deepseek/flash#idle#hud": {
       "assetId": "338aea47-5d99-4985-98da-112574a2b648",
@@ -660,7 +711,8 @@
       "objectPosition": "center 20%",
       "loop": true,
       "muted": true,
-      "updatedAt": "2026-10-24T12:26:20.438Z"
+      "updatedAt": "2026-11-15T04:40:10.000Z",
+      "loopStart": 5.8333
     },
     "form:glm/flagship#idle#hud": {
       "assetId": "8291afcb-9223-45a9-87e6-94a2ef5487d4",
@@ -670,7 +722,8 @@
       "objectPosition": "center 20%",
       "loop": true,
       "muted": true,
-      "updatedAt": "2026-10-24T12:26:20.438Z"
+      "updatedAt": "2026-11-15T04:40:10.000Z",
+      "loopStart": 5.8333
     },
     "form:glm/flash#idle#hud": {
       "assetId": "45a64f9f-8231-4961-a91e-431a1817725b",
@@ -689,43 +742,52 @@
       "objectPosition": "center 20%",
       "loop": true,
       "muted": true,
-      "updatedAt": "2026-10-24T12:26:20.438Z"
+      "updatedAt": "2026-11-15T04:40:10.000Z",
+      "loopStart": 5.8333
     },
     "card:qfmodel#idle#hud": {
       "assetId": "19e1c67c-7866-4a7b-bc95-13d9605f5f34",
       "mediaType": "video",
       "fit": "cover",
       "objectPosition": "center 20%",
-      "updatedAt": "2026-10-24T12:26:20.438Z",
+      "updatedAt": "2026-11-15T04:40:10.000Z",
       "posterAssetId": "bd37dddd-9e45-41d4-9a21-0d2841ff0e8d",
       "loop": true,
-      "muted": true
+      "muted": true,
+      "loopStart": 6.5
     },
     "card:qfmodel#summon#hud": {
       "assetId": "19e1c67c-7866-4a7b-bc95-13d9605f5f34",
       "mediaType": "video",
       "fit": "cover",
       "objectPosition": "center 20%",
-      "updatedAt": "2026-10-24T12:26:20.438Z",
+      "updatedAt": "2026-11-15T04:40:10.000Z",
       "posterAssetId": "bd37dddd-9e45-41d4-9a21-0d2841ff0e8d",
       "loop": true,
-      "muted": true
+      "muted": true,
+      "loopStart": 6.5
     },
     "form:gemini/flash#idle#hud": {
-      "assetId": "01f24ff1-19dc-445d-87e2-48796af98d75",
+      "assetId": "bc695692-e086-4888-b11a-b4def4c1795f",
       "posterAssetId": "01f24ff1-19dc-445d-87e2-48796af98d75",
-      "mediaType": "image",
+      "mediaType": "video",
       "fit": "cover",
       "objectPosition": "center 20%",
-      "updatedAt": "2026-10-24T00:47:10.215Z"
+      "loop": true,
+      "muted": true,
+      "loopStart": 4.25,
+      "updatedAt": "2026-11-17T05:42:27.000Z"
     },
     "form:gemini/flash#summon#hud": {
-      "assetId": "01f24ff1-19dc-445d-87e2-48796af98d75",
+      "assetId": "bc695692-e086-4888-b11a-b4def4c1795f",
       "posterAssetId": "01f24ff1-19dc-445d-87e2-48796af98d75",
-      "mediaType": "image",
+      "mediaType": "video",
       "fit": "cover",
       "objectPosition": "center 20%",
-      "updatedAt": "2026-10-24T00:47:10.215Z"
+      "loop": true,
+      "muted": true,
+      "loopStart": 4.25,
+      "updatedAt": "2026-11-17T05:42:27.000Z"
     },
     "form:openai/astra#idle#hud": {
       "mediaType": "video",
@@ -735,7 +797,8 @@
       "muted": true,
       "assetId": "4f91d6b2-7a08-4e53-b2c9-1d6e8f04a3c7",
       "posterAssetId": "7c3e1a90-4b62-4d18-9f05-2a6d8e47b1c3",
-      "updatedAt": "2026-10-27T02:30:00.000Z"
+      "updatedAt": "2026-11-15T04:40:10.000Z",
+      "loopStart": 6.5
     },
     "form:openai/astra#summon#hud": {
       "mediaType": "video",
@@ -745,7 +808,8 @@
       "muted": true,
       "assetId": "4f91d6b2-7a08-4e53-b2c9-1d6e8f04a3c7",
       "posterAssetId": "7c3e1a90-4b62-4d18-9f05-2a6d8e47b1c3",
-      "updatedAt": "2026-10-27T02:30:00.000Z"
+      "updatedAt": "2026-11-15T04:40:10.000Z",
+      "loopStart": 6.5
     },
     "form:openai/luna#idle#hud": {
       "mediaType": "video",
@@ -755,7 +819,8 @@
       "muted": true,
       "assetId": "9a2c5e78-1d64-4f0b-95a3-7e18b6d04c29",
       "posterAssetId": "b5d94f27-8e31-4c6a-a0d2-6f19c3e85a74",
-      "updatedAt": "2026-10-27T02:30:00.000Z"
+      "updatedAt": "2026-11-15T04:40:10.000Z",
+      "loopStart": 6.5
     },
     "form:openai/luna#summon#hud": {
       "mediaType": "video",
@@ -765,7 +830,8 @@
       "muted": true,
       "assetId": "9a2c5e78-1d64-4f0b-95a3-7e18b6d04c29",
       "posterAssetId": "b5d94f27-8e31-4c6a-a0d2-6f19c3e85a74",
-      "updatedAt": "2026-10-27T02:30:00.000Z"
+      "updatedAt": "2026-11-15T04:40:10.000Z",
+      "loopStart": 6.5
     },
     "form:openai/sol#idle#hud": {
       "mediaType": "video",
@@ -775,7 +841,8 @@
       "muted": true,
       "assetId": "f280aa92-f7e3-4af1-92ee-af40f5b94914",
       "posterAssetId": "1e4d410e-78de-4036-90f7-df3ba2445c61",
-      "updatedAt": "2026-10-27T02:30:00.000Z"
+      "updatedAt": "2026-11-15T04:40:10.000Z",
+      "loopStart": 6.5
     },
     "form:openai/sol#summon#hud": {
       "mediaType": "video",
@@ -785,7 +852,8 @@
       "muted": true,
       "assetId": "f280aa92-f7e3-4af1-92ee-af40f5b94914",
       "posterAssetId": "1e4d410e-78de-4036-90f7-df3ba2445c61",
-      "updatedAt": "2026-10-27T02:30:00.000Z"
+      "updatedAt": "2026-11-15T04:40:10.000Z",
+      "loopStart": 6.5
     },
     "form:qwen/max#idle#hud": {
       "assetId": "54b40ad0-ce69-4849-b78e-a4b06c90bbaa",
@@ -793,9 +861,10 @@
       "mediaType": "video",
       "fit": "cover",
       "objectPosition": "center 20%",
-      "updatedAt": "2026-10-25T07:44:22.794Z",
+      "updatedAt": "2026-11-15T04:40:10.000Z",
       "loop": true,
-      "muted": true
+      "muted": true,
+      "loopStart": 6.5
     },
     "form:qwen/max#summon#hud": {
       "assetId": "54b40ad0-ce69-4849-b78e-a4b06c90bbaa",
@@ -803,9 +872,10 @@
       "mediaType": "video",
       "fit": "cover",
       "objectPosition": "center 20%",
-      "updatedAt": "2026-10-25T07:44:22.794Z",
+      "updatedAt": "2026-11-15T04:40:10.000Z",
       "loop": true,
-      "muted": true
+      "muted": true,
+      "loopStart": 6.5
     },
     "card:claude-opus-5-5#recover#hud": {
       "assetId": "3679f087-6721-44f8-8edc-876435b73e81",
@@ -947,9 +1017,10 @@
       "mediaType": "video",
       "fit": "cover",
       "objectPosition": "center 20%",
-      "updatedAt": "2026-10-25T07:44:22.794Z",
+      "updatedAt": "2026-11-15T04:40:10.000Z",
       "loop": true,
-      "muted": true
+      "muted": true,
+      "loopStart": 6.5
     },
     "card:doubao-seed-1-6#summon#hud": {
       "assetId": "580f6905-f98b-4469-8d7f-5cbb5f74ee40",
@@ -957,9 +1028,10 @@
       "mediaType": "video",
       "fit": "cover",
       "objectPosition": "center 20%",
-      "updatedAt": "2026-10-25T07:44:22.794Z",
+      "updatedAt": "2026-11-15T04:40:10.000Z",
       "loop": true,
-      "muted": true
+      "muted": true,
+      "loopStart": 6.5
     },
     "card:llama-3-3-70b#idle#hud": {
       "assetId": "74ce24bd-7d58-4dfb-b937-5e8b6f631130",
@@ -967,9 +1039,10 @@
       "mediaType": "video",
       "fit": "cover",
       "objectPosition": "center 20%",
-      "updatedAt": "2026-10-25T07:44:22.794Z",
+      "updatedAt": "2026-11-15T04:40:10.000Z",
       "loop": true,
-      "muted": true
+      "muted": true,
+      "loopStart": 6.5
     },
     "card:llama-3-3-70b#summon#hud": {
       "assetId": "74ce24bd-7d58-4dfb-b937-5e8b6f631130",
@@ -977,9 +1050,10 @@
       "mediaType": "video",
       "fit": "cover",
       "objectPosition": "center 20%",
-      "updatedAt": "2026-10-25T07:44:22.794Z",
+      "updatedAt": "2026-11-15T04:40:10.000Z",
       "loop": true,
-      "muted": true
+      "muted": true,
+      "loopStart": 6.5
     },
     "card:mistral-large-2411#idle#hud": {
       "assetId": "78bf0f66-200b-4409-a463-c4f2017d4701",
@@ -987,9 +1061,10 @@
       "mediaType": "video",
       "fit": "cover",
       "objectPosition": "center 20%",
-      "updatedAt": "2026-10-25T07:44:22.794Z",
+      "updatedAt": "2026-11-15T04:40:10.000Z",
       "loop": true,
-      "muted": true
+      "muted": true,
+      "loopStart": 6.5
     },
     "card:mistral-large-2411#summon#hud": {
       "assetId": "78bf0f66-200b-4409-a463-c4f2017d4701",
@@ -997,9 +1072,10 @@
       "mediaType": "video",
       "fit": "cover",
       "objectPosition": "center 20%",
-      "updatedAt": "2026-10-25T07:44:22.794Z",
+      "updatedAt": "2026-11-15T04:40:10.000Z",
       "loop": true,
-      "muted": true
+      "muted": true,
+      "loopStart": 6.5
     },
     "card:sonar-pro#idle#hud": {
       "assetId": "ae79f21e-ffe9-46f8-ac39-6aba54d25c13",
@@ -1007,9 +1083,10 @@
       "mediaType": "video",
       "fit": "cover",
       "objectPosition": "center 20%",
-      "updatedAt": "2026-10-25T07:44:22.794Z",
+      "updatedAt": "2026-11-15T04:40:10.000Z",
       "loop": true,
-      "muted": true
+      "muted": true,
+      "loopStart": 6.5
     },
     "card:sonar-pro#summon#hud": {
       "assetId": "ae79f21e-ffe9-46f8-ac39-6aba54d25c13",
@@ -1017,9 +1094,10 @@
       "mediaType": "video",
       "fit": "cover",
       "objectPosition": "center 20%",
-      "updatedAt": "2026-10-25T07:44:22.794Z",
+      "updatedAt": "2026-11-15T04:40:10.000Z",
       "loop": true,
-      "muted": true
+      "muted": true,
+      "loopStart": 6.5
     },
     "card:ernie-4-5-turbo#idle#hud": {
       "assetId": "c96363d8-fa83-41c3-a1b3-ed6da8a7265d",
@@ -1027,9 +1105,10 @@
       "mediaType": "video",
       "fit": "cover",
       "objectPosition": "center 20%",
-      "updatedAt": "2026-10-25T07:44:22.794Z",
+      "updatedAt": "2026-11-15T04:40:10.000Z",
       "loop": true,
-      "muted": true
+      "muted": true,
+      "loopStart": 6.5
     },
     "card:ernie-4-5-turbo#summon#hud": {
       "assetId": "c96363d8-fa83-41c3-a1b3-ed6da8a7265d",
@@ -1037,9 +1116,10 @@
       "mediaType": "video",
       "fit": "cover",
       "objectPosition": "center 20%",
-      "updatedAt": "2026-10-25T07:44:22.794Z",
+      "updatedAt": "2026-11-15T04:40:10.000Z",
       "loop": true,
-      "muted": true
+      "muted": true,
+      "loopStart": 6.5
     },
     "card:jev-1#idle#hud": {
       "assetId": "65f0df25-21da-4c70-ae12-ef64bd6b3b5c",
@@ -1047,9 +1127,10 @@
       "mediaType": "video",
       "fit": "cover",
       "objectPosition": "center 20%",
-      "updatedAt": "2026-10-25T07:44:22.794Z",
+      "updatedAt": "2026-11-15T04:40:10.000Z",
       "loop": true,
-      "muted": true
+      "muted": true,
+      "loopStart": 6.5
     },
     "card:jev-1#summon#hud": {
       "assetId": "65f0df25-21da-4c70-ae12-ef64bd6b3b5c",
@@ -1057,9 +1138,10 @@
       "mediaType": "video",
       "fit": "cover",
       "objectPosition": "center 20%",
-      "updatedAt": "2026-10-25T07:44:22.794Z",
+      "updatedAt": "2026-11-15T04:40:10.000Z",
       "loop": true,
-      "muted": true
+      "muted": true,
+      "loopStart": 6.5
     },
     "card:rwkv-7b#idle#hud": {
       "assetId": "945576f3-b57b-499d-b9d6-641c860dfd16",
@@ -1067,9 +1149,10 @@
       "mediaType": "video",
       "fit": "cover",
       "objectPosition": "center 20%",
-      "updatedAt": "2026-10-25T07:44:22.794Z",
+      "updatedAt": "2026-11-15T04:40:10.000Z",
       "loop": true,
-      "muted": true
+      "muted": true,
+      "loopStart": 6.5
     },
     "card:rwkv-7b#summon#hud": {
       "assetId": "945576f3-b57b-499d-b9d6-641c860dfd16",
@@ -1077,29 +1160,32 @@
       "mediaType": "video",
       "fit": "cover",
       "objectPosition": "center 20%",
-      "updatedAt": "2026-10-25T07:44:22.794Z",
+      "updatedAt": "2026-11-15T04:40:10.000Z",
       "loop": true,
-      "muted": true
+      "muted": true,
+      "loopStart": 6.5
     },
     "form:gemini/argon#idle#hud": {
-      "assetId": "362759e9-193c-4ee4-b5ad-4952d6776a38",
+      "assetId": "99ab2c54-ea9e-4a95-b669-81f62ca02319",
       "posterAssetId": "c1873d30-dfae-4c99-94bb-8381429ec281",
       "mediaType": "video",
       "fit": "cover",
       "objectPosition": "center 20%",
       "loop": true,
       "muted": true,
-      "updatedAt": "2026-10-25T18:08:28.809Z"
+      "loopStart": 4.25,
+      "updatedAt": "2026-11-17T05:42:27.000Z"
     },
     "form:gemini/argon#summon#hud": {
-      "assetId": "362759e9-193c-4ee4-b5ad-4952d6776a38",
+      "assetId": "99ab2c54-ea9e-4a95-b669-81f62ca02319",
       "posterAssetId": "c1873d30-dfae-4c99-94bb-8381429ec281",
       "mediaType": "video",
       "fit": "cover",
       "objectPosition": "center 20%",
       "loop": true,
       "muted": true,
-      "updatedAt": "2026-10-25T18:08:28.809Z"
+      "loopStart": 4.25,
+      "updatedAt": "2026-11-17T05:42:27.000Z"
     },
     "form:gemini/argon#recover#hud": {
       "assetId": "c1873d30-dfae-4c99-94bb-8381429ec281",
@@ -1153,7 +1239,8 @@
       "muted": true,
       "assetId": "c6b07d43-5e92-4a18-8f36-0d2a9c71e4b5",
       "posterAssetId": "e2a86c15-3f47-4b90-8d61-9c04f7a2e5b8",
-      "updatedAt": "2026-10-27T02:30:00.000Z"
+      "updatedAt": "2026-11-15T04:40:10.000Z",
+      "loopStart": 6.5
     },
     "form:openai/terra#summon#hud": {
       "mediaType": "video",
@@ -1163,7 +1250,8 @@
       "muted": true,
       "assetId": "c6b07d43-5e92-4a18-8f36-0d2a9c71e4b5",
       "posterAssetId": "e2a86c15-3f47-4b90-8d61-9c04f7a2e5b8",
-      "updatedAt": "2026-10-27T02:30:00.000Z"
+      "updatedAt": "2026-11-15T04:40:10.000Z",
+      "loopStart": 6.5
     },
     "form:openai/terra#recover#hud": {
       "mediaType": "image",
@@ -1178,6 +1266,82 @@
       "objectPosition": "center 20%",
       "assetId": "e2a86c15-3f47-4b90-8d61-9c04f7a2e5b8",
       "updatedAt": "2026-10-27T02:30:00.000Z"
+    },
+    "form:gemini/hydrogen#idle#hud": {
+      "assetId": "fb765c77-a53d-4dc2-9426-b4fe8fe781b4",
+      "posterAssetId": "932ec093-da80-42e1-8f86-c5906eb0ad11",
+      "mediaType": "video",
+      "fit": "cover",
+      "objectPosition": "center 20%",
+      "loop": true,
+      "muted": true,
+      "loopStart": 4.25,
+      "updatedAt": "2026-11-17T05:42:27.000Z"
+    },
+    "form:gemini/hydrogen#summon#hud": {
+      "assetId": "fb765c77-a53d-4dc2-9426-b4fe8fe781b4",
+      "posterAssetId": "932ec093-da80-42e1-8f86-c5906eb0ad11",
+      "mediaType": "video",
+      "fit": "cover",
+      "objectPosition": "center 20%",
+      "loop": true,
+      "muted": true,
+      "loopStart": 4.25,
+      "updatedAt": "2026-11-17T05:42:27.000Z"
+    },
+    "form:gemini/hydrogen#recover#hud": {
+      "assetId": "2e5cfe96-7cd8-4dae-aa13-b538f8986920",
+      "posterAssetId": "2e5cfe96-7cd8-4dae-aa13-b538f8986920",
+      "mediaType": "image",
+      "fit": "cover",
+      "objectPosition": "center 20%",
+      "updatedAt": "2026-11-13T12:07:00.984Z"
+    },
+    "form:gemini/hydrogen#warning#hud": {
+      "assetId": "2e5cfe96-7cd8-4dae-aa13-b538f8986920",
+      "posterAssetId": "2e5cfe96-7cd8-4dae-aa13-b538f8986920",
+      "mediaType": "image",
+      "fit": "cover",
+      "objectPosition": "center 20%",
+      "updatedAt": "2026-11-13T12:07:00.984Z"
+    },
+    "form:gemini/carbon#idle#hud": {
+      "assetId": "a4bb8a68-07e6-4ad6-b4bb-1d943ca5781b",
+      "posterAssetId": "b63d37c0-fe5f-404c-a33e-002fe135dc2b",
+      "mediaType": "video",
+      "fit": "cover",
+      "objectPosition": "center 20%",
+      "loop": true,
+      "muted": true,
+      "loopStart": 4.25,
+      "updatedAt": "2026-11-17T05:42:27.000Z"
+    },
+    "form:gemini/carbon#summon#hud": {
+      "assetId": "a4bb8a68-07e6-4ad6-b4bb-1d943ca5781b",
+      "posterAssetId": "b63d37c0-fe5f-404c-a33e-002fe135dc2b",
+      "mediaType": "video",
+      "fit": "cover",
+      "objectPosition": "center 20%",
+      "loop": true,
+      "muted": true,
+      "loopStart": 4.25,
+      "updatedAt": "2026-11-17T05:42:27.000Z"
+    },
+    "form:gemini/carbon#recover#hud": {
+      "assetId": "fbf0d6d5-4d62-434e-b992-641e08dc2934",
+      "posterAssetId": "fbf0d6d5-4d62-434e-b992-641e08dc2934",
+      "mediaType": "image",
+      "fit": "cover",
+      "objectPosition": "center 20%",
+      "updatedAt": "2026-11-13T12:07:00.984Z"
+    },
+    "form:gemini/carbon#warning#hud": {
+      "assetId": "fbf0d6d5-4d62-434e-b992-641e08dc2934",
+      "posterAssetId": "fbf0d6d5-4d62-434e-b992-641e08dc2934",
+      "mediaType": "image",
+      "fit": "cover",
+      "objectPosition": "center 20%",
+      "updatedAt": "2026-11-13T12:07:00.984Z"
     }
   }
 }

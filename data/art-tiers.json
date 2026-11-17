@@ -1,0 +1,48 @@
+{
+  "version": 1,
+  "axis": "effort",
+  "note": "R87-K1 · effort 装饰 2.0 的视觉档轴正本（DESIGN §1.1/§1.2/§4.2）。映射只认本文件：客户端、渲染层、导出脚本一律不许各写一份。字段名用 artTiers（禁 decor —— 仓内 lib/carddata.cjs 的 TIER_DECOR_CLASSES 是家族档 CSS 装饰轴，与本轴正交）。",
+  "base": "plain",
+  "artTiers": [
+    {
+      "id": "plain",
+      "label": "素",
+      "rank": 1,
+      "accessories": 0,
+      "ambience": "none",
+      "scene": false
+    },
+    {
+      "id": "std",
+      "label": "常",
+      "rank": 2,
+      "accessories": "1-3",
+      "ambience": "faint",
+      "scene": false
+    },
+    {
+      "id": "deep",
+      "label": "深",
+      "rank": 3,
+      "accessories": "2-3",
+      "ambience": "medium",
+      "scene": "optional"
+    },
+    {
+      "id": "extreme",
+      "label": "极",
+      "rank": 4,
+      "accessories": "3-5",
+      "ambience": "strong",
+      "scene": "required"
+    }
+  ],
+  "effortToTier": {
+    "none": "plain",
+    "low": "plain",
+    "medium": "std",
+    "high": "deep",
+    "xhigh": "extreme",
+    "max": "extreme"
+  }
+}

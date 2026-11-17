@@ -1,0 +1,1001 @@
+{
+  "version": 1,
+  "note": "R87-C2 · 卡 ↔ 视觉档 ↔ L1 人物抠像 / L2 氛围层绑定表（sha256 指向素材库里的那一条资产）。 形状与 data/art-scenes.json（L3）同构：卡号 → 视觉档 → 条目。素材本体在素材库（仓外），仓里只留绑定； 装库走 scripts/install-art-figures.mjs（共享装库逻辑在 lib/assetinstall.cjs）。**口径**： ① 键＝解析出来的视觉档（lib/arttiers.cjs 的 artTierOf，浏览器半体不复制）；该档没有条目 ⇒ 没有 L1 素材 ⇒ 回落现役立绘，不回落别的档。 ② cutout 段＝透明伴生件（透明循环 WebM）；装库时回填主资产的 cutout 指针（素材库既有约定，见 lib/binding.cjs resolveCutout）⇒ 服务端 mediaPlan 直接给出 cutoutKind='video'。 ③ levels＝氛围层强度 → 不透明度；强度名取自 data/art-tiers.json 的 ambience 字段（none/faint/medium/strong），数值上限 .32（DESIGN §2.3.1：L3 背景板不透明度 ≤ .35，氛围层不许高过它）。 ④ ambience 本波为空对象＝0 件素材：只留空槽位、不出素材（L2 素材生产见 backlog）。 2026-11-02：家族卡条目 form 标明素材所属成员（sourceModel 为原生产目标），只匹配同一形态；缺件保留 1.0 形象。可在 forms[家族/成员][scenes|figures|ambience][档位] 登记其他成员专属素材。 2026-11-13（D 卡）：forms 段按形态补上一版 CG（不产新图、不产视频）：16 个形态按 plain/std/deep/extreme 四档铺满（已有专属件的 5 个槽位不在本段重复登记，见下），同一形态各档复用同一张上一版 CG； 条目 sha256/bytes 取自生产素材库 manifest 的真值，source 相对 install-art-figures 的 --src 根（effort-deco）。 **不覆盖更高档专属件**：本形态已有专属件的槽位保留原值——forms[gemini/argon].figures.deep 的 argon alpha 件，以及卡级 legacy 的 001/deep(gemini/flash)、009/deep(anthropic/opus)、010/deep(openai/sol)、003/extreme(glm/flash)、011/extreme(qwen/flash)（它们经 scopedArtEntry 的 legacy 回落在解析时命中，故 forms 段不再重复登记）。 卡声明 efforts 覆盖不到的档位（如 001 无 max ⇒ extreme 不可达、007 无 efforts ⇒ 只有 plain）填了也解析不到，属 providers.json 的 tier 轴问题，不在本表处理。",
+  "levels": {
+    "none": 0,
+    "faint": 0.12,
+    "medium": 0.22,
+    "strong": 0.32
+  },
+  "figures": {
+    "001": {
+      "deep": {
+        "sha256": "9123dfb7711b0b694da57048c63aadef5cba329d90124da3c604978deffd0cbc",
+        "bytes": 568209,
+        "name": "001-high-alpha-768x1024.png",
+        "source": "pilot-001/001-high-alpha-768x1024.png",
+        "tier": "deep",
+        "effort": "high",
+        "fit": "contain",
+        "objectPosition": "center top",
+        "form": "gemini/flash",
+        "sourceModel": "gemini-3.8-flash-tiered",
+        "cutout": {
+          "sha256": "1623317dd45edf179b536f0aef765675026a53060bb1b6e98ac6d4aa1d21ff1e",
+          "bytes": 410965,
+          "name": "A-001-high-480x640-alpha.webm",
+          "source": "pilot-001/video/A-001-high-480x640-alpha.webm"
+        }
+      }
+    },
+    "002": {
+      "deep": {
+        "sha256": "c730471db1f4c9d700fefa5480dec1c90fa1440a7c2deaea8649b094c363646a",
+        "bytes": 675739,
+        "name": "002-high-alpha-768x1024.png",
+        "source": "pilot-002/002-high-alpha-768x1024.png",
+        "tier": "deep",
+        "effort": "high",
+        "fit": "contain",
+        "objectPosition": "center top",
+        "sourceModel": "LongCat-2.5-Preview",
+        "cutout": {
+          "sha256": "52c5adcfadb9b94260b673858fdcde03eb831308c3e14cef368dab8ab081289b",
+          "bytes": 579327,
+          "name": "A-002-high-480x640-alpha.webm",
+          "source": "pilot-002/video/A-002-high-480x640-alpha.webm",
+          "loopStart": 2.75
+        }
+      }
+    },
+    "003": {
+      "extreme": {
+        "sha256": "ae90158e87af016dc6d9ebcc0e179b0ab52c1e684dc73d819681c85b6fd4137e",
+        "bytes": 592332,
+        "name": "003-max-alpha-768x1024.png",
+        "source": "pilot-003/003-max-alpha-768x1024.png",
+        "tier": "extreme",
+        "effort": "max",
+        "fit": "contain",
+        "objectPosition": "center top",
+        "form": "glm/flash",
+        "sourceModel": "GLM-5.3-Flash",
+        "cutout": {
+          "sha256": "ff01b92d365933312ec9f1b06b2dcacc02e80d77faee9ae20667167933775efe",
+          "bytes": 467450,
+          "name": "A-003-max-480x640-alpha.webm",
+          "source": "pilot-003/video/A-003-max-480x640-alpha.webm"
+        }
+      }
+    },
+    "004": {
+      "plain": {
+        "sha256": "4b3f8d1db65d6227ae092edb4dc96d56df0a03f61a1d545786343efbec64c00b",
+        "bytes": 1413547,
+        "name": "004-effort-low-cutout.png",
+        "source": "pilot-004/004-effort-low-cutout.png",
+        "tier": "plain",
+        "effort": "low",
+        "fit": "contain",
+        "objectPosition": "center top",
+        "cutout": {
+          "sha256": "8cace4d9f7d8f691804f78e9011b4de1fd1e0f51676b8265126127455a7aa209",
+          "bytes": 161332,
+          "name": "A-004-low-480x640-alpha.webm",
+          "source": "pilot-004/video/A-004-low-480x640-alpha.webm"
+        }
+      },
+      "extreme": {
+        "sha256": "1d0ef792076590cb0f5ef163dfaeea023b2f1def608833929b0c15d11633c197",
+        "bytes": 484204,
+        "name": "004-max-alpha-768x1024.png",
+        "source": "pilot-004/004-max-alpha-768x1024.png",
+        "tier": "extreme",
+        "effort": "max",
+        "fit": "contain",
+        "objectPosition": "center top",
+        "sourceModel": "MiniMax-M3.1-Flash-Preview",
+        "cutout": {
+          "sha256": "7eea2ddd96e5eec2e63db0d672d52d93f71c273551b65e1d20a73ad91bfd83ac",
+          "bytes": 409626,
+          "name": "A-004-max-480x640-alpha.webm",
+          "source": "pilot-004/video/A-004-max-480x640-alpha.webm"
+        }
+      }
+    },
+    "005": {
+      "deep": {
+        "sha256": "42a8700b3bd5c6763ef79ba013619d84b841cdfbdaa26bb0635b4fa3ee12ba06",
+        "bytes": 643310,
+        "name": "005-high-alpha-768x1024.png",
+        "source": "pilot-005/005-high-alpha-768x1024.png",
+        "tier": "deep",
+        "effort": "high",
+        "fit": "contain",
+        "objectPosition": "center top",
+        "sourceModel": "grok-4.6",
+        "cutout": {
+          "sha256": "fae46a223276e58f2210261436986accf0f57f97ff687e76eb14e88d2e739b0e",
+          "bytes": 253513,
+          "name": "A-005-high-480x640-alpha.webm",
+          "source": "pilot-005/video/A-005-high-480x640-alpha.webm"
+        }
+      }
+    },
+    "009": {
+      "deep": {
+        "sha256": "19fa297331e398642966f3bc23ef235494017602ee5b335303d593a0e08b0deb",
+        "bytes": 639231,
+        "name": "009-high-alpha-768x1024.png",
+        "source": "pilot-009/009-high-alpha-768x1024.png",
+        "tier": "deep",
+        "effort": "high",
+        "fit": "contain",
+        "objectPosition": "center top",
+        "form": "anthropic/opus",
+        "sourceModel": "claude-opus-5-5",
+        "cutout": {
+          "sha256": "9e2e1a5a0b196c5b60e0763672e5a70884cec764683b98730a2469026b8a0769",
+          "bytes": 461254,
+          "name": "A-009-high-480x640-alpha.webm",
+          "source": "pilot-009/video/A-009-high-480x640-alpha.webm"
+        }
+      }
+    },
+    "010": {
+      "deep": {
+        "sha256": "633de1a611a8d6a71b728bc01550facc669632916f16532ad04a19adf1e5a933",
+        "bytes": 945667,
+        "name": "010-effort-high-alpha-768x1024.png",
+        "source": "pilot-010/010-effort-high-alpha-768x1024.png",
+        "tier": "deep",
+        "effort": "high",
+        "fit": "contain",
+        "objectPosition": "center top",
+        "form": "openai/sol",
+        "sourceModel": "gpt-6.1-sol",
+        "cutout": {
+          "sha256": "7f7ecffe91c531b4900c5a19fc7d45786e70b94df269baf436ffa7f46cb80aa5",
+          "bytes": 549992,
+          "name": "A-010-high-480x640-alpha.webm",
+          "source": "pilot-010/video/A-010-high-480x640-alpha.webm"
+        }
+      }
+    },
+    "011": {
+      "extreme": {
+        "sha256": "d2fa1adb976d2c7b9c06e6ecfc9d0ae5debe71655007448f035b1a0b17317306",
+        "bytes": 629601,
+        "name": "011-xhigh-alpha-768x1024.png",
+        "source": "pilot-011/011-xhigh-alpha-768x1024.png",
+        "tier": "extreme",
+        "effort": "xhigh",
+        "fit": "contain",
+        "objectPosition": "center top",
+        "form": "qwen/flash",
+        "sourceModel": "qfmodel",
+        "cutout": {
+          "sha256": "4ad1a0bf31b3ba76d125e197c1a138b5a1a13ffacfada036a4e88dc887b0f541",
+          "bytes": 529910,
+          "name": "A-011-xhigh-480x640-alpha.webm",
+          "source": "pilot-011/video/A-011-xhigh-480x640-alpha.webm"
+        }
+      }
+    },
+    "013": {
+      "deep": {
+        "sha256": "1c6362f8ee7176806d8256c803c34ee1a545693d67de2c8dc3744a408a6b4d66",
+        "bytes": 431094,
+        "name": "013-high-alpha-768x1024.png",
+        "source": "pilot-013/013-high-alpha-768x1024.png",
+        "tier": "deep",
+        "effort": "high",
+        "fit": "contain",
+        "objectPosition": "center top",
+        "sourceModel": "step-5-preview",
+        "cutout": {
+          "sha256": "2ce8ceeb14d76c2b84c01bbff4fe820972d64fa33d390e9612237280430bdc99",
+          "bytes": 411753,
+          "name": "A-013-high-480x640-alpha.webm",
+          "source": "pilot-013/video/A-013-high-480x640-alpha.webm"
+        }
+      }
+    },
+    "014": {
+      "extreme": {
+        "sha256": "4825c5e17c19709ef51daeaacd8e7d8c401241b1c7ad4f1e1e5ea07bf57816fb",
+        "bytes": 616173,
+        "name": "014-xhigh-alpha-768x1024.png",
+        "source": "pilot-014/014-xhigh-alpha-768x1024.png",
+        "tier": "extreme",
+        "effort": "xhigh",
+        "fit": "contain",
+        "objectPosition": "center top",
+        "sourceModel": "sensenova-6.8-flash-lite",
+        "cutout": {
+          "sha256": "3dbf0c823cab102d92ff7ecb1e3e60bef489fc4588cb0ffd445bc3c0780a35f6",
+          "bytes": 299386,
+          "name": "A-014-xhigh-480x640-alpha.webm",
+          "source": "pilot-014/video/A-014-xhigh-480x640-alpha.webm"
+        }
+      }
+    }
+  },
+  "ambience": {},
+  "forms": {
+    "anthropic/haiku": {
+      "figures": {
+        "plain": {
+          "sha256": "4b0173227141b2ddc41cef09a4be2f039ccc2a8be6d703dcde9033bb5c56aa74",
+          "bytes": 299855,
+          "name": "009-haiku-alpha-768x1024.png",
+          "source": "pilot-009/009-haiku-alpha-768x1024.png",
+          "tier": "plain",
+          "fit": "contain",
+          "objectPosition": "center top",
+          "form": "anthropic/haiku"
+        },
+        "std": {
+          "sha256": "4b0173227141b2ddc41cef09a4be2f039ccc2a8be6d703dcde9033bb5c56aa74",
+          "bytes": 299855,
+          "name": "009-haiku-alpha-768x1024.png",
+          "source": "pilot-009/009-haiku-alpha-768x1024.png",
+          "tier": "std",
+          "fit": "contain",
+          "objectPosition": "center top",
+          "form": "anthropic/haiku"
+        },
+        "deep": {
+          "sha256": "4b0173227141b2ddc41cef09a4be2f039ccc2a8be6d703dcde9033bb5c56aa74",
+          "bytes": 299855,
+          "name": "009-haiku-alpha-768x1024.png",
+          "source": "pilot-009/009-haiku-alpha-768x1024.png",
+          "tier": "deep",
+          "effort": "high",
+          "fit": "contain",
+          "objectPosition": "center top",
+          "form": "anthropic/haiku",
+          "sourceModel": "claude-haiku-5-5"
+        },
+        "extreme": {
+          "sha256": "4b0173227141b2ddc41cef09a4be2f039ccc2a8be6d703dcde9033bb5c56aa74",
+          "bytes": 299855,
+          "name": "009-haiku-alpha-768x1024.png",
+          "source": "pilot-009/009-haiku-alpha-768x1024.png",
+          "tier": "extreme",
+          "fit": "contain",
+          "objectPosition": "center top",
+          "form": "anthropic/haiku"
+        }
+      }
+    },
+    "anthropic/sonnet": {
+      "figures": {
+        "plain": {
+          "sha256": "20f9e86d9cbf292a6979a7f5c813dd7e07abe7d0c2eaa5cb01d2eb1aca20b166",
+          "bytes": 448734,
+          "name": "009-sonnet-alpha-768x1024.png",
+          "source": "pilot-009/009-sonnet-alpha-768x1024.png",
+          "tier": "plain",
+          "fit": "contain",
+          "objectPosition": "center top",
+          "form": "anthropic/sonnet"
+        },
+        "std": {
+          "sha256": "20f9e86d9cbf292a6979a7f5c813dd7e07abe7d0c2eaa5cb01d2eb1aca20b166",
+          "bytes": 448734,
+          "name": "009-sonnet-alpha-768x1024.png",
+          "source": "pilot-009/009-sonnet-alpha-768x1024.png",
+          "tier": "std",
+          "fit": "contain",
+          "objectPosition": "center top",
+          "form": "anthropic/sonnet"
+        },
+        "deep": {
+          "sha256": "20f9e86d9cbf292a6979a7f5c813dd7e07abe7d0c2eaa5cb01d2eb1aca20b166",
+          "bytes": 448734,
+          "name": "009-sonnet-alpha-768x1024.png",
+          "source": "pilot-009/009-sonnet-alpha-768x1024.png",
+          "tier": "deep",
+          "effort": "high",
+          "fit": "contain",
+          "objectPosition": "center top",
+          "form": "anthropic/sonnet",
+          "sourceModel": "claude-sonnet-5-5"
+        },
+        "extreme": {
+          "sha256": "20f9e86d9cbf292a6979a7f5c813dd7e07abe7d0c2eaa5cb01d2eb1aca20b166",
+          "bytes": 448734,
+          "name": "009-sonnet-alpha-768x1024.png",
+          "source": "pilot-009/009-sonnet-alpha-768x1024.png",
+          "tier": "extreme",
+          "fit": "contain",
+          "objectPosition": "center top",
+          "form": "anthropic/sonnet"
+        }
+      }
+    },
+    "anthropic/fable": {
+      "figures": {
+        "plain": {
+          "sha256": "2a287c57d6db350901366d76595b0feb092cb0bfed3e8e0840a54b224bc9971b",
+          "bytes": 703275,
+          "name": "009-fable-alpha-768x1024.png",
+          "source": "pilot-009/009-fable-alpha-768x1024.png",
+          "tier": "plain",
+          "fit": "contain",
+          "objectPosition": "center top",
+          "form": "anthropic/fable"
+        },
+        "std": {
+          "sha256": "2a287c57d6db350901366d76595b0feb092cb0bfed3e8e0840a54b224bc9971b",
+          "bytes": 703275,
+          "name": "009-fable-alpha-768x1024.png",
+          "source": "pilot-009/009-fable-alpha-768x1024.png",
+          "tier": "std",
+          "fit": "contain",
+          "objectPosition": "center top",
+          "form": "anthropic/fable"
+        },
+        "deep": {
+          "sha256": "2a287c57d6db350901366d76595b0feb092cb0bfed3e8e0840a54b224bc9971b",
+          "bytes": 703275,
+          "name": "009-fable-alpha-768x1024.png",
+          "source": "pilot-009/009-fable-alpha-768x1024.png",
+          "tier": "deep",
+          "effort": "high",
+          "fit": "contain",
+          "objectPosition": "center top",
+          "form": "anthropic/fable",
+          "sourceModel": "claude-fable-5-1"
+        },
+        "extreme": {
+          "sha256": "2a287c57d6db350901366d76595b0feb092cb0bfed3e8e0840a54b224bc9971b",
+          "bytes": 703275,
+          "name": "009-fable-alpha-768x1024.png",
+          "source": "pilot-009/009-fable-alpha-768x1024.png",
+          "tier": "extreme",
+          "fit": "contain",
+          "objectPosition": "center top",
+          "form": "anthropic/fable"
+        }
+      }
+    },
+    "anthropic/opus": {
+      "figures": {
+        "plain": {
+          "sha256": "b64bc90a712eb805f118a05c645d4c77aeea83c19cf943e99f3ce39df15b4c8f",
+          "bytes": 2136077,
+          "name": "cg-r57-009-form-opus.png",
+          "source": "../r57/art/009-form-opus.png",
+          "tier": "plain",
+          "fit": "contain",
+          "objectPosition": "center top",
+          "form": "anthropic/opus"
+        },
+        "std": {
+          "sha256": "b64bc90a712eb805f118a05c645d4c77aeea83c19cf943e99f3ce39df15b4c8f",
+          "bytes": 2136077,
+          "name": "cg-r57-009-form-opus.png",
+          "source": "../r57/art/009-form-opus.png",
+          "tier": "std",
+          "fit": "contain",
+          "objectPosition": "center top",
+          "form": "anthropic/opus"
+        },
+        "extreme": {
+          "sha256": "b64bc90a712eb805f118a05c645d4c77aeea83c19cf943e99f3ce39df15b4c8f",
+          "bytes": 2136077,
+          "name": "cg-r57-009-form-opus.png",
+          "source": "../r57/art/009-form-opus.png",
+          "tier": "extreme",
+          "fit": "contain",
+          "objectPosition": "center top",
+          "form": "anthropic/opus"
+        }
+      }
+    },
+    "openai/astra": {
+      "figures": {
+        "plain": {
+          "sha256": "7819824edc3f38efdf49d80edd140587ae779a877d92cb9ef486cf940cf53764",
+          "bytes": 667311,
+          "name": "010-astra-alpha-768x1024.png",
+          "source": "pilot-010/010-astra-alpha-768x1024.png",
+          "tier": "plain",
+          "fit": "contain",
+          "objectPosition": "center top",
+          "form": "openai/astra"
+        },
+        "std": {
+          "sha256": "7819824edc3f38efdf49d80edd140587ae779a877d92cb9ef486cf940cf53764",
+          "bytes": 667311,
+          "name": "010-astra-alpha-768x1024.png",
+          "source": "pilot-010/010-astra-alpha-768x1024.png",
+          "tier": "std",
+          "fit": "contain",
+          "objectPosition": "center top",
+          "form": "openai/astra"
+        },
+        "deep": {
+          "sha256": "7819824edc3f38efdf49d80edd140587ae779a877d92cb9ef486cf940cf53764",
+          "bytes": 667311,
+          "name": "010-astra-alpha-768x1024.png",
+          "source": "pilot-010/010-astra-alpha-768x1024.png",
+          "tier": "deep",
+          "effort": "high",
+          "fit": "contain",
+          "objectPosition": "center top",
+          "form": "openai/astra",
+          "sourceModel": "gpt-6-astra"
+        },
+        "extreme": {
+          "sha256": "7819824edc3f38efdf49d80edd140587ae779a877d92cb9ef486cf940cf53764",
+          "bytes": 667311,
+          "name": "010-astra-alpha-768x1024.png",
+          "source": "pilot-010/010-astra-alpha-768x1024.png",
+          "tier": "extreme",
+          "fit": "contain",
+          "objectPosition": "center top",
+          "form": "openai/astra"
+        }
+      }
+    },
+    "openai/luna": {
+      "figures": {
+        "plain": {
+          "sha256": "9a7c71c8369343a7e033f476e0f639b8bf063e5882317dca0b22bd3745d7197e",
+          "bytes": 381588,
+          "name": "010-luna-alpha-768x1024.png",
+          "source": "pilot-010/010-luna-alpha-768x1024.png",
+          "tier": "plain",
+          "fit": "contain",
+          "objectPosition": "center top",
+          "form": "openai/luna"
+        },
+        "std": {
+          "sha256": "9a7c71c8369343a7e033f476e0f639b8bf063e5882317dca0b22bd3745d7197e",
+          "bytes": 381588,
+          "name": "010-luna-alpha-768x1024.png",
+          "source": "pilot-010/010-luna-alpha-768x1024.png",
+          "tier": "std",
+          "fit": "contain",
+          "objectPosition": "center top",
+          "form": "openai/luna"
+        },
+        "deep": {
+          "sha256": "9a7c71c8369343a7e033f476e0f639b8bf063e5882317dca0b22bd3745d7197e",
+          "bytes": 381588,
+          "name": "010-luna-alpha-768x1024.png",
+          "source": "pilot-010/010-luna-alpha-768x1024.png",
+          "tier": "deep",
+          "effort": "high",
+          "fit": "contain",
+          "objectPosition": "center top",
+          "form": "openai/luna",
+          "sourceModel": "gpt-6-luna"
+        },
+        "extreme": {
+          "sha256": "9a7c71c8369343a7e033f476e0f639b8bf063e5882317dca0b22bd3745d7197e",
+          "bytes": 381588,
+          "name": "010-luna-alpha-768x1024.png",
+          "source": "pilot-010/010-luna-alpha-768x1024.png",
+          "tier": "extreme",
+          "fit": "contain",
+          "objectPosition": "center top",
+          "form": "openai/luna"
+        }
+      }
+    },
+    "openai/sol": {
+      "figures": {
+        "plain": {
+          "sha256": "d605b2f546694c0b7feaa0a1714a71db01b52840ddf236caa87ee8b7b6c9b61c",
+          "bytes": 2177456,
+          "name": "cg-hd-codex-010-idle.png",
+          "source": "../cg-hd/codex/010-idle.png",
+          "tier": "plain",
+          "fit": "contain",
+          "objectPosition": "center top",
+          "form": "openai/sol"
+        },
+        "std": {
+          "sha256": "d605b2f546694c0b7feaa0a1714a71db01b52840ddf236caa87ee8b7b6c9b61c",
+          "bytes": 2177456,
+          "name": "cg-hd-codex-010-idle.png",
+          "source": "../cg-hd/codex/010-idle.png",
+          "tier": "std",
+          "fit": "contain",
+          "objectPosition": "center top",
+          "form": "openai/sol"
+        },
+        "extreme": {
+          "sha256": "d605b2f546694c0b7feaa0a1714a71db01b52840ddf236caa87ee8b7b6c9b61c",
+          "bytes": 2177456,
+          "name": "cg-hd-codex-010-idle.png",
+          "source": "../cg-hd/codex/010-idle.png",
+          "tier": "extreme",
+          "fit": "contain",
+          "objectPosition": "center top",
+          "form": "openai/sol"
+        }
+      }
+    },
+    "openai/terra": {
+      "figures": {
+        "plain": {
+          "sha256": "415ebfaf8316de21030a5a8dac42549b65dda3da71d57f002a746fd401c218ad",
+          "bytes": 503164,
+          "name": "010-terra-alpha-768x1024.png",
+          "source": "pilot-010/010-terra-alpha-768x1024.png",
+          "tier": "plain",
+          "fit": "contain",
+          "objectPosition": "center top",
+          "form": "openai/terra"
+        },
+        "std": {
+          "sha256": "415ebfaf8316de21030a5a8dac42549b65dda3da71d57f002a746fd401c218ad",
+          "bytes": 503164,
+          "name": "010-terra-alpha-768x1024.png",
+          "source": "pilot-010/010-terra-alpha-768x1024.png",
+          "tier": "std",
+          "fit": "contain",
+          "objectPosition": "center top",
+          "form": "openai/terra"
+        },
+        "deep": {
+          "sha256": "415ebfaf8316de21030a5a8dac42549b65dda3da71d57f002a746fd401c218ad",
+          "bytes": 503164,
+          "name": "010-terra-alpha-768x1024.png",
+          "source": "pilot-010/010-terra-alpha-768x1024.png",
+          "tier": "deep",
+          "effort": "high",
+          "fit": "contain",
+          "objectPosition": "center top",
+          "form": "openai/terra",
+          "sourceModel": "gpt-6.1-terra"
+        },
+        "extreme": {
+          "sha256": "415ebfaf8316de21030a5a8dac42549b65dda3da71d57f002a746fd401c218ad",
+          "bytes": 503164,
+          "name": "010-terra-alpha-768x1024.png",
+          "source": "pilot-010/010-terra-alpha-768x1024.png",
+          "tier": "extreme",
+          "fit": "contain",
+          "objectPosition": "center top",
+          "form": "openai/terra"
+        }
+      }
+    },
+    "gemini/flash": {
+      "figures": {
+        "plain": {
+          "sha256": "35c6f412fa24c8d652ff68e21f2b3bb003477deb3e0b7aff20c1674797d21f40",
+          "bytes": 1989240,
+          "name": "cg-r57-001-idle.png",
+          "source": "../r57/art/001-idle.png",
+          "tier": "plain",
+          "fit": "contain",
+          "objectPosition": "center top",
+          "form": "gemini/flash"
+        },
+        "std": {
+          "sha256": "35c6f412fa24c8d652ff68e21f2b3bb003477deb3e0b7aff20c1674797d21f40",
+          "bytes": 1989240,
+          "name": "cg-r57-001-idle.png",
+          "source": "../r57/art/001-idle.png",
+          "tier": "std",
+          "fit": "contain",
+          "objectPosition": "center top",
+          "form": "gemini/flash"
+        },
+        "extreme": {
+          "sha256": "35c6f412fa24c8d652ff68e21f2b3bb003477deb3e0b7aff20c1674797d21f40",
+          "bytes": 1989240,
+          "name": "cg-r57-001-idle.png",
+          "source": "../r57/art/001-idle.png",
+          "tier": "extreme",
+          "fit": "contain",
+          "objectPosition": "center top",
+          "form": "gemini/flash"
+        }
+      }
+    },
+    "gemini/argon": {
+      "figures": {
+        "deep": {
+          "sha256": "37adb02b1cbfed00218e3b005b07860ce832f8095c6566d0d8511c6498035f2f",
+          "bytes": 1179609,
+          "name": "001-argon-high-alpha-768x1024.png",
+          "source": "pilot-001/001-argon-high-alpha-768x1024.png",
+          "tier": "deep",
+          "effort": "high",
+          "fit": "contain",
+          "objectPosition": "center top",
+          "form": "gemini/argon",
+          "sourceModel": "gemini-4-argon"
+        },
+        "plain": {
+          "sha256": "42787d3608ad6fe7a87cfb6b9c79e1b82a3776e4ba558b704e0f455497a9906b",
+          "bytes": 1162141,
+          "name": "cg-r68c-001-argon-idle.png",
+          "source": "../r68c/art/norm/argon-cg-raw.normalized.png",
+          "tier": "plain",
+          "fit": "contain",
+          "objectPosition": "center top",
+          "form": "gemini/argon"
+        },
+        "std": {
+          "sha256": "42787d3608ad6fe7a87cfb6b9c79e1b82a3776e4ba558b704e0f455497a9906b",
+          "bytes": 1162141,
+          "name": "cg-r68c-001-argon-idle.png",
+          "source": "../r68c/art/norm/argon-cg-raw.normalized.png",
+          "tier": "std",
+          "fit": "contain",
+          "objectPosition": "center top",
+          "form": "gemini/argon"
+        },
+        "extreme": {
+          "sha256": "42787d3608ad6fe7a87cfb6b9c79e1b82a3776e4ba558b704e0f455497a9906b",
+          "bytes": 1162141,
+          "name": "cg-r68c-001-argon-idle.png",
+          "source": "../r68c/art/norm/argon-cg-raw.normalized.png",
+          "tier": "extreme",
+          "fit": "contain",
+          "objectPosition": "center top",
+          "form": "gemini/argon"
+        }
+      }
+    },
+    "gemini/hydrogen": {
+      "figures": {
+        "deep": {
+          "sha256": "c0eb0f4c9a28fac0ba07a411eb783322126b9ad051e31b398707d4912cbdd0b5",
+          "bytes": 585707,
+          "name": "001-hydrogen-alpha-768x1024.png",
+          "source": "pilot-001/001-hydrogen-alpha-768x1024.png",
+          "tier": "deep",
+          "effort": "high",
+          "fit": "contain",
+          "objectPosition": "center top",
+          "form": "gemini/hydrogen",
+          "sourceModel": "gemini-4-hydrogen",
+          "supersedesLegacy": true
+        },
+        "plain": {
+          "sha256": "c0eb0f4c9a28fac0ba07a411eb783322126b9ad051e31b398707d4912cbdd0b5",
+          "bytes": 585707,
+          "name": "001-hydrogen-alpha-768x1024.png",
+          "source": "pilot-001/001-hydrogen-alpha-768x1024.png",
+          "tier": "plain",
+          "fit": "contain",
+          "objectPosition": "center top",
+          "form": "gemini/hydrogen",
+          "supersedesLegacy": true
+        },
+        "std": {
+          "sha256": "c0eb0f4c9a28fac0ba07a411eb783322126b9ad051e31b398707d4912cbdd0b5",
+          "bytes": 585707,
+          "name": "001-hydrogen-alpha-768x1024.png",
+          "source": "pilot-001/001-hydrogen-alpha-768x1024.png",
+          "tier": "std",
+          "fit": "contain",
+          "objectPosition": "center top",
+          "form": "gemini/hydrogen",
+          "supersedesLegacy": true
+        },
+        "extreme": {
+          "sha256": "c0eb0f4c9a28fac0ba07a411eb783322126b9ad051e31b398707d4912cbdd0b5",
+          "bytes": 585707,
+          "name": "001-hydrogen-alpha-768x1024.png",
+          "source": "pilot-001/001-hydrogen-alpha-768x1024.png",
+          "tier": "extreme",
+          "fit": "contain",
+          "objectPosition": "center top",
+          "form": "gemini/hydrogen",
+          "supersedesLegacy": true
+        }
+      }
+    },
+    "gemini/carbon": {
+      "figures": {
+        "deep": {
+          "sha256": "8e8a5d376bf3d74d6583b633da13a1a1318bc5435b6edf790e7beebab6e5956e",
+          "bytes": 564504,
+          "name": "001-carbon-alpha-768x1024.png",
+          "source": "pilot-001/001-carbon-alpha-768x1024.png",
+          "tier": "deep",
+          "effort": "high",
+          "fit": "contain",
+          "objectPosition": "center top",
+          "form": "gemini/carbon",
+          "sourceModel": "gemini-4-carbon",
+          "supersedesLegacy": true
+        },
+        "plain": {
+          "sha256": "8e8a5d376bf3d74d6583b633da13a1a1318bc5435b6edf790e7beebab6e5956e",
+          "bytes": 564504,
+          "name": "001-carbon-alpha-768x1024.png",
+          "source": "pilot-001/001-carbon-alpha-768x1024.png",
+          "tier": "plain",
+          "fit": "contain",
+          "objectPosition": "center top",
+          "form": "gemini/carbon",
+          "supersedesLegacy": true
+        },
+        "std": {
+          "sha256": "8e8a5d376bf3d74d6583b633da13a1a1318bc5435b6edf790e7beebab6e5956e",
+          "bytes": 564504,
+          "name": "001-carbon-alpha-768x1024.png",
+          "source": "pilot-001/001-carbon-alpha-768x1024.png",
+          "tier": "std",
+          "fit": "contain",
+          "objectPosition": "center top",
+          "form": "gemini/carbon",
+          "supersedesLegacy": true
+        },
+        "extreme": {
+          "sha256": "8e8a5d376bf3d74d6583b633da13a1a1318bc5435b6edf790e7beebab6e5956e",
+          "bytes": 564504,
+          "name": "001-carbon-alpha-768x1024.png",
+          "source": "pilot-001/001-carbon-alpha-768x1024.png",
+          "tier": "extreme",
+          "fit": "contain",
+          "objectPosition": "center top",
+          "form": "gemini/carbon",
+          "supersedesLegacy": true
+        }
+      }
+    },
+    "glm/flagship": {
+      "figures": {
+        "plain": {
+          "sha256": "f6e874ae6b9d625b748c36bc8ccbae75eee7c4975c0725161cbb9a104c7fbc02",
+          "bytes": 515476,
+          "name": "003-glm-flagship-alpha-768x1024.png",
+          "source": "pilot-003/003-glm-flagship-alpha-768x1024.png",
+          "tier": "plain",
+          "fit": "contain",
+          "objectPosition": "center top",
+          "form": "glm/flagship"
+        },
+        "std": {
+          "sha256": "f6e874ae6b9d625b748c36bc8ccbae75eee7c4975c0725161cbb9a104c7fbc02",
+          "bytes": 515476,
+          "name": "003-glm-flagship-alpha-768x1024.png",
+          "source": "pilot-003/003-glm-flagship-alpha-768x1024.png",
+          "tier": "std",
+          "fit": "contain",
+          "objectPosition": "center top",
+          "form": "glm/flagship"
+        },
+        "deep": {
+          "sha256": "f6e874ae6b9d625b748c36bc8ccbae75eee7c4975c0725161cbb9a104c7fbc02",
+          "bytes": 515476,
+          "name": "003-glm-flagship-alpha-768x1024.png",
+          "source": "pilot-003/003-glm-flagship-alpha-768x1024.png",
+          "tier": "deep",
+          "fit": "contain",
+          "objectPosition": "center top",
+          "form": "glm/flagship"
+        },
+        "extreme": {
+          "sha256": "f6e874ae6b9d625b748c36bc8ccbae75eee7c4975c0725161cbb9a104c7fbc02",
+          "bytes": 515476,
+          "name": "003-glm-flagship-alpha-768x1024.png",
+          "source": "pilot-003/003-glm-flagship-alpha-768x1024.png",
+          "tier": "extreme",
+          "effort": "max",
+          "fit": "contain",
+          "objectPosition": "center top",
+          "form": "glm/flagship",
+          "sourceModel": "glm-5.3"
+        }
+      }
+    },
+    "glm/flash": {
+      "figures": {
+        "plain": {
+          "sha256": "c5676053d301546052c6c6e498b99b5ee9a185dc3ab8ba457633179c007ab1ef",
+          "bytes": 2034658,
+          "name": "cg-hd-codex-003-idle.png",
+          "source": "../cg-hd/codex/003-idle.png",
+          "tier": "plain",
+          "fit": "contain",
+          "objectPosition": "center top",
+          "form": "glm/flash"
+        },
+        "std": {
+          "sha256": "c5676053d301546052c6c6e498b99b5ee9a185dc3ab8ba457633179c007ab1ef",
+          "bytes": 2034658,
+          "name": "cg-hd-codex-003-idle.png",
+          "source": "../cg-hd/codex/003-idle.png",
+          "tier": "std",
+          "fit": "contain",
+          "objectPosition": "center top",
+          "form": "glm/flash"
+        },
+        "deep": {
+          "sha256": "c5676053d301546052c6c6e498b99b5ee9a185dc3ab8ba457633179c007ab1ef",
+          "bytes": 2034658,
+          "name": "cg-hd-codex-003-idle.png",
+          "source": "../cg-hd/codex/003-idle.png",
+          "tier": "deep",
+          "fit": "contain",
+          "objectPosition": "center top",
+          "form": "glm/flash"
+        }
+      }
+    },
+    "deepseek/pro": {
+      "figures": {
+        "plain": {
+          "sha256": "c429e3bd02e384c1d77833b5fc32db59068615f36bf14942f08648cbe8c9d112",
+          "bytes": 574313,
+          "name": "007-ds-pro-alpha-768x1024.png",
+          "source": "pilot-007/007-ds-pro-alpha-768x1024.png",
+          "tier": "plain",
+          "effort": "max",
+          "fit": "contain",
+          "objectPosition": "center top",
+          "form": "deepseek/pro",
+          "sourceModel": "deepseek-v4-pro"
+        },
+        "std": {
+          "sha256": "c429e3bd02e384c1d77833b5fc32db59068615f36bf14942f08648cbe8c9d112",
+          "bytes": 574313,
+          "name": "007-ds-pro-alpha-768x1024.png",
+          "source": "pilot-007/007-ds-pro-alpha-768x1024.png",
+          "tier": "std",
+          "fit": "contain",
+          "objectPosition": "center top",
+          "form": "deepseek/pro"
+        },
+        "deep": {
+          "sha256": "c429e3bd02e384c1d77833b5fc32db59068615f36bf14942f08648cbe8c9d112",
+          "bytes": 574313,
+          "name": "007-ds-pro-alpha-768x1024.png",
+          "source": "pilot-007/007-ds-pro-alpha-768x1024.png",
+          "tier": "deep",
+          "fit": "contain",
+          "objectPosition": "center top",
+          "form": "deepseek/pro"
+        },
+        "extreme": {
+          "sha256": "c429e3bd02e384c1d77833b5fc32db59068615f36bf14942f08648cbe8c9d112",
+          "bytes": 574313,
+          "name": "007-ds-pro-alpha-768x1024.png",
+          "source": "pilot-007/007-ds-pro-alpha-768x1024.png",
+          "tier": "extreme",
+          "fit": "contain",
+          "objectPosition": "center top",
+          "form": "deepseek/pro"
+        }
+      }
+    },
+    "deepseek/flash": {
+      "figures": {
+        "plain": {
+          "sha256": "b37e25e7aa84f21c805bff7c1abf2aae14173880f41b890e0f90c8912b6650d4",
+          "bytes": 1678583,
+          "name": "cg-r57-007-form-flash.png",
+          "source": "../r57/art/007-form-flash.png",
+          "tier": "plain",
+          "fit": "contain",
+          "objectPosition": "center top",
+          "form": "deepseek/flash"
+        },
+        "std": {
+          "sha256": "b37e25e7aa84f21c805bff7c1abf2aae14173880f41b890e0f90c8912b6650d4",
+          "bytes": 1678583,
+          "name": "cg-r57-007-form-flash.png",
+          "source": "../r57/art/007-form-flash.png",
+          "tier": "std",
+          "fit": "contain",
+          "objectPosition": "center top",
+          "form": "deepseek/flash"
+        },
+        "deep": {
+          "sha256": "b37e25e7aa84f21c805bff7c1abf2aae14173880f41b890e0f90c8912b6650d4",
+          "bytes": 1678583,
+          "name": "cg-r57-007-form-flash.png",
+          "source": "../r57/art/007-form-flash.png",
+          "tier": "deep",
+          "fit": "contain",
+          "objectPosition": "center top",
+          "form": "deepseek/flash"
+        },
+        "extreme": {
+          "sha256": "b37e25e7aa84f21c805bff7c1abf2aae14173880f41b890e0f90c8912b6650d4",
+          "bytes": 1678583,
+          "name": "cg-r57-007-form-flash.png",
+          "source": "../r57/art/007-form-flash.png",
+          "tier": "extreme",
+          "fit": "contain",
+          "objectPosition": "center top",
+          "form": "deepseek/flash"
+        }
+      }
+    },
+    "qwen/flash": {
+      "figures": {
+        "plain": {
+          "sha256": "ad53ceae9e3b1e94f681d6448c9ee1b7aa64614f363f0dfa15ea290bd41e38f7",
+          "bytes": 458906,
+          "name": "011-qwen-flash-alpha-768x1024.png",
+          "source": "pilot-011/011-qwen-flash-alpha-768x1024.png",
+          "tier": "plain",
+          "fit": "contain",
+          "objectPosition": "center top",
+          "form": "qwen/flash"
+        },
+        "std": {
+          "sha256": "ad53ceae9e3b1e94f681d6448c9ee1b7aa64614f363f0dfa15ea290bd41e38f7",
+          "bytes": 458906,
+          "name": "011-qwen-flash-alpha-768x1024.png",
+          "source": "pilot-011/011-qwen-flash-alpha-768x1024.png",
+          "tier": "std",
+          "effort": "medium",
+          "fit": "contain",
+          "objectPosition": "center top",
+          "form": "qwen/flash",
+          "sourceModel": "Qwen3.8-Flash"
+        },
+        "deep": {
+          "sha256": "ad53ceae9e3b1e94f681d6448c9ee1b7aa64614f363f0dfa15ea290bd41e38f7",
+          "bytes": 458906,
+          "name": "011-qwen-flash-alpha-768x1024.png",
+          "source": "pilot-011/011-qwen-flash-alpha-768x1024.png",
+          "tier": "deep",
+          "fit": "contain",
+          "objectPosition": "center top",
+          "form": "qwen/flash"
+        }
+      }
+    },
+    "qwen/max": {
+      "figures": {
+        "plain": {
+          "sha256": "80c3606c718b0c237398a5071ce90260fa4f716f1f722e6df17f8f315c85115c",
+          "bytes": 2244551,
+          "name": "cg-hd-codex-011-idle.png",
+          "source": "../cg-hd/codex/011-idle.png",
+          "tier": "plain",
+          "fit": "contain",
+          "objectPosition": "center top",
+          "form": "qwen/max"
+        },
+        "std": {
+          "sha256": "80c3606c718b0c237398a5071ce90260fa4f716f1f722e6df17f8f315c85115c",
+          "bytes": 2244551,
+          "name": "cg-hd-codex-011-idle.png",
+          "source": "../cg-hd/codex/011-idle.png",
+          "tier": "std",
+          "fit": "contain",
+          "objectPosition": "center top",
+          "form": "qwen/max"
+        },
+        "deep": {
+          "sha256": "80c3606c718b0c237398a5071ce90260fa4f716f1f722e6df17f8f315c85115c",
+          "bytes": 2244551,
+          "name": "cg-hd-codex-011-idle.png",
+          "source": "../cg-hd/codex/011-idle.png",
+          "tier": "deep",
+          "fit": "contain",
+          "objectPosition": "center top",
+          "form": "qwen/max"
+        },
+        "extreme": {
+          "sha256": "80c3606c718b0c237398a5071ce90260fa4f716f1f722e6df17f8f315c85115c",
+          "bytes": 2244551,
+          "name": "cg-hd-codex-011-idle.png",
+          "source": "../cg-hd/codex/011-idle.png",
+          "tier": "extreme",
+          "fit": "contain",
+          "objectPosition": "center top",
+          "form": "qwen/max"
+        }
+      }
+    }
+  }
+}

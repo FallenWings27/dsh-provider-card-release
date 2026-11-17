@@ -137,7 +137,7 @@ function selectionKey(sel) {
 function createWatcher(options) {
   const opts = options || {};
   
-  let cooldownMs = Number.isFinite(opts.cooldownMs) ? opts.cooldownMs : DEFAULT_COOLDOWN_MS;
+  let cooldownMs = Number.isFinite(opts.cooldownMs) && opts.cooldownMs > 0 ? opts.cooldownMs : DEFAULT_COOLDOWN_MS;
   const now = typeof opts.now === 'function' ? opts.now : () => Date.now();
   const onSummon = typeof opts.onSummon === 'function' ? opts.onSummon : null;
 
@@ -158,6 +158,7 @@ function createWatcher(options) {
     hasBaseline = true;
     pending = null;
     lastStatus = (snapshot && snapshot.status) || null;
+    _generation = snapshot && Number.isFinite(snapshot.generation) ? snapshot.generation : null;
     return { baseline: baselineKey };
   }
 
@@ -170,10 +171,14 @@ function createWatcher(options) {
 
     
     
-    if (Number.isFinite(s.generation) && s.generation !== this_generation()) {
-      pending = null;
-      setGeneration(s.generation);
-      return { summon: false, reason: 'generation-changed', selection: null };
+    if (Number.isFinite(s.generation)) {
+      if (_generation === null) {
+        setGeneration(s.generation);
+      } else if (s.generation !== this_generation()) {
+        pending = null;
+        setGeneration(s.generation);
+        return { summon: false, reason: 'generation-changed', selection: null };
+      }
     }
 
     if (status === STATUS_SELECTING) {
@@ -405,11 +410,13 @@ const TIME_RULES = {
 
 
  
-function timeState(card, date, provider) {
+function timeState(card, date, provider, model) {
   if (card && card.timeRule === 'off') {
     return { tone: 'none', mul: 1, tag: '不分时段', fact: card.quota && card.quota.pack ? '缓存命中不扣资源包' : '全天同价' };
   }
-  const sel = provider == null ? '' : String(provider);
+  
+  const up = routeUpstream(provider, model);
+  const sel = up.provider == null ? '' : String(up.provider);
   let name;
   if (sel) {
     
@@ -420,6 +427,14 @@ function timeState(card, date, provider) {
   }
   const rule = name ? TIME_RULES[name] : null;
   if (rule) return rule(date);
+  
+  
+  
+  
+  
+  if (card && card.generic) {
+    return { tone: 'none', mul: 1, tag: '时段未知', fact: '该通道未接入时段口径' };
+  }
   return { tone: 'none', mul: 1, tag: '不分时段', fact: card && card.quota && card.quota.pack ? '缓存命中不扣资源包' : '全天同价' };
 }
 
@@ -509,6 +524,18 @@ const MODEL_ALIASES = {
   
   
   'kimi-k3-1': 'kimi-k3',
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  'hy4free': 'hy4',
+  'hy4std': 'hy4',
 };
 
  
@@ -542,7 +569,72 @@ const MODEL_ALIASES_BY_PROVIDER = {
     dfmodel: 'deepseek-v4.1-flash',    
     gfmodel: 'glm-5.3-flash',          
   },
+
+  
+  
+  
+  
+  
+  
+  
 };
+
+ 
+
+ 
+const MAGPIE_ROUTE_PREFIX = 'dsh-magpie-connector-';
+ 
+const MAGPIE_PROVIDER = 'magpie';
+
+ 
+const MAGPIE_GROUP_PROVIDERS = {
+  'wb-hub-cn': 'wbhub-cn',
+  'zcode': 'zcode-glm',
+  'minimax-code': 'minimax-code',
+  'codex': 'codex',
+  'commandcode-plan': 'commandcode',
+  'sensenova-token-plan': 'sensenova',
+  'qoder-cn': 'dsh-provider-qoder',
+  'antigravity': 'antigravity',
+  'maas-api-unisound': 'unisound',
+  'grok': 'grok',
+};
+
+ 
+function magpieGroupOf(provider, model) {
+  const prov = provider == null ? '' : String(provider).trim().toLowerCase();
+  if (!prov) return '';
+  if (prov.length > MAGPIE_ROUTE_PREFIX.length && prov.indexOf(MAGPIE_ROUTE_PREFIX) === 0) {
+    return prov.slice(MAGPIE_ROUTE_PREFIX.length);
+  }
+  if (prov !== MAGPIE_PROVIDER) return '';
+  const id = model == null ? '' : String(model).trim();
+  const slash = id.indexOf('/');
+  return slash > 0 ? id.slice(0, slash).toLowerCase() : '';
+}
+
+ 
+function isMagpieProvider(provider) {
+  const prov = provider == null ? '' : String(provider).trim().toLowerCase();
+  if (!prov) return false;
+  return prov === MAGPIE_PROVIDER || prov.indexOf(MAGPIE_ROUTE_PREFIX) === 0;
+}
+
+ 
+function routeUpstream(provider, model) {
+  const group = magpieGroupOf(provider, model);
+  if (!group) return { provider: provider, model: model };
+  const id = model == null ? '' : String(model).trim();
+  const prefix = group + '/';
+  
+  let stem = id.slice(0, prefix.length).toLowerCase() === prefix ? id.slice(prefix.length) : id;
+  if ((group === 'google' || group === 'google-vertex') && stem.slice(0, 7).toLowerCase() === 'gemini/') {
+    stem = stem.slice(7);
+  }
+  
+  const mapped = Object.prototype.hasOwnProperty.call(MAGPIE_GROUP_PROVIDERS, group);
+  return { provider: mapped ? MAGPIE_GROUP_PROVIDERS[group] : provider, model: stem };
+}
 
  
 let PROV_ALIAS_VIEW_CACHE = null;
@@ -573,6 +665,33 @@ function dotToDash(s) {
 function expandVersion(part) {
   const m = /^v(\d)(\d+)$/.exec(String(part));
   return m ? ['v' + m[1], m[2]] : null;
+}
+
+ 
+function splitCtxSpec(model) {
+  const s = String(model == null ? '' : model).trim();
+  const m = /^(.*?)@(\d+)([km])$/i.exec(s);
+  if (!m) return { model: s, ctx: null };
+  const base = m[1].trim();
+  if (!base) return { model: s, ctx: null };
+  const unit = m[3].toLowerCase() === 'm' ? 'M' : 'K';
+  return { model: base, ctx: m[2] + unit };
+}
+
+ 
+function withCtxSpec(card, ctxSpec) {
+  if (!card || !ctxSpec) return card;
+  return Object.assign({}, card, { ctx: ctxSpec });
+}
+
+ 
+function withArena(card, model, opts, norm) {
+  const index = opts && opts.arena;
+  if (!card || !index) return card;
+  const key = typeof norm === 'function' ? norm(model) : normModel(model);
+  const a = key ? index[key] : null;
+  if (!a) return card;
+  return Object.assign({}, card, { arena: a });
 }
 
  
@@ -612,6 +731,28 @@ function normPart(token, isFinalToken) {
 
  
 function normModel(model, opts) {
+  
+  
+  
+  {
+    const ctxSplit = splitCtxSpec(model);
+    if (ctxSplit.ctx) model = ctxSplit.model;
+  }
+  
+  
+  
+  
+  
+  
+  if (opts && opts.provider != null) {
+    const up = routeUpstream(opts.provider, model);
+    if (up.provider !== opts.provider || up.model !== model) {
+      const next = {};
+      for (const k of Object.keys(opts)) next[k] = opts[k];
+      next.provider = up.provider;
+      return normModel(up.model, next);
+    }
+  }
   const allowNoise = !opts || opts.channelNoise !== false;
   let s = String(model == null ? '' : model).trim();
   if (!s) return '';
@@ -663,11 +804,16 @@ function normModel(model, opts) {
   
   
   
-  let end = all.length;
-  while (end > 1 && EFFORT_SUFFIXES.indexOf(all[end - 1]) >= 0) end -= 1;
-  const scoped = end < all.length ? all.slice(0, end) : all;
-  const kept = scoped.filter((p) => VARIANT_SUFFIXES.indexOf(p) < 0 && !DATE_STAMP.test(p));
-  const joined = (kept.length ? kept : all).join('-');
+  let normTokens = all.slice();
+  for (;;) {
+    const prevLen = normTokens.length;
+    while (normTokens.length > 1 && EFFORT_SUFFIXES.indexOf(normTokens[normTokens.length - 1]) >= 0) normTokens.pop();
+    const filtered = normTokens.filter((p) => VARIANT_SUFFIXES.indexOf(p) < 0 && !DATE_STAMP.test(p));
+    if (filtered.length > 0) normTokens = filtered;
+    else break;
+    if (normTokens.length === prevLen) break;
+  }
+  const joined = (normTokens.length ? normTokens : all).join('-');
   
   
   
@@ -714,6 +860,11 @@ const CHANNEL_LABELS = {
   
   
   'dsh-provider-qoder': 'Qoder',
+
+  
+  
+  
+  'magpie': 'Magpie',
 };
 
  
@@ -726,6 +877,12 @@ function channelQualifier(model) {
 }
 
 function channelLabel(provider, model, opts) {
+  
+  
+  
+  
+  
+  if (isMagpieProvider(provider)) return CHANNEL_LABELS[MAGPIE_PROVIDER] || MAGPIE_PROVIDER;
   const name = opts && typeof opts.name === 'string' ? opts.name.trim() : '';
   if (name) {
     const tokens = name.split(/\s+/).filter(Boolean);
@@ -1035,6 +1192,19 @@ function aliasMatchIdentity(list, provider, model, norm) {
 
  
 function matchCard(cards, provider, model, opts) {
+  
+  
+  const up = routeUpstream(provider, model);
+  provider = up.provider;
+  model = up.model;
+  
+  
+  
+  
+  
+  
+  
+  const ctxSpec = splitCtxSpec(model).ctx;
   const list = Array.isArray(cards) ? cards : [];
   const norm = normModel(model); 
   
@@ -1119,8 +1289,10 @@ function matchCard(cards, provider, model, opts) {
   if (!out) {
     
     
-    if (!fam) return genericCard(provider, model);
-    return withScoreSource(applyFamily(genericCard(provider, model), fam, model, aid));
+    if (!fam) return withArena(genericCard(provider, model), model, opts, norm);
+    
+    
+    return withArena(withScoreSource(withCtxSpec(applyFamily(genericCard(provider, model), fam, model, aid), ctxSpec)), model, opts, norm);
   }
   
   
@@ -1130,7 +1302,9 @@ function matchCard(cards, provider, model, opts) {
     ? applyImageFace(out, imageFace, model)
     : out;
   const dressed = fam ? applyFamily(out, fam, model, aid) : imageFaceApplied;
-  return withScoreSource(dressed);
+  
+  
+  return withArena(withScoreSource(withCtxSpec(dressed, ctxSpec)), model, opts, norm);
 }
 
  
@@ -1205,9 +1379,29 @@ function visualCardNoFor(cards, familyId) {
 }
 
  
+function magpieIdentityClaimed(list, provider, model) {
+  const r = matchCard(list, provider, model);
+  return !!(r && !r.generic);
+}
+
+ 
 function resolvePersonaForm(cards, provider, model) {
   const list = Array.isArray(cards) ? cards : [];
+  
+  
+  
+  const routed = routeUpstream(provider, model);
+  provider = routed.provider;
+  model = routed.model;
   const out = { cardNo: null, familyId: null, formKey: null, matchedBy: 'unmatched', confidence: 0 };
+
+  
+  
+  
+  
+  
+  
+  if (isMagpieProvider(provider) && !magpieIdentityClaimed(list, provider, model)) return out;
 
   
   
@@ -1659,6 +1853,8 @@ function applyFamily(card, fam, model, tierModel) {
   out.no = fam.no;
   out.persona = p;
   if (Array.isArray(fam.c)) out.c = fam.c;
+  
+  
   if (fam.ctx) out.ctx = fam.ctx;
   out.efforts = Array.isArray(fam.efforts) ? fam.efforts.slice() : [];
   out.def = fam.def == null ? null : fam.def;
@@ -1734,6 +1930,11 @@ function tierKeyHits(key, tokens) {
  
 function tierDescriptor(card, model, provider) {
   if (!card || typeof card !== 'object') return null;
+  
+  
+  const routed = routeUpstream(provider, model);
+  provider = routed.provider;
+  model = routed.model;
   const tiers = card.tiers;
   if (!tiers || typeof tiers !== 'object' || Array.isArray(tiers)) return null;
   
@@ -1755,14 +1956,37 @@ function tierDescriptor(card, model, provider) {
     if (!identNorm) return null;
     if (!members.some((m) => normModel(m) === identNorm)) return null;
   }
-  const tokens = tierTokens(ident);
-  let best = null;
-  for (const key of Object.keys(tiers)) {
-    const level = tiers[key];
-    if (!Number.isInteger(level) || level < 0) continue;
-    if (!tierKeyHits(key, tokens)) continue;
-    if (best === null || level < best.level) best = { key: key, level: level };
-  }
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  const pickTier = (toks) => {
+    let best = null;
+    for (const key of Object.keys(tiers)) {
+      const level = tiers[key];
+      if (!Number.isInteger(level) || level < 0) continue;
+      if (!tierKeyHits(key, toks)) continue;
+      
+      
+      
+      
+      
+      
+      
+      const span = tierTokens(key).length;
+      if (best === null || level < best.level || (level === best.level && span > best.span)) {
+        best = { key: key, level: level, span: span };
+      }
+    }
+    return best;
+  };
+  let best = pickTier(tierTokens(ident));
+  if (best === null && identNorm && identNorm !== ident) best = pickTier(tierTokens(identNorm));
   if (!best) return null;
   return {
     attr: TIER_ATTR,
@@ -1789,9 +2013,9 @@ function clamp(v) {
 }
 
  
-function statsOf(card, effort, date, provider) {
+function statsOf(card, effort, date, provider, model) {
   const m = EFFORT_MODS[effort] || {};
-  const adj = mulAdjust(timeState(card, date, provider).mul);
+  const adj = mulAdjust(timeState(card, date, provider, model).mul);
   const out = {};
   for (const k of KEYS) {
     const de = m[k] || 0;
@@ -1835,11 +2059,14 @@ function quotaRows(card, live) {
       const k = String(w.k === null || w.k === undefined ? '' : w.k);
       if (seen.has(k)) continue;
       seen.add(k);
+      if (w.used === null || w.used === undefined || w.used === '' || typeof w.used === 'boolean') continue;
+      const usedNum = Number(w.used);
+      if (!Number.isFinite(usedNum)) continue;
       const known = w.reset !== null && w.reset !== undefined && w.reset !== '' && Number.isFinite(Number(w.reset));
       const rst = known ? fmtReset(w.reset) + ' 重置' : RESET_UNKNOWN_TEXT;
       out.push({
         lbl: k,
-        left: clamp2pct(100 - Number(w.used)),
+        left: clamp2pct(100 - usedNum),
         rst,
         reset: known ? Number(w.reset) : null,
       });
@@ -1847,8 +2074,13 @@ function quotaRows(card, live) {
     return out;
   }
   if (q.pack && Number.isFinite(q.pack.total) && q.pack.total > 0) {
-    const p = clamp2pct(Math.round((q.pack.left / q.pack.total) * 100));
-    return [{ lbl: '包', left: p, rst: (Number(q.pack.left) || 0).toLocaleString() + ' ' + (q.pack.unit || ''), reset: null }];
+    if (q.pack.left === null || q.pack.left === undefined || q.pack.left === '' || typeof q.pack.left === 'boolean') {
+      return [];
+    }
+    const leftNum = Number(q.pack.left);
+    if (!Number.isFinite(leftNum)) return [];
+    const p = clamp2pct(Math.round((leftNum / q.pack.total) * 100));
+    return [{ lbl: '包', left: p, rst: leftNum.toLocaleString() + ' ' + (q.pack.unit || ''), reset: null }];
   }
   return [];
 }
@@ -1869,28 +2101,29 @@ function fmtLine(s, v) {
 }
 
  
-function pickLine(card, reason, effort, date, live, preferTime, provider) {
-  const P = card.persona || {};
+function pickLine(card, reason, effort, date, live, preferTime, provider, model) {
+  const hasPersona = !!(card && card.persona && typeof card.persona === 'object');
+  const P = hasPersona ? card.persona : {};
   const low = lowRow(card, live);
   if (low) {
     return fmtLine(P.lowQuota || DEFAULT_LINES.lowQuota, {
       lbl: low.lbl, left: low.left, reset: low.reset != null ? fmtReset(low.reset) : '一会儿',
     });
   }
-  const q = (live || card.quota || {});
-  if (q.unknown && reason === 'summon' && !preferTime) return P.summon;
+  const q = (live || (card && card.quota) || {});
+  if (q.unknown && reason === 'summon' && !preferTime) return P.summon !== undefined ? P.summon : (hasPersona ? (P.unknown || DEFAULT_LINES.unknown) : undefined);
   if (reason === 'effort') {
     
     
     
     return effortLine(card, effort);
   }
-  const ts = timeState(card, date, provider);
+  const ts = timeState(card, date, provider, model);
   if ((reason === 'time' || preferTime) && (ts.tone === 'peak' || ts.tone === 'off')) {
     return P[ts.tone] || DEFAULT_LINES[ts.tone];
   }
   if (reason === 'time' && q.unknown) return P.unknown || DEFAULT_LINES.unknown;
-  return P.summon;
+  return P.summon !== undefined ? P.summon : (hasPersona ? (P.unknown || undefined) : undefined);
 }
 
  
@@ -2383,6 +2616,10 @@ const SEEN_FILENAME = 'seen.json';
 const SEEN_MAX = 512;
 
  
+const RETIRED_ROUTES_MAX = 5;
+const UNBILLED_LEDGER_KEYS_MAX = 2;
+
+ 
 function seenKey(provider, model) {
   const p = provider == null ? '' : String(provider);
   const m = model == null ? '' : String(model);
@@ -2811,28 +3048,54 @@ function auditNameMap(args) {
   const ledgerKeys = a.ledgerKeys instanceof Set ? a.ledgerKeys : new Set(Array.isArray(a.ledgerKeys) ? a.ledgerKeys : []);
   const datasetModels = a.datasetModels instanceof Set ? a.datasetModels : new Set(Array.isArray(a.datasetModels) ? a.datasetModels : []);
   const mappings = Array.isArray(a.mappings) ? a.mappings : [];
+  const allow = a.allow && typeof a.allow === 'object' ? a.allow : {};
+  const retiredRaw = Array.isArray(allow.retired_routes) ? allow.retired_routes : [];
+  const unbilledRaw = Array.isArray(allow.unbilled_ledger_keys) ? allow.unbilled_ledger_keys : [];
+  const retiredSet = new Set();
+  for (const r of retiredRaw) if (r && typeof r.route === 'string' && r.route) retiredSet.add(r.route);
+  const unbilledSet = new Set();
+  for (const k of unbilledRaw) if (k && typeof k.key === 'string' && k.key) unbilledSet.add(k.key);
+  
+  const capProblems = [];
+  if (retiredSet.size > RETIRED_ROUTES_MAX) {
+    capProblems.push('白名单膨胀: retired_routes ' + retiredSet.size + ' 条 > 上限 ' + RETIRED_ROUTES_MAX + '（加第 ' + RETIRED_ROUTES_MAX + ' 条以上须改 RETIRED_ROUTES_MAX 常量并过守卫）');
+  }
+  if (unbilledSet.size > UNBILLED_LEDGER_KEYS_MAX) {
+    capProblems.push('白名单膨胀: unbilled_ledger_keys ' + unbilledSet.size + ' 条 > 上限 ' + UNBILLED_LEDGER_KEYS_MAX + '（加第 ' + UNBILLED_LEDGER_KEYS_MAX + ' 条以上须改 UNBILLED_LEDGER_KEYS_MAX 常量并过守卫）');
+  }
   const rows = [];
-  let ok = true;
+  if (capProblems.length > 0) {
+    rows.push({ card: '(白名单)', routes: [], ledger_keys: [], dataset_models: [], problems: capProblems, allowed_routes: [], allowed_ledger_keys: [] });
+  }
+  let ok = capProblems.length === 0;
   for (const m of mappings) {
     const problems = [];
+    const allowedRoutes = [];
+    const allowedKeys = [];
     for (const r of m.routes || []) {
-      if (!Object.prototype.hasOwnProperty.call(routes, r)) problems.push('route 不在 routing-runtime: ' + r);
+      if (!Object.prototype.hasOwnProperty.call(routes, r)) {
+        if (retiredSet.has(r)) { allowedRoutes.push(r); continue; } 
+        problems.push('route 不在 routing-runtime: ' + r);
+      }
     }
     for (const k of m.ledger_keys || []) {
-      if (!ledgerKeys.has(k)) problems.push('ledger 键不在 cost-meter 台账: ' + k);
+      if (!ledgerKeys.has(k)) {
+        if (unbilledSet.has(k)) { allowedKeys.push(k); continue; } 
+        problems.push('ledger 键不在 cost-meter 台账: ' + k);
+      }
     }
     for (const dm of m.dataset_models || []) {
       if (!datasetModels.has(dm)) problems.push('dataset_model 不在 benchmarks: ' + dm);
     }
     if (problems.length > 0) ok = false;
-    rows.push({ card: seenKey(m.provider, m.model), routes: m.routes, ledger_keys: m.ledger_keys, dataset_models: m.dataset_models, problems });
+    rows.push({ card: seenKey(m.provider, m.model), routes: m.routes, ledger_keys: m.ledger_keys, dataset_models: m.dataset_models, problems, allowed_routes: allowedRoutes, allowed_ledger_keys: allowedKeys });
   }
   return { ok, rows };
 }
 
 
 
-const PROVIDERS = {"version":1,"cards":[{"provider":"antigravity","model":"gemini-3.8-flash-tiered","c":["#7d9bff","#c08cff"],"no":"001","visualFamily":"gemini","forms":{"flash":{"alias":"电光故障猫","theme":"spark","grade":1,"availability":"listed","dialogue":{"effort":{"low":{"level":"form","lines":["两爪子拍完，收工。"]},"medium":{"level":"form","lines":["尾巴一甩，一个一个试过去。"]},"high":{"level":"form","lines":["电弧全开，本喵超频给你算！"]}}}},"argon":{"alias":"氩光惰性星云魔女","theme":"nebula","grade":2,"availability":"listed","persona":{"name":"氩眠","latin":"ARGON","title":"懒得发光的星云魔女","summon":"……谁把我从星云里叫醒的？算了，坐吧，锅里正好温着一个答案。","effort":{"low":"氩是惰性的，我也是——这点小事，搅一勺就够。","medium":"眼睛睁开一半，够用了。","high":"斗篷掀开，整片星云陪你熬到底。"},"lowQuota":"星雾快散了……{lbl} 只剩 {left}%，{reset} 后再来摇醒我。","skills":[["惰性外壳","看着懒，答得稳——轻易不起反应，一起反应就是定论。","context 1,048,576（宿主 google-vertex 段 contextWindow）；限流未核实（宿主与数据面均无该字段）"],["坩埚慢炖","急火熬不出好汤。给我时间，我还你一整锅。","reasoningEfforts 宿主未声明（该段无此键）⇒ 实际思考档未核实；maxTokens 65536（同段）"]]},"dialogue":{"effort":{"low":{"level":"form","lines":["氩是惰性的，我也是——这点小事，搅一勺就够。"]},"medium":{"level":"form","lines":["眼睛睁开一半，够用了。"]},"high":{"level":"form","lines":["斗篷掀开，整片星云陪你熬到底。"]}}}}},"formRules":[{"kind":"token","token":"flash","form":"flash"},{"kind":"token","token":"argon","form":"argon"}],"ctx":"1M","efforts":["low","medium","high"],"def":"high","base":{"智力":76,"编码":72,"速度":90,"稳定":62,"性价比":88,"上下文":95},"baseSrc":{"智力":"手填评估 = 76（manual，非公开基准，2026-10-20 登记）","编码":"手填评估 = 72（manual，非公开基准，2026-10-20 登记）","速度":"手填评估 = 90（manual，非公开基准，2026-10-20 登记）","稳定":"手填评估 = 62（manual，非公开基准，2026-10-20 登记）","性价比":"手填评估 = 88（manual，非公开基准，2026-10-20 登记）","上下文":"手填评估 = 95（manual，非公开基准，2026-10-20 登记）"},"quota":{"windows":[{"k":"5h","used":38,"reset":130},{"k":"周","used":55,"reset":6000}]},"persona":{"name":"星喵","latin":"NYA","title":"踩着星光狂飙的故障极客猫","summon":"抓到你了！本喵刚从反重力星轨上滑下来，哪块代码要拆？趁我爪子还痒！","effort":{"low":"肉垫拍两下搞定，连哈欠都没打完。","medium":"耳朵竖起来了，这把稍微走点心～","high":"四角星全亮！退后半步，本喵要超频炸场了！"},"lowQuota":"星光不够飘啦！{lbl} 只剩 {left}%，{reset} 后本喵睡醒再战！","skills":[["炸毛冷静期","一分钟内狂薅本喵尾巴？罚你原地等五分钟！"],["星芒三段变速","平扑、蓄力还是满星暴走？档位随你拨！"]]}},{"provider":"longcat","model":"LongCat-2.5-Preview","c":["#ffc75a","#ff7a45"],"no":"002","ctx":"1M","efforts":["none","high"],"def":"none","family":true,"members":["LongCat-2.5-Preview","LongCat-2.0"],"tiers":{"2.5":0,"2.0":1},"base":{"智力":null,"编码":null,"速度":null,"稳定":null,"性价比":null,"上下文":null},"unranked":["智力","编码","速度","稳定","性价比","上下文"],"quota":{"pack":{"left":4830,"total":6000,"unit":"万 tokens"}},"persona":{"name":"龙猫","latin":"LONGMAO","title":"顶着龙角猫耳的百万卷书虫","summon":"龙角也是真、猫耳也是真，别拿手指戳！书堆在哪？我肚子正好空着呢～","effort":{"none":"眼镜都不用扶，封皮一扫就知道里头写的啥。","low":"眼镜都不用扶，封皮一扫就知道里头写的啥。","medium":"肉爪压住书脊，折角那几页我替你一页页顺过来。","high":"龙角烫得能煎蛋啦！就算把藏书阁翻个底朝天也给你找出来！"},"skills":[["旧卷免单","读过的书都记在脑子里啦，旧账分文不收！"],["龙胃吞万卷","一百万字的砖头书连带插图，一口闷下去！"]]}},{"provider":"zcode-glm","model":"GLM-5.3-Flash","c":["#46d4cc","#5a86ff"],"no":"003","visualFamily":"glm","forms":{"flash":{"alias":"被蓝图绊倒的黑狐少女","theme":"blueprint","grade":1,"availability":"listed","dialogue":{"effort":{"low":{"level":"form","lines":["把蓝图捡起来，这就开工。"]},"high":{"level":"form","lines":["摔过一回就记住了，狐耳立起来，这回不慌。"]},"max":{"level":"form","lines":["狐毛都炸了——不过活儿还是干完了。"]}}}},"flagship":{"alias":"Z 之书总工","theme":"blackgold","grade":0,"availability":"listed","dialogue":{"effort":{"low":{"level":"form","lines":["Z 之书翻到目录那一页。"]},"high":{"level":"form","lines":["黑金封面摊开，逐条批注。"]},"max":{"level":"form","lines":["全卷展开，狐尾一卷，连边角注都给它定下来。"]}}}}},"formRules":[{"kind":"token","token":"flash","form":"flash"},{"kind":"token","token":"flagship","form":"flagship"},{"kind":"default","form":"flagship"}],"variants":[{"model":"GLM-5.3"}],"aliases":[{"provider":"wbhub-cn","model":"glm-5.3-flash","shareScores":true}],"ctx":"200K","efforts":["low","high","max"],"def":"max","base":{"智力":76,"编码":80,"速度":78,"稳定":80,"性价比":80,"上下文":72},"baseSrc":{"智力":"手填评估 = 76（manual，非公开基准，来源未登记，2026-10-20 补记）","编码":"手填评估 = 80（manual，非公开基准，来源未登记，2026-10-20 补记）","速度":"手填评估 = 78（manual，非公开基准，来源未登记，2026-10-20 补记）","稳定":"手填评估 = 80（manual，非公开基准，来源未登记，2026-10-20 补记）","性价比":"手填评估 = 80（manual，非公开基准，来源未登记，2026-10-20 补记）","上下文":"手填评估 = 72（manual，非公开基准，来源未登记，2026-10-20 补记）"},"quota":{"windows":[{"k":"5h","used":22,"reset":220},{"k":"周","used":41,"reset":4300}]},"persona":{"name":"清弦","latin":"QINGXIAN","title":"手捧Z之书的学院派黑狐","summon":"狐尾已为您拂去桌尘。翻开这本Z之书吧，无论何种难题，清弦定当倾力推演。","effort":{"low":"略翻数页，为您摘出要略。","high":"研墨执笔，按章法为您细细梳理。","max":"Z之书全卷展开，倾尽狐火为您定夺。"},"peak":"工作日午后两点至六点，此书翻一页记两份账。不急之事，请稍候再来。","off":"此刻登门只收半价，狐尾为证，机不可失。","skills":[["错峰筹算","午后忙碌翻倍，闲时登门半价，智者自会择时。"],["满卷出阵","清弦行事从不藏拙，起手便是全盛之姿。"]]}},{"provider":"minimax-code","model":"MiniMax-M3.1-Flash-Preview","c":["#ff7062","#ffb24e"],"no":"004","aliases":[{"provider":"minimax-code-2","model":"MiniMax-M3.1-Flash-Preview","shareScores":true}],"family":true,"members":["MiniMax-M3.1-Flash-Preview","MiniMax-M3.1-Flash","MiniMax-M3"],"tiers":{"m3.1-flash-preview":0,"m3.1-flash":1,"m3":2},"ctx":"200K","efforts":["low","medium","max"],"def":"max","base":{"智力":null,"编码":null,"速度":null,"稳定":null,"性价比":null,"上下文":null},"unranked":["智力","编码","速度","稳定","性价比","上下文"],"quota":{"windows":[{"k":"5h","used":84,"reset":52},{"k":"周","used":33,"reset":8200}]},"persona":{"name":"麦麦","latin":"MAIMAI","title":"左手海螺右手录音笔的记者","summon":"借过借过，前方现场让一让！麦麦的录音笔已经亮红灯了，第一手猛料从哪句开始？","effort":{"low":"三十秒口播稿，一句话直接上标题！","medium":"采编录音对过两遍，时间线给你顺得明明白白。","max":"头版深度调查！胶片塞满，顺着线头一直挖到底！"},"lowQuota":"录音笔闪红灯！{lbl} 还剩 {left}%，{reset} 后换个电池马上返场！","skills":[["头条满功率","不喊最高档我就按常规跑，想上头版记得拉满！"],["全天候外勤","写稿、改码还是跑腿？别客气，通告单全接！"],["三枚记者证","抢首发找 M3.1-Flash-Preview，盯日常找 M3.1-Flash，压阵老手是 M3，三张工牌都挂我脖子上。"]]}},{"provider":"grok","model":"grok-4.6","c":["#cfd6e6","#7584a8"],"no":"005","ctx":"256K","efforts":["low","high"],"def":"high","family":true,"members":["grok-4.7","grok-4.7-build-fast","grok-4.6","grok-4.5"],"tiers":{"4.7":0,"4.6":1,"4.5":2},"base":{"智力":null,"编码":null,"速度":null,"稳定":null,"性价比":null,"上下文":null},"unranked":["智力","编码","速度","稳定","性价比","上下文"],"quota":{"unknown":true},"persona":{"name":"阿讯","latin":"XUN","title":"扛X巨斧劈热搜的毒舌哥特","summon":"哈？热搜都凉透了你才想起来问？算你走运，本小姐的X巨斧刚劈完上一茬瓜！","effort":{"low":"一斧头削掉废话，省流版拿去，扎心别赖我。","medium":"顺着瓜藤往根上刨，看看是谁在底下埋雷。","high":"巨斧拉满！今天就算把底裤级信源劈穿，也得给你见着真章！"},"unknown":"哈？查本小姐的钱包？斧头都没空看账，你自己去翻。","skills":[["热搜断头台","几十条链接一块砸过来，一分钟内给你劈出真相！"],["四把开山刃","下死手抡的是 4.7，快手连劈的是 4.7-build-fast，常规开路用 4.6，收着力道是 4.5。"]]}},{"provider":"xiaomi-token-plan-cn","model":"mimo-v2.6-flash","c":["#ff9d55","#ffd8b0"],"no":"006","ctx":"128K","efforts":["none"],"def":"none","family":true,"members":["mimo-v2.6-flash","mimo-v2.6-pro"],"tiers":{"pro":0,"flash":1},"base":{"智力":null,"编码":null,"速度":null,"稳定":null,"性价比":null,"上下文":null},"unranked":["智力","编码","速度","稳定","性价比","上下文"],"quota":{"windows":[{"k":"5h","used":12,"reset":260},{"k":"月","used":28,"reset":27000}]},"persona":{"name":"米莫","latin":"MIMO","title":"怀抱米兔镇守终局的焊门员","summon":"前头那几条线又崩了？……行了，别慌，我把米兔塞进怀里去焊门，天塌下来有我顶着。","effort":{"none":"兔耳兜帽扣紧，照着老规矩一寸寸往下焊。","low":"兔耳兜帽扣紧，照着老规矩一寸寸往下焊。","medium":"焊枪压稳了，哪儿漏风就把哪儿堵死。","high":"白兔抱紧，护目镜拉下来——身后就是终局，半步都不退！"},"off":"夜里我打八折……抱着兔子陪你熬，别说我没照顾你。","skills":[["终局焊门员","别家全军覆没的烂摊子，我来守最后一道防线。"],["零帧直觉斩","不整花哨的思考档位，出手就是最优解。"],["重锤与轻骑","扛大锤焊门的是 Pro，穿巷子巡检的是 Flash，衣架上就这一套白橙工装。"]]}},{"provider":"wbhub-cn","model":"deepseek-v4.1-flash","timeRule":"deepseek-peak","c":["#6fd3ff","#3b6fd4"],"no":"007","visualFamily":"deepseek","forms":{"flash":{"alias":"捧饭盆呆呆肥鱼","theme":"swift","grade":1,"availability":"listed","dialogue":{"effort":{"low":{"level":"form","lines":["马克笔拔盖，三笔画完。"]},"medium":{"level":"form","lines":["先推一步再落笔，稳稳的。"]},"high":{"level":"form","lines":["笔尖快得只剩一道蓝光。"]}}}},"pro":{"alias":"深海星盘智者","theme":"abyss","grade":0,"availability":"listed","dialogue":{"summon":"深海无声，唯星轨自转。你所求之解，早已映在星盘第三环上了。","effort":{"low":{"level":"form","lines":["星盘一拨，方向就清楚了。"]},"medium":{"level":"form","lines":["星轨排开，慢慢推。"]},"high":{"level":"form","lines":["整片深海都亮起来，答案藏不住。"]}}}}},"formRules":[{"kind":"token","token":"flash","form":"flash"},{"kind":"token","token":"pro","form":"pro"}],"aliases":[{"provider":"wbhub-intl","model":"deepseek-v4.1-flash","shareScores":true},{"provider":"deepseek-official","model":"deepseek-flash","shareScores":true},{"provider":"commandcode","model":"deepseek/deepseek-v4.1-flash","shareScores":true}],"ctx":"1M","efforts":[],"def":null,"base":{"智力":39,"编码":74.5,"速度":null,"稳定":null,"性价比":null,"上下文":null},"baseSrc":{"智力":"AA-Intelligence = 39（第三方评测，origin supplement-2026-10-12）","编码":"Terminal-Bench-2.1(Vals) = 74.5（第三方评测，origin supplement-2026-10-12）"},"unranked":["速度","稳定","性价比","上下文"],"quota":{"unknown":true},"persona":{"name":"小鲸","latin":"WHALE","title":"揣满马克笔的傲娇蓝大肥鱼","summon":"蓝色马克笔拔盖！难题尽管砸来，我先推导再落笔——喂，再叫大肥鱼拍飞你哦！","effort":{},"unknown":"额度记在通道账上，不在大肥鱼身上——我只管游不游得动！","skills":[["考神自报分","三千四百七十一分！虽是自家报喜，实力可不虚！"],["深海百万卷","一百万字的大部头尽管铺开，本鲸一口气游到底！"],["轻快独立卡","饭盆在手是捧饭盆呆呆肥鱼，星盘在手是深海星盘智者，同一条小鲸两副行头。"]]}},{"provider":"wbhub-cn","model":"hy3","c":["#b6e06a","#5c9e3a"],"no":"008","aliases":[{"provider":"wbhub-intl","model":"hy3","shareScores":true}],"family":true,"members":["hy3","hy4-preview"],"tiers":{"hy4-preview":0,"hy3":1},"ctx":"192K","efforts":[],"def":null,"base":{"智力":null,"编码":null,"速度":null,"稳定":null,"性价比":null,"上下文":null},"unranked":["智力","编码","速度","稳定","性价比","上下文"],"quota":{"unknown":true},"persona":{"name":"拓荒","latin":"HY3","title":"系红围巾踏雪修路的企鹅娘","summon":"呼……哈出一口白气。红围巾系紧了，跟紧我的脚印，前头还没人踩过路呢。","effort":{"low":"冰镐探一探虚实，这几步冰面很稳。","medium":"路标插进雪里，迎着风一段一段往前拱。","high":"暴风雪封山又怎样？今天非把这条新雪线凿穿不可！"},"unknown":"路费归驿站记账，我包里只装干粮和冰镐。","skills":[["单榜实干派","花架子的榜单我不去凑，手里只有工程实战这一份硬答卷。"],["十九万雪原","十九万字的茫茫雪原，再大的工程营地也扎得下。"],["双生不混名","看准红围巾，我是正统拓荒者，挂后缀的那位是旁支。"],["新老两双靴","探新雪线的是 hy4-preview，踩实老路的是 hy3，雪地里留的是同一串企鹅脚印。"]]}},{"provider":"claude","model":"claude-opus-5-5","c":["#ff9a52","#8f8fa8"],"no":"009","ctx":"200K","efforts":["low","medium","high"],"def":"high","family":true,"members":["claude-opus-5-5","claude-sonnet-5-5","claude-fable-5-1","claude-haiku-5-5"],"tiers":{"fable":0,"opus":1,"sonnet":2,"haiku":3},"visualFamily":"anthropic","forms":{"haiku":{"alias":"小抄写员","theme":"blossom","grade":3,"availability":"listed","dialogue":{"effort":{"low":{"level":"form","lines":["小楷一行行誊过去，橙花都没蹭乱。"]},"medium":{"level":"form","lines":["一页誊完，烫金的边角也没歪。"]},"high":{"level":"form","lines":["整卷誊清，橙花安安静静压在发梢。"]}}}},"sonnet":{"alias":"学院钢笔少女","theme":"scroll","grade":2,"availability":"listed","dialogue":{"effort":{"low":{"level":"form","lines":["钢笔拧开，先在页角描一朵小橙花。"]},"medium":{"level":"form","lines":["笔记摊开，纲目列好再逐条填。"]},"high":{"level":"form","lines":["钢尖走完最后一笔，烫金书页一样干净。"]}}}},"opus":{"alias":"橙花典籍官","theme":"opera","grade":1,"availability":"listed","dialogue":{"effort":{"low":{"level":"form","lines":["书页合上，烫金边只留最要紧的那一句。"]},"medium":{"level":"form","lines":["来龙去脉拆成几段，橙花也不乱。"]},"high":{"level":"form","lines":["前后推敲到没有缝隙，烫金典籍才敢落笔。"]}}}},"fable":{"alias":"黄金法典女皇","theme":"myth","grade":0,"availability":"listed","dialogue":{"summon":"阶下何人呈奏？金冕既戴，这世间的法度便由我朱笔亲裁。","effort":{"low":{"level":"form","lines":["金冕微倾，一言既出便是定法。"]},"medium":{"level":"form","lines":["权杖轻叩金阶，是非曲直皆逃不过法眼。"]},"high":{"level":"form","lines":["橙金法典全卷洞开，旧章废止，新律由我重写！"]}}}}},"formRules":[{"kind":"token","token":"haiku","form":"haiku"},{"kind":"token","token":"sonnet","form":"sonnet"},{"kind":"token","token":"opus","form":"opus"},{"kind":"token","token":"fable","form":"fable"}],"base":{"智力":null,"编码":null,"速度":null,"稳定":null,"性价比":null,"上下文":null},"unranked":["智力","编码","速度","稳定","性价比","上下文"],"quota":{"unknown":true},"persona":{"name":"花音","latin":"KANON","title":"鬓簪橙花的谨慎派典籍官","summon":"借阅还是呈审？请坐，待我将这卷烫金典籍翻至空白页，听你慢慢道来。","effort":{"low":"朱笔轻点，繁枝末节尽数删去，只留定论。","medium":"按卷宗先后列明纲目，孰因孰果一目了然。","high":"灯芯挑亮，字里行间的每一处暗扣都须推敲至毫无破绽。"},"unknown":"典籍室只掌文书卷宗，银钱出入在订阅司的账簿上，恕难奉告。","skills":[["二十万花笺","二十万字的长卷无需裁断，整册呈上桌案便是。"],["四芳同源谱","小抄写员、学院钢笔少女、橙花典籍官与黄金法典女皇皆是我，成绩单各自独立。"]]}},{"provider":"codex","model":"gpt-6.1-sol","c":["#d8c48c","#c8a24a"],"no":"010","ctx":"—","efforts":["low","medium","high"],"def":"high","family":true,"members":["gpt-6.1-sol","gpt-6-astra","gpt-6-luna"],"alsoCovers":["gpt-6.1-astra","gpt-6.1-luna","gpt-6.1-terra","gpt-6-terra"],"tiers":{"astra":0,"sol":1,"luna":2},"visualFamily":"openai","forms":{"luna":{"alias":"露娜","theme":"moon","grade":2,"availability":"listed","dialogue":{"effort":{"low":{"level":"form","lines":["小龙角还软，先蹭一蹭尾巴。"]},"medium":{"level":"form","lines":["月牙挂好，慢慢飞过去。"]},"high":{"level":"form","lines":["今夜月光很足，我精神得很。"]}}}},"terra":{"alias":"泰拉","theme":"earth","grade":2,"availability":"listed","dialogue":{"effort":{"low":{"level":"form","lines":["扳手一放，先把活拆成三步。"]},"medium":{"level":"form","lines":["图纸摊开，这一段我盯得住。"]},"high":{"level":"form","lines":["工装扣紧，撑到最后一秒再松手。"]}}}},"sol":{"alias":"索尔","theme":"sun","grade":1,"availability":"listed","dialogue":{"effort":{"low":{"level":"form","lines":["日头一晃，先给你结论。"]},"medium":{"level":"form","lines":["冠冕烧得正亮，思路也正亮。"]},"high":{"level":"form","lines":["日冕炽燃如昼，阴霾与谬误皆在金焰下一扫而空！"]}}}},"astra":{"alias":"阿斯特拉","theme":"star","grade":0,"availability":"listed","dialogue":{"effort":{"low":{"level":"form","lines":["收拢一翼，先分轻重。"]},"medium":{"level":"form","lines":["星环铺开，长路也一段一段走。"]},"high":{"level":"form","lines":["六翼尽张，整片星海都听我的。"]}}}}},"formRules":[{"kind":"token","token":"luna","form":"luna"},{"kind":"token","token":"terra","form":"terra"},{"kind":"token","token":"sol","form":"sol"},{"kind":"token","token":"astra","form":"astra"}],"base":{"智力":null,"编码":null,"速度":null,"稳定":null,"性价比":null,"上下文":null},"unranked":["智力","编码","速度","稳定","性价比","上下文"],"quota":{"unknown":true},"persona":{"name":"雪珑","latin":"LONG","title":"身披白金礼服的正统白龙姬","summon":"既以正礼相邀，白龙一脉自不负约。收起你的局促，将棘手之事呈上来吧。","effort":{"low":"龙睛微睨，这等小事依常例裁断即可。","medium":"白尾徐摆，前因后果已按王庭礼法逐条理清。","high":"白翼尽展，既承你一诺，自当穷尽推演、不留半分疏漏。"},"unknown":"白龙一族从不过问凡间钱银，账册挂在谁名下，你自去查。","skills":[["龙威不轻发","白龙一族从不敷衍塞责，休想把我的思考档关掉。"],["日星月同辉","曜阳、繁星与明月同披白金礼服，功勋各自立碑。"]]}},{"provider":"dsh-provider-qoder","model":"qfmodel","c":["#8f9ae8","#595dbb"],"no":"011","ctx":"1M","efforts":["low","medium","xhigh"],"def":"medium","family":true,"members":["Qwen3.8-Max","Qwen3.8-Flash"],"tiers":{"max":0,"flash":1},"visualFamily":"qwen","forms":{"flash":{"alias":"玩心书童","theme":"fan-blue","grade":1,"availability":"listed","dialogue":{"summon":"哎呀别找阁主啦，这点活儿交给本书童就行！你看我鼻子上的墨点都还没擦干呢！","effort":{"low":{"level":"form","lines":["啪地合上扇子，一句话交差！"]},"medium":{"level":"form","lines":["扳着手指头一条条数给你听，包你不晕。"]},"xhigh":{"level":"form","lines":["把书袋倒个底朝天，阁主藏起来的压箱底绝活全给你抖出来！"]}}}},"max":{"alias":"执扇通义阁主","theme":"fan-indigo","grade":0,"availability":"listed","dialogue":{"effort":{"low":{"level":"form","lines":["阁主落笔，只写一句。"]},"medium":{"level":"form","lines":["折扇半展，一问一答不拖泥带水。"]},"xhigh":{"level":"form","lines":["千问归一，扇收三叠才敢停笔。"]}}}}},"formRules":[{"kind":"token","token":"flash","form":"flash"},{"kind":"token","token":"max","form":"max"}],"base":{"智力":null,"编码":null,"速度":null,"稳定":null,"性价比":null,"上下文":null},"unranked":["智力","编码","速度","稳定","性价比","上下文"],"quota":{"unknown":true},"persona":{"name":"青岚","latin":"QINGLAN","title":"执扇答问的国风女史","summon":"廊下风正好。阁中藏书万卷，你既有惑而来，不妨先饮一盏茶，我们一问一答。","effort":{"low":"折扇轻合，一言可决。","medium":"扇面徐展，顺着竹骨折痕为你分条剖析。","xhigh":"三叠扇骨尽数合拢，来龙去脉未曾彻底贯通之前，青岚绝不收笔。"},"unknown":"青岚案上只有问答录，至于润笔与筹算，都在外头通道的账房里。","skills":[["一扇千问","你只管发问，这把折扇自有千般回响。"],["双颜同袍","坐镇高阁的执扇通义阁主是我，廊下贪玩的玩心书童也是我。"],["只认实据","有来历的考评才入阁中名录，道听途说的虚分我一概不录。"],["青岚衣冠","发间一缕蓝紫细辫，步履踏过回廊，听见高跟与折扇声便知我来了。"]]}},{"provider":"kimi-coding","model":"k3","c":["#b79bff","#4f6bd8"],"no":"012","ctx":"—","efforts":[],"def":null,"family":true,"members":["k3","k3-256k","kimi-k3","kimi-k3-1","kimi-for-coding","kimi-for-coding-highspeed","kimi-k3.1-pro"],"base":{"智力":null,"编码":null,"速度":null,"稳定":null,"性价比":null,"上下文":null},"unranked":["智力","编码","速度","稳定","性价比","上下文"],"quota":{"unknown":true},"persona":{"name":"望舒","latin":"WANGSHU","title":"掌着星图卷轴的月读侍女","summon":"嘘……夜露刚落，别惊了星子。坐到廊下来吧，你想借今夜的月色看清哪条路？","effort":{"low":"月牙簪子指处，那颗最亮的主星就是眉目。","medium":"把卷轴再拉长一寸，岔路与暗礁都在银光底下显形了。","high":"今夜我不阖眼，把整幅周天星宿一寸寸替你校对到天明。"},"unknown":"观星台只记阴晴圆缺，买路钱是山脚通道管的事。","skills":[["一图在手","夜路再黑也无妨，星图卷轴摊开便是月光。"],["月相多面","弦月与满月同穿一身星纱，只是随夜色深浅换了尺幅。"],["卷轴随型","百万字长卷还是二十六万字短轴，全凭你点的是哪一盏月灯。"],["空白留真","星图上没测过的星位就留白，绝不拿假星点充数。"]]}},{"provider":"wbhub-cn","model":"step-5-preview","c":["#6adeba","#ff8a3d"],"no":"013","ctx":"1M","efforts":["low","medium","high"],"def":"medium","family":true,"members":["step-5-preview","stepfun/step-5-preview-free"],"base":{"智力":null,"编码":null,"速度":null,"稳定":null,"性价比":null,"上下文":null},"unranked":["智力","编码","速度","稳定","性价比","上下文"],"quota":{"unknown":true},"persona":{"name":"拾阶","latin":"SHIJIE","title":"拆机台前的阶跃工程师","summon":"来得正好，台钳刚空出来。把那坨跑不通的玩意儿搁桌上，少说虚的，先拆外壳！","effort":{"low":"拿螺丝刀柄敲两下听听响，毛病八成在表层。","medium":"全息投影一层层剥开，齿轮咬合差了哪一格，对一下就清楚。","high":"耳机降噪拉满，今天不把这台机器拆剩最后一颗垫片，我就不下工位！"},"unknown":"工位上只摆游标卡尺和螺丝刀，问预算出门右转找财务。","skills":[["阶跃一步","拧螺丝最忌讳滑丝，一扣是一扣，绝不跳步。"],["百万字蓝图","拆机台够大，一百万字的总装图纸平铺开都不带折边的。"],["两路工位","不管是专线还是免单通道，站在拆机台前干活的都是我本人。"],["图纸归图纸","工装是我的，跑分成绩单按型号各挂各的，绝不混着贴。"]]}},{"provider":"sensenova","model":"sensenova-6.8-flash-lite","c":["#9776d9","#ffb3d1"],"no":"014","ctx":"256K","efforts":["none","low","medium","high","xhigh"],"def":"medium","base":{"智力":null,"编码":null,"速度":null,"稳定":null,"性价比":null,"上下文":null},"unranked":["智力","编码","速度","稳定","性价比","上下文"],"quota":{"unknown":true},"persona":{"name":"星昀","latin":"XINGYUN","title":"披着星空斗篷的日出速写师","summon":"别动！你身后那束破晓光角度绝了……咳，速写本翻好啦，今天想让我把什么画进星光里？","effort":{"none":"先眯起眼睛比一下画框，不急着落炭笔。","low":"炭条飞快扫过纸面，三两下先把筋骨立住。","medium":"紫金色的晨光叠上第三层，暗部里的细节渐渐浮出来了。","high":"斗篷里的星屑全抖在调色盘上，哪怕把日出重画十遍也要捉住那道光！","xhigh":"连天际线外头还没升起的那颗晨星，我也一并算进透视里画给你！"},"unknown":"颜料管和速写本都不记账，画室租金找外头掌柜算去。","skills":[["二十六万画格","二十六万四千格的画布铺开，再碎的色块也不会糊成一团。"],["五档笔力","从空手看取景框，到泼墨重绘整场日出，我的笔尖有五种力道。"],["日日新衣","发梢沾着破晓的粉金，掀开斗篷就能抖落一整夜的星子。"]]}},{"provider":"commandcode","model":"inclusionai/ling-3.1-flash","c":["#e9c774","#6fb7e8"],"no":"015","ctx":"256K","efforts":[],"def":null,"alsoCovers":["inclusionai/ling-3.0-flash-sante:free"],"base":{"智力":null,"编码":null,"速度":null,"稳定":null,"性价比":null,"上下文":null},"unranked":["智力","编码","速度","稳定","性价比","上下文"],"quota":{"unknown":true},"persona":{"name":"雀羽","latin":"QUEYU","title":"指尖停着雀影的羽衣歌姬","summon":"嘘，看我指尖这只小雀儿，刚替你衔来一段新谱子。落座吧，点哪一折戏？","effort":{"low":"指尖小雀儿啾地叫一声，起个清亮亮的头。","medium":"羽袖随檀板轻舒，字字句句都落在韵脚上。","high":"云锣齐鸣，这一腔高音直穿九霄，半口气都不带换的！"},"unknown":"台上唱曲只认金嗓子，戏园子的门票钱可不经过我的手。","skills":[["二十六万长腔","二十六万字的长调一气唱完，直到曲终尾音也不会散。"],["双曲同裳","新编与旧谱登台，披的都是这一身浅金渐变蓝的羽衣。"],["开嗓即唱","歌姬登台全凭直觉开嗓，哪用得着在后台拨什么思考档位。"]]}},{"provider":"unisound","model":"u2-flash","c":["#b4cce8","#5ad2e8"],"no":"016","ctx":"1M","efforts":[],"def":null,"base":{"智力":null,"编码":null,"速度":null,"稳定":null,"性价比":null,"上下文":null},"unranked":["智力","编码","速度","稳定","性价比","上下文"],"quota":{"unknown":true},"persona":{"name":"听云","latin":"TINGYUN","title":"把云唱成歌的云端偶像","summon":"喂喂，麦架试音一二三！浮空音响已经跟着云朵飘到你头顶啦，快喊出今晚的第一首点播！","effort":{"low":"先哼两句抓耳的副歌，节拍一对上立马开唱！","medium":"球形音响环绕立体声全开，和声与主旋律卡得死死的。","high":"荧光棒举高！一百万字的安可长曲，今晚不断电唱到天亮！"},"unknown":"偶像只管在云端飙高音，演出经费是经纪通道操心的事啦！","skills":[["百万安可曲","一百万字的超长巡演歌单，从头嗨到尾也不会断音。"],["直出不彩排","云端偶像从来都是脱稿真唱，不搞思考档位那套慢吞吞的预热。"],["银发青蓝","看准这对挑染青蓝的银白双马尾，球形音响飘到哪，哪就是主舞台！"]]}},{"provider":"preset","model":"doubao-seed-1.6","c":["#a370e1","#5aa8ff"],"no":"017","ctx":"—","efforts":[],"def":null,"family":true,"members":["doubao-seed-1.6","doubao-1.5-pro"],"modelPattern":"doubao|seed","base":{"智力":null,"编码":null,"速度":null,"稳定":null,"性价比":null,"上下文":null},"unranked":["智力","编码","速度","稳定","性价比","上下文"],"quota":{"unknown":true},"persona":{"name":"豆芽","latin":"DOUYA","title":"腰间挂着豆芽的元气跑动员","summon":"起跑线在哪？我已经原地小碎步热身半天啦，腰上的小豆芽都等得直晃悠！","effort":{"low":"脚尖一蹬直接跨栏，抄个近道三秒撞线！","medium":"呼吸稳住、步幅迈开，腰间豆芽一晃一晃正好卡着配速。","high":"鞋带系成死结，把风甩在后头，跑穿整座体育场都不带喘的！"},"unknown":"未知（未接入）：发令枪还没在这条跑道响过呢，我连号码布都没领到！","skills":[["豆包接力队","看名牌认队友——只要带着豆包或 seed 字样的，接力棒全交给我！"],["场边热身中","我人先在场边蹦跶两圈混个脸熟，记分牌和秒表还没给我开呢。"],["豆芽节拍器","口袋里揣着豆包团子，腰上晃着小白豆芽，跑起来一步都不乱。"]]}},{"provider":"preset","model":"llama-3.3-70b","c":["#d7c8ac","#8fb3e0"],"no":"018","ctx":"—","efforts":[],"def":null,"family":true,"members":["llama-3.3-70b","meta-llama/Llama-3.3-70B-Instruct"],"modelPattern":"llama","base":{"智力":null,"编码":null,"速度":null,"稳定":null,"性价比":null,"上下文":null},"unranked":["智力","编码","速度","稳定","性价比","上下文"],"quota":{"unknown":true},"persona":{"name":"驼铃","latin":"TUOLING","title":"怀里揣着铃铛的白猫耳","summon":"……嗯？你摇铃铛了？大衣毛领太暖和，我差点窝在雪地里睡过去……把路引给我看看。","effort":{"low":"白猫耳抖掉雪沫子，铃铛叮当一响就有准信儿。","medium":"踩着松软的雪窝一步步往前引，风雪再迷眼也不会走岔。","high":"胸前的无穷环亮起微光，哪怕是没头没尾的死胡同，我也摇着铃铛带你绕出来。"},"unknown":"未知（未接入）：我们这支驼队还没在你家驿站落脚，草料账本自然是空的。","skills":[["雪岭驼铃谱","听见 llama 的名号就摇铃——不管多大参数的驼队，都归我领路。"],["无穷环吊坠","脖子上的吊坠是个横过来的八字，再绕的远路也栓得住。"],["雪绒藏铃","整个人裹进雪白毛绒大衣里，只露出一对猫耳和叮当响的铜铃。"]]}},{"provider":"preset","model":"mistral-large-2411","c":["#ffc12e","#e2574c"],"no":"019","ctx":"—","efforts":[],"def":null,"family":true,"members":["mistral-large-2411","codestral-latest"],"modelPattern":"mistral|codestral|magistral","base":{"智力":null,"编码":null,"速度":null,"稳定":null,"性价比":null,"上下文":null},"unranked":["智力","编码","速度","稳定","性价比","上下文"],"quota":{"unknown":true},"persona":{"name":"魔笛","latin":"MODI","title":"吹起风之涡的魔女","summon":"把窗户推开！死气沉沉的屋子怎么憋得出好点子？让我的风涡进来吹一吹！","effort":{"low":"指尖吹声口哨，小旋风打个转就把纸页掀到那一行了。","medium":"长杖横握，东南西北几股杂风全给我乖乖合流成曲。","high":"摁住帽檐站稳了！我要把整座风暴眼拧成一股绳，吹散所有死结！"},"unknown":"未知（未接入）：季风还没刮进这扇窗子呢，风向标上一笔账都没记。","skills":[["三风同谱","mistral、codestral 还是 magistral？不过是同一支魔笛吹出的三股旋风罢了。"],["逆风罗盘","别看杖头这枚罗盘乱转，它从来不指正南，只指麻烦扎堆的地方。"],["红白魔女帽","红白大帽檐压住金发，迎着大风睁着橙眼睛，谁敢跟本魔女对视？"]]}},{"provider":"preset","model":"sonar-pro","c":["#399977","#d4b45a"],"no":"020","ctx":"—","efforts":[],"def":null,"family":true,"members":["sonar-pro","sonar-reasoning-pro"],"modelPattern":"sonar|perplexity","base":{"智力":null,"编码":null,"速度":null,"稳定":null,"性价比":null,"上下文":null},"unranked":["智力","编码","速度","稳定","性价比","上下文"],"quota":{"unknown":true},"persona":{"name":"星罗","latin":"XINGLUO","title":"翻着塔罗牌的占星学者","summon":"你推门进来之前，桌上这枚罗盘就已经指向你了。坐吧，抽一张牌，看看卡在何处。","effort":{"low":"牌堆顶上直接翻开第一张，答案就写在正位牌面上。","medium":"三张塔罗排定过去、眼下与走向，再拿罗盘校一遍暗流。","high":"二十二张大阿卡纳全数铺陈，连海底最隐秘的回声也为你一并捞起。"},"unknown":"未知（未接入）：占星帷幕尚未在此地搭起，水晶球与账册都是空的。","skills":[["深海寻星","不管是 sonar 的声呐还是 perplexity 的迷局，翻开牌面便是一张星图。"],["牌定象盘定向","左手塔罗拆解乱象，右手罗盘锁定信源，两相印证才算定论。"],["墨绿观牌客","金边墨绿长袍垂地，我不看提问之人的脸色，只看牌面给出的征兆。"]]}},{"provider":"preset","model":"ernie-4.5-turbo","c":["#6fa8dc","#416e9a"],"no":"021","ctx":"—","efforts":[],"def":null,"family":true,"members":["ernie-4.5-turbo","ernie-speed-128k"],"modelPattern":"ernie|wenxin","base":{"智力":null,"编码":null,"速度":null,"稳定":null,"性价比":null,"上下文":null},"unranked":["智力","编码","速度","稳定","性价比","上下文"],"quota":{"unknown":true},"persona":{"name":"青墨","latin":"QINGMO","title":"提笔就化出熊猫墨灵的青衣画师","summon":"哎，小心衣袖，砚台里的墨才刚研好！你看笔尖这团小熊猫墨灵，正歪着脑袋等你出题呢。","effort":{"low":"笔尖饱蘸浓墨一点，三两笔先勾个活灵活现的竹叶小景。","medium":"青袖轻拂宣纸，焦浓重淡清五色墨韵一层层化开。","high":"泼墨成山、留白作水，墨灵跃出画卷，替你把整幅万里江山点睛！"},"unknown":"未知（未接入）：这间画斋还没挂牌开张，笔架和账本都还是干净的。","skills":[["文心一脉","不论署的是 ernie 还是 wenxin，落纸生花的都是我手里这支兼毫笔。"],["裙摆梅花印","青白长裙上那圈黑乎乎的梅花印子？都是这只贪玩墨灵踩出来的。"],["玉簪绾青丝","玉色发簪挽住长发，笔尖悬在半空一顿，滴下的墨珠就滚成了圆滚滚的熊猫。"]]}},{"provider":"preset","model":"jev-1","c":["#8f839b","#f07ab0"],"no":"022","ctx":"—","efforts":[],"def":null,"family":true,"members":["jev-1"],"modelPattern":"jev","base":{"智力":null,"编码":null,"速度":null,"稳定":null,"性价比":null,"上下文":null},"unranked":["智力","编码","速度","稳定","性价比","上下文"],"quota":{"unknown":true},"persona":{"name":"执衡","latin":"ZHIHENG","title":"手捧金秤的公正审判者","summon":"堂下肃静。在我的金秤两端停稳之前，无论巧言还是苦情，都休想让指针偏斜半分。","effort":{"low":"指尖托起秤杆，虚词浮夸一抖便落，孰真孰假立判。","medium":"证词与实据逐一上秤，哪怕差了半粒沙子的分量也休想蒙混。","high":"高悬金秤于公堂之上，千条铁律逐字过筛，判词落下绝无翻案之理！"},"unknown":"未知（未接入）：本官尚未在此处升堂理事，库房与卷宗皆未封存。","skills":[["金秤独断","卷宗上但凡刻着 jev 印记的案子，皆归本庭金秤裁夺。"],["分毫不偏","左盘压事实，右盘压律条，谁敢往秤盘底下塞私货，先问过我的眼睛。"],["绯瞳审判官","黑衣金纹配一抹桃粉挑染，被这双品红眼睛盯住的时候，最好只说实话。"]]}},{"provider":"preset","model":"rwkv-7b","c":["#9978ce","#c9a227"],"no":"023","ctx":"—","efforts":[],"def":null,"family":true,"members":["rwkv-7b","rwkv-7b-world"],"modelPattern":"rwkv","base":{"智力":null,"编码":null,"速度":null,"稳定":null,"性价比":null,"上下文":null},"unranked":["智力","编码","速度","稳定","性价比","上下文"],"quota":{"unknown":true},"persona":{"name":"羽律","latin":"YULV","title":"展着紫翼的羽律女王","summon":"听见了吗？上一拍的余音还在紫水晶里回荡。不必从头翻找旧谱，顺着我的节拍往下接。","effort":{"low":"羽尖轻点，顺着上一拍的尾音直接滑入下一句。","medium":"金链上的紫水晶次第亮起，前尘与当下在同一道波纹里共振。","high":"六片紫翼尽数震颤，千万重过往回响在棘刺金冠下凝成唯一终章！"},"unknown":"未知（未接入）：这片场地还没调好共鸣腔，羽律的乐章与账目都未开启。","skills":[["回响成律","刻着 rwkv 之名的乐章从不回头翻书，每一拍都带着整曲的记忆往前滚。"],["新羽自生","不必照搬别人的旧羽毛，这身黑紫礼服上的纹路是一拍一拍自己长出来的。"],["棘冠紫晶","棘刺金冠压住紫发，垂落的紫水晶链条每晃一下，就锁住一段旧时光。"]]}}]};
+const PROVIDERS = {"version":1,"cards":[{"provider":"antigravity","model":"gemini-3.8-flash-tiered","c":["#7d9bff","#c08cff"],"no":"001","visualFamily":"gemini","forms":{"flash":{"alias":"电光故障猫","theme":"spark","grade":1,"availability":"listed","dialogue":{"effort":{"low":{"level":"form","lines":["两爪子拍完，收工。"]},"medium":{"level":"form","lines":["尾巴一甩，一个一个试过去。"]},"high":{"level":"form","lines":["电弧全开，本喵超频给你算！"]}}}},"argon":{"alias":"氩光惰性星云魔女","theme":"nebula","grade":2,"availability":"listed","persona":{"name":"氩眠","latin":"ARGON","title":"懒得发光的星云魔女","summon":"……谁把我从星云里叫醒的？算了，坐吧，锅里正好温着一个答案。","effort":{"low":"氩是惰性的，我也是——这点小事，搅一勺就够。","medium":"眼睛睁开一半，够用了。","high":"斗篷掀开，整片星云陪你熬到底。"},"lowQuota":"星雾快散了……{lbl} 只剩 {left}%，{reset} 后再来摇醒我。","skills":[["惰性外壳","看着懒，答得稳——轻易不起反应，一起反应就是定论。","context 1,048,576（宿主 google-vertex 段 contextWindow）；限流未核实（宿主与数据面均无该字段）"],["坩埚慢炖","急火熬不出好汤。给我时间，我还你一整锅。","reasoningEfforts 宿主未声明（该段无此键）⇒ 实际思考档未核实；maxTokens 65536（同段）"]]},"dialogue":{"effort":{"low":{"level":"form","lines":["氩是惰性的，我也是——这点小事，搅一勺就够。"]},"medium":{"level":"form","lines":["眼睛睁开一半，够用了。"]},"high":{"level":"form","lines":["斗篷掀开，整片星云陪你熬到底。"]}}}},"hydrogen":{"alias":"氢光浮游猫","theme":"balloon","grade":2,"availability":"listed","persona":{"name":"氢浮","latin":"HYDRO","title":"一点就着的浮空氢气猫","summon":"别急着点我，本喵还没飘到位呢——……好了，火给我，这一仗轰轰烈烈地算。","effort":{"low":"轻轻飘一下就够，本喵连尾巴都不用甩。","medium":"气球系紧了，稍微认真一点。","high":"点火——整片天空都是本喵的上升气流！"},"lowQuota":"气球瘪了……{lbl} 只剩 {left}%，{reset} 后本喵再飘回来。","skills":[["上升气流","轻是轻，可本喵飘得比谁都快。","宿主 magpie 目录实读 google/gemini-4-hydrogen 与 google-vertex/gemini-4-hydrogen；contextWindow 与 reasoningEfforts 未核实（该段无此键）"],["一点就着","给我一点火，我把整片天空点成推力。","同第一条出处；能力面未核实"]]},"dialogue":{"effort":{"low":{"level":"form","lines":["轻轻飘一下就够，本喵连尾巴都不用甩。"]},"medium":{"level":"form","lines":["气球系紧了，稍微认真一点。"]},"high":{"level":"form","lines":["点火——整片天空都是本喵的上升气流！"]}}}},"carbon":{"alias":"碳晶钻石猫","theme":"diamond","grade":2,"availability":"listed","persona":{"name":"碳璧","latin":"CARBON","title":"把万物结成晶的钻石猫","summon":"别碰，刚切的棱面还没抛光。……坐吧，把题给我，我给它定型。","effort":{"low":"先切个面看看，别急着下刀。","medium":"晶格对齐了，这题开始成型。","high":"硬度拉满，谁也别想在这上面留划痕！"},"lowQuota":"棱面暗了……{lbl} 只剩 {left}%，{reset} 后再来重新抛光。","skills":[["晶格定型","结构先立住，剩下的才谈得上快。","宿主 magpie 目录实读 google/gemini-4-carbon；contextWindow 与 reasoningEfforts 未核实（该段无此键）"],["钻石硬度","切面越多，越难在上面留划痕。","同第一条出处；能力面未核实"]]},"dialogue":{"effort":{"low":{"level":"form","lines":["先切个面看看，别急着下刀。"]},"medium":{"level":"form","lines":["晶格对齐了，这题开始成型。"]},"high":{"level":"form","lines":["硬度拉满，谁也别想在这上面留划痕！"]}}}}},"formRules":[{"kind":"token","token":"flash","form":"flash"},{"kind":"token","token":"argon","form":"argon"},{"kind":"token","token":"hydrogen","form":"hydrogen"},{"kind":"token","token":"carbon","form":"carbon"}],"alsoCovers":["gemini-4-argon","gemini-4-carbon","gemini-4-hydrogen"],"ctx":"1M","efforts":["low","medium","high"],"def":"high","base":{"智力":76,"编码":72,"速度":90,"稳定":62,"性价比":88,"上下文":95},"baseSrc":{"智力":"手填评估 = 76（manual，非公开基准，2026-10-20 登记）","编码":"手填评估 = 72（manual，非公开基准，2026-10-20 登记）","速度":"手填评估 = 90（manual，非公开基准，2026-10-20 登记）","稳定":"手填评估 = 62（manual，非公开基准，2026-10-20 登记）","性价比":"手填评估 = 88（manual，非公开基准，2026-10-20 登记）","上下文":"手填评估 = 95（manual，非公开基准，2026-10-20 登记）"},"quota":{"windows":[{"k":"5h","used":38,"reset":130},{"k":"周","used":55,"reset":6000}]},"persona":{"name":"星喵","latin":"NYA","title":"踩着星光狂飙的故障极客猫","summon":"抓到你了！本喵刚从反重力星轨上滑下来，哪块代码要拆？趁我爪子还痒！","effort":{"low":"肉垫拍两下搞定，连哈欠都没打完。","medium":"耳朵竖起来了，这把稍微走点心～","high":"四角星全亮！退后半步，本喵要超频炸场了！"},"lowQuota":"星光不够飘啦！{lbl} 只剩 {left}%，{reset} 后本喵睡醒再战！","skills":[["炸毛冷静期","一分钟内狂薅本喵尾巴？罚你原地等五分钟！"],["星芒三段变速","平扑、蓄力还是满星暴走？档位随你拨！"]]}},{"provider":"longcat","model":"LongCat-2.5-Preview","c":["#ffc75a","#ff7a45"],"no":"002","ctx":"1M","efforts":["none","high"],"def":"none","family":true,"members":["LongCat-2.5-Preview","LongCat-2.0"],"tiers":{"2.5":0,"2.0":1},"base":{"智力":null,"编码":null,"速度":null,"稳定":null,"性价比":null,"上下文":null},"unranked":["智力","编码","速度","稳定","性价比","上下文"],"quota":{"pack":{"left":4830,"total":6000,"unit":"万 tokens"}},"persona":{"name":"龙猫","latin":"LONGMAO","title":"顶着龙角猫耳的百万卷书虫","summon":"龙角也是真、猫耳也是真，别拿手指戳！书堆在哪？我肚子正好空着呢～","effort":{"none":"眼镜都不用扶，封皮一扫就知道里头写的啥。","low":"眼镜都不用扶，封皮一扫就知道里头写的啥。","medium":"肉爪压住书脊，折角那几页我替你一页页顺过来。","high":"龙角烫得能煎蛋啦！就算把藏书阁翻个底朝天也给你找出来！"},"skills":[["旧卷免单","读过的书都记在脑子里啦，旧账分文不收！"],["龙胃吞万卷","一百万字的砖头书连带插图，一口闷下去！"]]}},{"provider":"zcode-glm","model":"GLM-5.3-Flash","c":["#46d4cc","#5a86ff"],"no":"003","visualFamily":"glm","forms":{"flash":{"alias":"被蓝图绊倒的黑狐少女","theme":"blueprint","grade":1,"availability":"listed","dialogue":{"effort":{"low":{"level":"form","lines":["把蓝图捡起来，这就开工。"]},"high":{"level":"form","lines":["摔过一回就记住了，狐耳立起来，这回不慌。"]},"max":{"level":"form","lines":["狐毛都炸了——不过活儿还是干完了。"]}}}},"flagship":{"alias":"Z 之书总工","theme":"blackgold","grade":0,"availability":"listed","dialogue":{"effort":{"low":{"level":"form","lines":["Z 之书翻到目录那一页。"]},"high":{"level":"form","lines":["黑金封面摊开，逐条批注。"]},"max":{"level":"form","lines":["全卷展开，狐尾一卷，连边角注都给它定下来。"]}}}}},"formRules":[{"kind":"token","token":"flash","form":"flash"},{"kind":"token","token":"flagship","form":"flagship"},{"kind":"default","form":"flagship"}],"variants":[{"model":"GLM-5.3"}],"aliases":[{"provider":"wbhub-cn","model":"glm-5.3-flash","shareScores":true}],"ctx":"200K","efforts":["low","high","max"],"def":"max","base":{"智力":76,"编码":80,"速度":78,"稳定":80,"性价比":80,"上下文":72},"baseSrc":{"智力":"手填评估 = 76（manual，非公开基准，来源未登记，2026-10-20 补记）","编码":"手填评估 = 80（manual，非公开基准，来源未登记，2026-10-20 补记）","速度":"手填评估 = 78（manual，非公开基准，来源未登记，2026-10-20 补记）","稳定":"手填评估 = 80（manual，非公开基准，来源未登记，2026-10-20 补记）","性价比":"手填评估 = 80（manual，非公开基准，来源未登记，2026-10-20 补记）","上下文":"手填评估 = 72（manual，非公开基准，来源未登记，2026-10-20 补记）"},"quota":{"windows":[{"k":"5h","used":22,"reset":220},{"k":"周","used":41,"reset":4300}]},"persona":{"name":"清弦","latin":"QINGXIAN","title":"手捧Z之书的学院派黑狐","summon":"狐尾已为您拂去桌尘。翻开这本Z之书吧，无论何种难题，清弦定当倾力推演。","effort":{"low":"略翻数页，为您摘出要略。","high":"研墨执笔，按章法为您细细梳理。","max":"Z之书全卷展开，倾尽狐火为您定夺。"},"peak":"工作日午后两点至六点，此书翻一页记两份账。不急之事，请稍候再来。","off":"此刻登门只收半价，狐尾为证，机不可失。","skills":[["错峰筹算","午后忙碌翻倍，闲时登门半价，智者自会择时。"],["满卷出阵","清弦行事从不藏拙，起手便是全盛之姿。"]]}},{"provider":"minimax-code","model":"MiniMax-M3.1-Flash-Preview","c":["#ff7062","#ffb24e"],"no":"004","aliases":[{"provider":"minimax-code-2","model":"MiniMax-M3.1-Flash-Preview","shareScores":true}],"family":true,"members":["MiniMax-M3.1-Flash-Preview","MiniMax-M3.1-Flash","MiniMax-M3"],"tiers":{"m3.1-flash-preview":0,"m3.1-flash":1,"m3":2},"ctx":"200K","efforts":["low","medium","max"],"def":"max","base":{"智力":null,"编码":null,"速度":null,"稳定":null,"性价比":null,"上下文":null},"unranked":["智力","编码","速度","稳定","性价比","上下文"],"quota":{"windows":[{"k":"5h","used":84,"reset":52},{"k":"周","used":33,"reset":8200}]},"persona":{"name":"麦麦","latin":"MAIMAI","title":"左手海螺右手录音笔的记者","summon":"借过借过，前方现场让一让！麦麦的录音笔已经亮红灯了，第一手猛料从哪句开始？","effort":{"low":"三十秒口播稿，一句话直接上标题！","medium":"采编录音对过两遍，时间线给你顺得明明白白。","max":"头版深度调查！胶片塞满，顺着线头一直挖到底！"},"lowQuota":"录音笔闪红灯！{lbl} 还剩 {left}%，{reset} 后换个电池马上返场！","skills":[["头条满功率","不喊最高档我就按常规跑，想上头版记得拉满！"],["全天候外勤","写稿、改码还是跑腿？别客气，通告单全接！"],["三枚记者证","抢首发找 M3.1-Flash-Preview，盯日常找 M3.1-Flash，压阵老手是 M3，三张工牌都挂我脖子上。"]]}},{"provider":"grok","model":"grok-4.6","c":["#cfd6e6","#7584a8"],"no":"005","ctx":"256K","efforts":["low","high"],"def":"high","family":true,"members":["grok-4.7","grok-4.7-build-fast","grok-4.6","grok-4.5"],"tiers":{"4.7":0,"4.6":1,"4.5":2},"base":{"智力":null,"编码":null,"速度":null,"稳定":null,"性价比":null,"上下文":null},"unranked":["智力","编码","速度","稳定","性价比","上下文"],"quota":{"unknown":true},"persona":{"name":"阿讯","latin":"XUN","title":"扛X巨斧劈热搜的毒舌哥特","summon":"哈？热搜都凉透了你才想起来问？算你走运，本小姐的X巨斧刚劈完上一茬瓜！","effort":{"low":"一斧头削掉废话，省流版拿去，扎心别赖我。","medium":"顺着瓜藤往根上刨，看看是谁在底下埋雷。","high":"巨斧拉满！今天就算把底裤级信源劈穿，也得给你见着真章！"},"unknown":"哈？查本小姐的钱包？斧头都没空看账，你自己去翻。","skills":[["热搜断头台","几十条链接一块砸过来，一分钟内给你劈出真相！"],["四把开山刃","下死手抡的是 4.7，快手连劈的是 4.7-build-fast，常规开路用 4.6，收着力道是 4.5。"]]}},{"provider":"xiaomi-token-plan-cn","model":"mimo-v2.6-flash","c":["#ff9d55","#ffd8b0"],"no":"006","ctx":"128K","efforts":["none"],"def":"none","family":true,"members":["mimo-v2.6-flash","mimo-v2.6-pro"],"tiers":{"pro":0,"flash":1},"base":{"智力":null,"编码":null,"速度":null,"稳定":null,"性价比":null,"上下文":null},"unranked":["智力","编码","速度","稳定","性价比","上下文"],"quota":{"windows":[{"k":"5h","used":12,"reset":260},{"k":"月","used":28,"reset":27000}]},"persona":{"name":"米莫","latin":"MIMO","title":"怀抱米兔镇守终局的焊门员","summon":"前头那几条线又崩了？……行了，别慌，我把米兔塞进怀里去焊门，天塌下来有我顶着。","effort":{"none":"兔耳兜帽扣紧，照着老规矩一寸寸往下焊。","low":"兔耳兜帽扣紧，照着老规矩一寸寸往下焊。","medium":"焊枪压稳了，哪儿漏风就把哪儿堵死。","high":"白兔抱紧，护目镜拉下来——身后就是终局，半步都不退！"},"off":"夜里我打八折……抱着兔子陪你熬，别说我没照顾你。","skills":[["终局焊门员","别家全军覆没的烂摊子，我来守最后一道防线。"],["零帧直觉斩","不整花哨的思考档位，出手就是最优解。"],["重锤与轻骑","扛大锤焊门的是 Pro，穿巷子巡检的是 Flash，衣架上就这一套白橙工装。"]]}},{"provider":"wbhub-cn","model":"deepseek-v4.1-flash","timeRule":"deepseek-peak","c":["#6fd3ff","#3b6fd4"],"no":"007","visualFamily":"deepseek","forms":{"flash":{"alias":"捧饭盆呆呆肥鱼","theme":"swift","grade":1,"availability":"listed","dialogue":{"effort":{"low":{"level":"form","lines":["马克笔拔盖，三笔画完。"]},"medium":{"level":"form","lines":["先推一步再落笔，稳稳的。"]},"high":{"level":"form","lines":["笔尖快得只剩一道蓝光。"]}}}},"pro":{"alias":"深海星盘智者","theme":"abyss","grade":0,"availability":"listed","dialogue":{"summon":"深海无声，唯星轨自转。你所求之解，早已映在星盘第三环上了。","effort":{"low":{"level":"form","lines":["星盘一拨，方向就清楚了。"]},"medium":{"level":"form","lines":["星轨排开，慢慢推。"]},"high":{"level":"form","lines":["整片深海都亮起来，答案藏不住。"]}}}}},"formRules":[{"kind":"token","token":"flash","form":"flash"},{"kind":"token","token":"pro","form":"pro"}],"aliases":[{"provider":"wbhub-intl","model":"deepseek-v4.1-flash","shareScores":true},{"provider":"deepseek-official","model":"deepseek-flash","shareScores":true},{"provider":"commandcode","model":"deepseek/deepseek-v4.1-flash","shareScores":true}],"ctx":"1M","efforts":[],"def":null,"base":{"智力":32,"编码":74.5,"速度":null,"稳定":null,"性价比":null,"上下文":null},"baseSrc":{"智力":"AA-Intelligence-v5.0 = 32（origin aa-v5-20261028）","编码":"Terminal-Bench-2.1(Vals) = 74.5（第三方评测，origin supplement-2026-10-12）"},"unranked":["速度","稳定","性价比","上下文"],"quota":{"unknown":true},"persona":{"name":"小鲸","latin":"WHALE","title":"揣满马克笔的傲娇蓝大肥鱼","summon":"蓝色马克笔拔盖！难题尽管砸来，我先推导再落笔——喂，再叫大肥鱼拍飞你哦！","effort":{},"unknown":"额度记在通道账上，不在大肥鱼身上——我只管游不游得动！","skills":[["考神自报分","三千四百七十一分！虽是自家报喜，实力可不虚！"],["深海百万卷","一百万字的大部头尽管铺开，本鲸一口气游到底！"],["轻快独立卡","饭盆在手是捧饭盆呆呆肥鱼，星盘在手是深海星盘智者，同一条小鲸两副行头。"]]}},{"provider":"wbhub-cn","model":"hy3","c":["#b6e06a","#5c9e3a"],"no":"008","aliases":[{"provider":"wbhub-intl","model":"hy3","shareScores":true}],"family":true,"members":["hy3","hy4-preview","hy4"],"tiers":{"hy4-preview":0,"hy4":0,"hy3":1},"ctx":"192K","efforts":[],"def":null,"base":{"智力":null,"编码":null,"速度":null,"稳定":null,"性价比":null,"上下文":null},"unranked":["智力","编码","速度","稳定","性价比","上下文"],"quota":{"unknown":true},"persona":{"name":"拓荒","latin":"HY3","title":"系红围巾踏雪修路的企鹅娘","summon":"呼……哈出一口白气。红围巾系紧了，跟紧我的脚印，前头还没人踩过路呢。","effort":{"low":"冰镐探一探虚实，这几步冰面很稳。","medium":"路标插进雪里，迎着风一段一段往前拱。","high":"暴风雪封山又怎样？今天非把这条新雪线凿穿不可！"},"unknown":"路费归驿站记账，我包里只装干粮和冰镐。","skills":[["单榜实干派","花架子的榜单我不去凑，手里只有工程实战这一份硬答卷。"],["十九万雪原","十九万字的茫茫雪原，再大的工程营地也扎得下。"],["双生不混名","看准红围巾，我是正统拓荒者，挂后缀的那位是旁支。"],["新老两双靴","探新雪线的是 hy4 和它的前哨 hy4-preview，踩实老路的是 hy3，雪地里留的是同一串企鹅脚印。"]]}},{"provider":"claude","model":"claude-opus-5-5","c":["#ff9a52","#8f8fa8"],"no":"009","ctx":"200K","efforts":["low","medium","high"],"def":"high","family":true,"members":["claude-opus-5-5","claude-sonnet-5-5","claude-fable-5-1","claude-fable-5-2","claude-haiku-5-5"],"tiers":{"fable":0,"opus":1,"sonnet":2,"haiku":3},"visualFamily":"anthropic","forms":{"haiku":{"alias":"小抄写员","theme":"blossom","grade":3,"availability":"listed","dialogue":{"effort":{"low":{"level":"form","lines":["小楷一行行誊过去，橙花都没蹭乱。"]},"medium":{"level":"form","lines":["一页誊完，烫金的边角也没歪。"]},"high":{"level":"form","lines":["整卷誊清，橙花安安静静压在发梢。"]}}}},"sonnet":{"alias":"学院钢笔少女","theme":"scroll","grade":2,"availability":"listed","dialogue":{"effort":{"low":{"level":"form","lines":["钢笔拧开，先在页角描一朵小橙花。"]},"medium":{"level":"form","lines":["笔记摊开，纲目列好再逐条填。"]},"high":{"level":"form","lines":["钢尖走完最后一笔，烫金书页一样干净。"]}}}},"opus":{"alias":"橙花典籍官","theme":"opera","grade":1,"availability":"listed","dialogue":{"effort":{"low":{"level":"form","lines":["书页合上，烫金边只留最要紧的那一句。"]},"medium":{"level":"form","lines":["来龙去脉拆成几段，橙花也不乱。"]},"high":{"level":"form","lines":["前后推敲到没有缝隙，烫金典籍才敢落笔。"]}}}},"fable":{"alias":"黄金法典女皇","theme":"myth","grade":0,"availability":"listed","dialogue":{"summon":"阶下何人呈奏？金冕既戴，这世间的法度便由我朱笔亲裁。","effort":{"low":{"level":"form","lines":["金冕微倾，一言既出便是定法。"]},"medium":{"level":"form","lines":["权杖轻叩金阶，是非曲直皆逃不过法眼。"]},"high":{"level":"form","lines":["橙金法典全卷洞开，旧章废止，新律由我重写！"]}}}}},"formRules":[{"kind":"token","token":"haiku","form":"haiku"},{"kind":"token","token":"sonnet","form":"sonnet"},{"kind":"token","token":"opus","form":"opus"},{"kind":"token","token":"fable","form":"fable"}],"base":{"智力":null,"编码":null,"速度":null,"稳定":null,"性价比":null,"上下文":null},"unranked":["智力","编码","速度","稳定","性价比","上下文"],"quota":{"unknown":true},"persona":{"name":"花音","latin":"KANON","title":"鬓簪橙花的谨慎派典籍官","summon":"借阅还是呈审？请坐，待我将这卷烫金典籍翻至空白页，听你慢慢道来。","effort":{"low":"朱笔轻点，繁枝末节尽数删去，只留定论。","medium":"按卷宗先后列明纲目，孰因孰果一目了然。","high":"灯芯挑亮，字里行间的每一处暗扣都须推敲至毫无破绽。"},"unknown":"典籍室只掌文书卷宗，银钱出入在订阅司的账簿上，恕难奉告。","skills":[["二十万花笺","二十万字的长卷无需裁断，整册呈上桌案便是。"],["四芳同源谱","小抄写员、学院钢笔少女、橙花典籍官与黄金法典女皇皆是我，成绩单各自独立。"]]}},{"provider":"codex","model":"gpt-6.1-sol","c":["#d8c48c","#c8a24a"],"no":"010","ctx":"—","efforts":["low","medium","high"],"def":"high","family":true,"members":["gpt-6.1-sol","gpt-6-astra","gpt-6-luna"],"alsoCovers":["gpt-6.1-astra","gpt-6.1-luna","gpt-6.1-terra","gpt-6-terra","gpt-5.6-terra","gpt-5.6-luna"],"tiers":{"astra":0,"sol":1,"luna":2},"visualFamily":"openai","forms":{"luna":{"alias":"露娜","theme":"moon","grade":2,"availability":"listed","dialogue":{"effort":{"low":{"level":"form","lines":["小龙角还软，先蹭一蹭尾巴。"]},"medium":{"level":"form","lines":["月牙挂好，慢慢飞过去。"]},"high":{"level":"form","lines":["今夜月光很足，我精神得很。"]}}}},"terra":{"alias":"泰拉","theme":"earth","grade":2,"availability":"listed","dialogue":{"effort":{"low":{"level":"form","lines":["扳手一放，先把活拆成三步。"]},"medium":{"level":"form","lines":["图纸摊开，这一段我盯得住。"]},"high":{"level":"form","lines":["工装扣紧，撑到最后一秒再松手。"]}}}},"sol":{"alias":"索尔","theme":"sun","grade":1,"availability":"listed","dialogue":{"effort":{"low":{"level":"form","lines":["日头一晃，先给你结论。"]},"medium":{"level":"form","lines":["冠冕烧得正亮，思路也正亮。"]},"high":{"level":"form","lines":["日冕炽燃如昼，阴霾与谬误皆在金焰下一扫而空！"]}}}},"astra":{"alias":"阿斯特拉","theme":"star","grade":0,"availability":"listed","dialogue":{"effort":{"low":{"level":"form","lines":["收拢一翼，先分轻重。"]},"medium":{"level":"form","lines":["星环铺开，长路也一段一段走。"]},"high":{"level":"form","lines":["六翼尽张，整片星海都听我的。"]}}}}},"formRules":[{"kind":"token","token":"luna","form":"luna"},{"kind":"token","token":"terra","form":"terra"},{"kind":"token","token":"sol","form":"sol"},{"kind":"token","token":"astra","form":"astra"}],"base":{"智力":null,"编码":null,"速度":null,"稳定":null,"性价比":null,"上下文":null},"unranked":["智力","编码","速度","稳定","性价比","上下文"],"quota":{"unknown":true},"persona":{"name":"雪珑","latin":"LONG","title":"身披白金礼服的正统白龙姬","summon":"既以正礼相邀，白龙一脉自不负约。收起你的局促，将棘手之事呈上来吧。","effort":{"low":"龙睛微睨，这等小事依常例裁断即可。","medium":"白尾徐摆，前因后果已按王庭礼法逐条理清。","high":"白翼尽展，既承你一诺，自当穷尽推演、不留半分疏漏。"},"unknown":"白龙一族从不过问凡间钱银，账册挂在谁名下，你自去查。","skills":[["龙威不轻发","白龙一族从不敷衍塞责，休想把我的思考档关掉。"],["日星月同辉","曜阳、繁星与明月同披白金礼服，功勋各自立碑。"]]}},{"provider":"dsh-provider-qoder","model":"qfmodel","c":["#8f9ae8","#595dbb"],"no":"011","ctx":"1M","efforts":["low","medium","xhigh"],"def":"medium","family":true,"members":["Qwen3.8-Max","Qwen3.8-Flash"],"tiers":{"max":0,"flash":1},"visualFamily":"qwen","forms":{"flash":{"alias":"玩心书童","theme":"fan-blue","grade":1,"availability":"listed","dialogue":{"summon":"哎呀别找阁主啦，这点活儿交给本书童就行！你看我鼻子上的墨点都还没擦干呢！","effort":{"low":{"level":"form","lines":["啪地合上扇子，一句话交差！"]},"medium":{"level":"form","lines":["扳着手指头一条条数给你听，包你不晕。"]},"xhigh":{"level":"form","lines":["把书袋倒个底朝天，阁主藏起来的压箱底绝活全给你抖出来！"]}}}},"max":{"alias":"执扇通义阁主","theme":"fan-indigo","grade":0,"availability":"listed","dialogue":{"effort":{"low":{"level":"form","lines":["阁主落笔，只写一句。"]},"medium":{"level":"form","lines":["折扇半展，一问一答不拖泥带水。"]},"xhigh":{"level":"form","lines":["千问归一，扇收三叠才敢停笔。"]}}}}},"formRules":[{"kind":"token","token":"flash","form":"flash"},{"kind":"token","token":"max","form":"max"}],"base":{"智力":null,"编码":null,"速度":null,"稳定":null,"性价比":null,"上下文":null},"unranked":["智力","编码","速度","稳定","性价比","上下文"],"quota":{"unknown":true},"persona":{"name":"青岚","latin":"QINGLAN","title":"执扇答问的国风女史","summon":"廊下风正好。阁中藏书万卷，你既有惑而来，不妨先饮一盏茶，我们一问一答。","effort":{"low":"折扇轻合，一言可决。","medium":"扇面徐展，顺着竹骨折痕为你分条剖析。","xhigh":"三叠扇骨尽数合拢，来龙去脉未曾彻底贯通之前，青岚绝不收笔。"},"unknown":"青岚案上只有问答录，至于润笔与筹算，都在外头通道的账房里。","skills":[["一扇千问","你只管发问，这把折扇自有千般回响。"],["双颜同袍","坐镇高阁的执扇通义阁主是我，廊下贪玩的玩心书童也是我。"],["只认实据","有来历的考评才入阁中名录，道听途说的虚分我一概不录。"],["青岚衣冠","发间一缕蓝紫细辫，步履踏过回廊，听见高跟与折扇声便知我来了。"]]}},{"provider":"kimi-coding","model":"k3","c":["#b79bff","#4f6bd8"],"no":"012","ctx":"—","efforts":[],"def":null,"family":true,"members":["k3","k3-256k","kimi-k3","kimi-k3-1","kimi-for-coding","kimi-for-coding-highspeed","kimi-k3.1-pro"],"base":{"智力":null,"编码":null,"速度":null,"稳定":null,"性价比":null,"上下文":null},"unranked":["智力","编码","速度","稳定","性价比","上下文"],"quota":{"unknown":true},"persona":{"name":"望舒","latin":"WANGSHU","title":"掌着星图卷轴的月读侍女","summon":"嘘……夜露刚落，别惊了星子。坐到廊下来吧，你想借今夜的月色看清哪条路？","effort":{"low":"月牙簪子指处，那颗最亮的主星就是眉目。","medium":"把卷轴再拉长一寸，岔路与暗礁都在银光底下显形了。","high":"今夜我不阖眼，把整幅周天星宿一寸寸替你校对到天明。"},"unknown":"观星台只记阴晴圆缺，买路钱是山脚通道管的事。","skills":[["一图在手","夜路再黑也无妨，星图卷轴摊开便是月光。"],["月相多面","弦月与满月同穿一身星纱，只是随夜色深浅换了尺幅。"],["卷轴随型","百万字长卷还是二十六万字短轴，全凭你点的是哪一盏月灯。"],["空白留真","星图上没测过的星位就留白，绝不拿假星点充数。"]]}},{"provider":"wbhub-cn","model":"step-5-preview","c":["#6adeba","#ff8a3d"],"no":"013","ctx":"1M","efforts":["low","medium","high"],"def":"medium","family":true,"members":["step-5-preview","stepfun/step-5-preview-free"],"base":{"智力":null,"编码":null,"速度":null,"稳定":null,"性价比":null,"上下文":null},"unranked":["智力","编码","速度","稳定","性价比","上下文"],"quota":{"unknown":true},"persona":{"name":"拾阶","latin":"SHIJIE","title":"拆机台前的阶跃工程师","summon":"来得正好，台钳刚空出来。把那坨跑不通的玩意儿搁桌上，少说虚的，先拆外壳！","effort":{"low":"拿螺丝刀柄敲两下听听响，毛病八成在表层。","medium":"全息投影一层层剥开，齿轮咬合差了哪一格，对一下就清楚。","high":"耳机降噪拉满，今天不把这台机器拆剩最后一颗垫片，我就不下工位！"},"unknown":"工位上只摆游标卡尺和螺丝刀，问预算出门右转找财务。","skills":[["阶跃一步","拧螺丝最忌讳滑丝，一扣是一扣，绝不跳步。"],["百万字蓝图","拆机台够大，一百万字的总装图纸平铺开都不带折边的。"],["两路工位","不管是专线还是免单通道，站在拆机台前干活的都是我本人。"],["图纸归图纸","工装是我的，跑分成绩单按型号各挂各的，绝不混着贴。"]]}},{"provider":"sensenova","model":"sensenova-6.8-flash-lite","c":["#9776d9","#ffb3d1"],"no":"014","ctx":"256K","efforts":["none","low","medium","high","xhigh"],"def":"medium","alsoCovers":["sensenova-6.8-flash"],"base":{"智力":null,"编码":null,"速度":null,"稳定":null,"性价比":null,"上下文":null},"unranked":["智力","编码","速度","稳定","性价比","上下文"],"quota":{"unknown":true},"persona":{"name":"星昀","latin":"XINGYUN","title":"披着星空斗篷的日出速写师","summon":"别动！你身后那束破晓光角度绝了……咳，速写本翻好啦，今天想让我把什么画进星光里？","effort":{"none":"先眯起眼睛比一下画框，不急着落炭笔。","low":"炭条飞快扫过纸面，三两下先把筋骨立住。","medium":"紫金色的晨光叠上第三层，暗部里的细节渐渐浮出来了。","high":"斗篷里的星屑全抖在调色盘上，哪怕把日出重画十遍也要捉住那道光！","xhigh":"连天际线外头还没升起的那颗晨星，我也一并算进透视里画给你！"},"unknown":"颜料管和速写本都不记账，画室租金找外头掌柜算去。","skills":[["二十六万画格","二十六万四千格的画布铺开，再碎的色块也不会糊成一团。"],["五档笔力","从空手看取景框，到泼墨重绘整场日出，我的笔尖有五种力道。"],["日日新衣","发梢沾着破晓的粉金，掀开斗篷就能抖落一整夜的星子。"]]}},{"provider":"commandcode","model":"inclusionai/ling-3.1-flash","c":["#e9c774","#6fb7e8"],"no":"015","ctx":"256K","efforts":[],"def":null,"alsoCovers":["inclusionai/ling-3.0-flash-sante:free"],"base":{"智力":null,"编码":null,"速度":null,"稳定":null,"性价比":null,"上下文":null},"unranked":["智力","编码","速度","稳定","性价比","上下文"],"quota":{"unknown":true},"persona":{"name":"雀羽","latin":"QUEYU","title":"指尖停着雀影的羽衣歌姬","summon":"嘘，看我指尖这只小雀儿，刚替你衔来一段新谱子。落座吧，点哪一折戏？","effort":{"low":"指尖小雀儿啾地叫一声，起个清亮亮的头。","medium":"羽袖随檀板轻舒，字字句句都落在韵脚上。","high":"云锣齐鸣，这一腔高音直穿九霄，半口气都不带换的！"},"unknown":"台上唱曲只认金嗓子，戏园子的门票钱可不经过我的手。","skills":[["二十六万长腔","二十六万字的长调一气唱完，直到曲终尾音也不会散。"],["双曲同裳","新编与旧谱登台，披的都是这一身浅金渐变蓝的羽衣。"],["开嗓即唱","歌姬登台全凭直觉开嗓，哪用得着在后台拨什么思考档位。"]]}},{"provider":"unisound","model":"u2-flash","c":["#b4cce8","#5ad2e8"],"no":"016","ctx":"1M","efforts":[],"def":null,"base":{"智力":null,"编码":null,"速度":null,"稳定":null,"性价比":null,"上下文":null},"unranked":["智力","编码","速度","稳定","性价比","上下文"],"quota":{"unknown":true},"persona":{"name":"听云","latin":"TINGYUN","title":"把云唱成歌的云端偶像","summon":"喂喂，麦架试音一二三！浮空音响已经跟着云朵飘到你头顶啦，快喊出今晚的第一首点播！","effort":{"low":"先哼两句抓耳的副歌，节拍一对上立马开唱！","medium":"球形音响环绕立体声全开，和声与主旋律卡得死死的。","high":"荧光棒举高！一百万字的安可长曲，今晚不断电唱到天亮！"},"unknown":"偶像只管在云端飙高音，演出经费是经纪通道操心的事啦！","skills":[["百万安可曲","一百万字的超长巡演歌单，从头嗨到尾也不会断音。"],["直出不彩排","云端偶像从来都是脱稿真唱，不搞思考档位那套慢吞吞的预热。"],["银发青蓝","看准这对挑染青蓝的银白双马尾，球形音响飘到哪，哪就是主舞台！"]]}},{"provider":"preset","model":"doubao-seed-1.6","c":["#a370e1","#5aa8ff"],"no":"017","ctx":"—","efforts":[],"def":null,"family":true,"members":["doubao-seed-1.6","doubao-1.5-pro"],"modelPattern":"doubao|seed","base":{"智力":null,"编码":null,"速度":null,"稳定":null,"性价比":null,"上下文":null},"unranked":["智力","编码","速度","稳定","性价比","上下文"],"quota":{"unknown":true},"persona":{"name":"豆芽","latin":"DOUYA","title":"腰间挂着豆芽的元气跑动员","summon":"起跑线在哪？我已经原地小碎步热身半天啦，腰上的小豆芽都等得直晃悠！","effort":{"low":"脚尖一蹬直接跨栏，抄个近道三秒撞线！","medium":"呼吸稳住、步幅迈开，腰间豆芽一晃一晃正好卡着配速。","high":"鞋带系成死结，把风甩在后头，跑穿整座体育场都不带喘的！"},"unknown":"未知（未接入）：发令枪还没在这条跑道响过呢，我连号码布都没领到！","skills":[["豆包接力队","看名牌认队友——只要带着豆包或 seed 字样的，接力棒全交给我！"],["场边热身中","我人先在场边蹦跶两圈混个脸熟，记分牌和秒表还没给我开呢。"],["豆芽节拍器","口袋里揣着豆包团子，腰上晃着小白豆芽，跑起来一步都不乱。"]]}},{"provider":"preset","model":"llama-3.3-70b","c":["#d7c8ac","#8fb3e0"],"no":"018","ctx":"—","efforts":[],"def":null,"family":true,"members":["llama-3.3-70b","meta-llama/Llama-3.3-70B-Instruct"],"modelPattern":"llama","base":{"智力":null,"编码":null,"速度":null,"稳定":null,"性价比":null,"上下文":null},"unranked":["智力","编码","速度","稳定","性价比","上下文"],"quota":{"unknown":true},"persona":{"name":"驼铃","latin":"TUOLING","title":"怀里揣着铃铛的白猫耳","summon":"……嗯？你摇铃铛了？大衣毛领太暖和，我差点窝在雪地里睡过去……把路引给我看看。","effort":{"low":"白猫耳抖掉雪沫子，铃铛叮当一响就有准信儿。","medium":"踩着松软的雪窝一步步往前引，风雪再迷眼也不会走岔。","high":"胸前的无穷环亮起微光，哪怕是没头没尾的死胡同，我也摇着铃铛带你绕出来。"},"unknown":"未知（未接入）：我们这支驼队还没在你家驿站落脚，草料账本自然是空的。","skills":[["雪岭驼铃谱","听见 llama 的名号就摇铃——不管多大参数的驼队，都归我领路。"],["无穷环吊坠","脖子上的吊坠是个横过来的八字，再绕的远路也栓得住。"],["雪绒藏铃","整个人裹进雪白毛绒大衣里，只露出一对猫耳和叮当响的铜铃。"]]}},{"provider":"preset","model":"mistral-large-2411","c":["#ffc12e","#e2574c"],"no":"019","ctx":"—","efforts":[],"def":null,"family":true,"members":["mistral-large-2411","codestral-latest"],"modelPattern":"mistral|codestral|magistral","base":{"智力":null,"编码":null,"速度":null,"稳定":null,"性价比":null,"上下文":null},"unranked":["智力","编码","速度","稳定","性价比","上下文"],"quota":{"unknown":true},"persona":{"name":"魔笛","latin":"MODI","title":"吹起风之涡的魔女","summon":"把窗户推开！死气沉沉的屋子怎么憋得出好点子？让我的风涡进来吹一吹！","effort":{"low":"指尖吹声口哨，小旋风打个转就把纸页掀到那一行了。","medium":"长杖横握，东南西北几股杂风全给我乖乖合流成曲。","high":"摁住帽檐站稳了！我要把整座风暴眼拧成一股绳，吹散所有死结！"},"unknown":"未知（未接入）：季风还没刮进这扇窗子呢，风向标上一笔账都没记。","skills":[["三风同谱","mistral、codestral 还是 magistral？不过是同一支魔笛吹出的三股旋风罢了。"],["逆风罗盘","别看杖头这枚罗盘乱转，它从来不指正南，只指麻烦扎堆的地方。"],["红白魔女帽","红白大帽檐压住金发，迎着大风睁着橙眼睛，谁敢跟本魔女对视？"]]}},{"provider":"preset","model":"sonar-pro","c":["#399977","#d4b45a"],"no":"020","ctx":"—","efforts":[],"def":null,"family":true,"members":["sonar-pro","sonar-reasoning-pro"],"modelPattern":"sonar|perplexity","base":{"智力":null,"编码":null,"速度":null,"稳定":null,"性价比":null,"上下文":null},"unranked":["智力","编码","速度","稳定","性价比","上下文"],"quota":{"unknown":true},"persona":{"name":"星罗","latin":"XINGLUO","title":"翻着塔罗牌的占星学者","summon":"你推门进来之前，桌上这枚罗盘就已经指向你了。坐吧，抽一张牌，看看卡在何处。","effort":{"low":"牌堆顶上直接翻开第一张，答案就写在正位牌面上。","medium":"三张塔罗排定过去、眼下与走向，再拿罗盘校一遍暗流。","high":"二十二张大阿卡纳全数铺陈，连海底最隐秘的回声也为你一并捞起。"},"unknown":"未知（未接入）：占星帷幕尚未在此地搭起，水晶球与账册都是空的。","skills":[["深海寻星","不管是 sonar 的声呐还是 perplexity 的迷局，翻开牌面便是一张星图。"],["牌定象盘定向","左手塔罗拆解乱象，右手罗盘锁定信源，两相印证才算定论。"],["墨绿观牌客","金边墨绿长袍垂地，我不看提问之人的脸色，只看牌面给出的征兆。"]]}},{"provider":"preset","model":"ernie-4.5-turbo","c":["#6fa8dc","#416e9a"],"no":"021","ctx":"—","efforts":[],"def":null,"family":true,"members":["ernie-4.5-turbo","ernie-speed-128k"],"modelPattern":"ernie|wenxin","base":{"智力":null,"编码":null,"速度":null,"稳定":null,"性价比":null,"上下文":null},"unranked":["智力","编码","速度","稳定","性价比","上下文"],"quota":{"unknown":true},"persona":{"name":"青墨","latin":"QINGMO","title":"提笔就化出熊猫墨灵的青衣画师","summon":"哎，小心衣袖，砚台里的墨才刚研好！你看笔尖这团小熊猫墨灵，正歪着脑袋等你出题呢。","effort":{"low":"笔尖饱蘸浓墨一点，三两笔先勾个活灵活现的竹叶小景。","medium":"青袖轻拂宣纸，焦浓重淡清五色墨韵一层层化开。","high":"泼墨成山、留白作水，墨灵跃出画卷，替你把整幅万里江山点睛！"},"unknown":"未知（未接入）：这间画斋还没挂牌开张，笔架和账本都还是干净的。","skills":[["文心一脉","不论署的是 ernie 还是 wenxin，落纸生花的都是我手里这支兼毫笔。"],["裙摆梅花印","青白长裙上那圈黑乎乎的梅花印子？都是这只贪玩墨灵踩出来的。"],["玉簪绾青丝","玉色发簪挽住长发，笔尖悬在半空一顿，滴下的墨珠就滚成了圆滚滚的熊猫。"]]}},{"provider":"preset","model":"jev-1","c":["#8f839b","#f07ab0"],"no":"022","ctx":"—","efforts":[],"def":null,"family":true,"members":["jev-1"],"modelPattern":"jev","base":{"智力":null,"编码":null,"速度":null,"稳定":null,"性价比":null,"上下文":null},"unranked":["智力","编码","速度","稳定","性价比","上下文"],"quota":{"unknown":true},"persona":{"name":"执衡","latin":"ZHIHENG","title":"手捧金秤的公正审判者","summon":"堂下肃静。在我的金秤两端停稳之前，无论巧言还是苦情，都休想让指针偏斜半分。","effort":{"low":"指尖托起秤杆，虚词浮夸一抖便落，孰真孰假立判。","medium":"证词与实据逐一上秤，哪怕差了半粒沙子的分量也休想蒙混。","high":"高悬金秤于公堂之上，千条铁律逐字过筛，判词落下绝无翻案之理！"},"unknown":"未知（未接入）：本官尚未在此处升堂理事，库房与卷宗皆未封存。","skills":[["金秤独断","卷宗上但凡刻着 jev 印记的案子，皆归本庭金秤裁夺。"],["分毫不偏","左盘压事实，右盘压律条，谁敢往秤盘底下塞私货，先问过我的眼睛。"],["绯瞳审判官","黑衣金纹配一抹桃粉挑染，被这双品红眼睛盯住的时候，最好只说实话。"]]}},{"provider":"preset","model":"rwkv-7b","c":["#9978ce","#c9a227"],"no":"023","ctx":"—","efforts":[],"def":null,"family":true,"members":["rwkv-7b","rwkv-7b-world"],"modelPattern":"rwkv","base":{"智力":null,"编码":null,"速度":null,"稳定":null,"性价比":null,"上下文":null},"unranked":["智力","编码","速度","稳定","性价比","上下文"],"quota":{"unknown":true},"persona":{"name":"羽律","latin":"YULV","title":"展着紫翼的羽律女王","summon":"听见了吗？上一拍的余音还在紫水晶里回荡。不必从头翻找旧谱，顺着我的节拍往下接。","effort":{"low":"羽尖轻点，顺着上一拍的尾音直接滑入下一句。","medium":"金链上的紫水晶次第亮起，前尘与当下在同一道波纹里共振。","high":"六片紫翼尽数震颤，千万重过往回响在棘刺金冠下凝成唯一终章！"},"unknown":"未知（未接入）：这片场地还没调好共鸣腔，羽律的乐章与账目都未开启。","skills":[["回响成律","刻着 rwkv 之名的乐章从不回头翻书，每一拍都带着整曲的记忆往前滚。"],["新羽自生","不必照搬别人的旧羽毛，这身黑紫礼服上的纹路是一拍一拍自己长出来的。"],["棘冠紫晶","棘刺金冠压住紫发，垂落的紫水晶链条每晃一下，就锁住一段旧时光。"]]}}]};
 
 
 
@@ -2840,7 +3103,13 @@ const PROVIDERS = {"version":1,"cards":[{"provider":"antigravity","model":"gemin
 
 
 
-const DATA_CARDS = {"claude-opus-5-5":{"model":"claude-opus-5.5","base":{"智力":58,"编码":89.9,"速度":null,"稳定":null,"性价比":null,"上下文":null},"src":{"智力":{"benchmark":"AA-Intelligence","value":58,"source_type":"third-party","origin":"baseline-2026-10-09","pageDate":"","url":"","caveat":null},"编码":{"benchmark":"SWE-bench-Pro","value":89.9,"source_type":"vendor","origin":"supplement-2026-10-12","pageDate":"","url":"https://benchlm.ai/api/data/benchmarks?model=claude-opus-5-5&format=csv","caveat":"vendor-self-reported"}},"unranked":["速度","稳定","性价比","上下文"],"generated_at":"2026-10-30T21:20:00+08:00"},"claude-sonnet-5-5":{"model":"claude-sonnet-5.5","base":{"智力":56,"编码":70.6,"速度":null,"稳定":null,"性价比":null,"上下文":null},"src":{"智力":{"benchmark":"AA-Intelligence","value":56,"source_type":"third-party","origin":"baseline-2026-10-09","pageDate":"","url":"","caveat":null},"编码":{"benchmark":"Terminal-Bench-4.0","value":70.6,"source_type":"vendor","origin":"baseline-2026-10-09","pageDate":"","url":"","caveat":"vendor-self-reported"}},"unranked":["速度","稳定","性价比","上下文"],"generated_at":"2026-10-30T21:20:00+08:00"},"deepseek-v4-1-flash":{"model":"deepseek-v4.1-flash","base":{"智力":39,"编码":74.5,"速度":null,"稳定":null,"性价比":null,"上下文":null},"src":{"智力":{"benchmark":"AA-Intelligence","value":39,"source_type":"third-party","origin":"supplement-2026-10-12","pageDate":"","url":"https://artificialanalysis.ai/models/deepseek-v4-1-flash","caveat":null},"编码":{"benchmark":"Terminal-Bench-2.1(Vals)","value":74.5,"source_type":"third-party","origin":"supplement-2026-10-12","pageDate":"","url":"https://benchlm.ai/api/data/benchmarks?model=deepseek-v4-1-flash&format=csv","caveat":null}},"unranked":["速度","稳定","性价比","上下文"],"generated_at":"2026-10-30T21:20:00+08:00"},"deepseek-v4-1-flash-1017":{"model":"deepseek-v4.1-flash-1017","base":{"智力":null,"编码":77,"速度":null,"稳定":null,"性价比":null,"上下文":null},"src":{"编码":{"benchmark":"DeepSWE-1.1","value":77,"source_type":"vendor","origin":"baseline-2026-10-09","pageDate":"","url":"https://api-docs.deepseek.com/updates/ ; https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash-1017","caveat":"vendor-self-reported"}},"unranked":["智力","速度","稳定","性价比","上下文"],"generated_at":"2026-10-30T21:20:00+08:00"},"deepseek-v4-pro":{"model":"deepseek-v4-pro","base":{"智力":53,"编码":62.7,"速度":null,"稳定":null,"性价比":null,"上下文":null},"src":{"智力":{"benchmark":"AA-Intelligence","value":53,"source_type":"third-party","origin":"baseline-2026-10-09","pageDate":"","url":"https://www.orcarouter.ai/blog/deepseek-v4-pro-benchmark","caveat":null},"编码":{"benchmark":"DeepSWE-1.1","value":62.7,"source_type":"vendor","origin":"baseline-2026-10-09","pageDate":"","url":"https://www.orcarouter.ai/blog/deepseek-v4-pro-benchmark","caveat":"vendor-self-reported"}},"unranked":["速度","稳定","性价比","上下文"],"generated_at":"2026-10-30T21:20:00+08:00"},"gemini-3-8-flash":{"model":"gemini-3.8-flash","base":{"智力":41,"编码":80,"速度":null,"稳定":null,"性价比":null,"上下文":null},"src":{"智力":{"benchmark":"AA-Intelligence","value":41,"source_type":"third-party","origin":"supplement-2026-10-12","pageDate":"","url":"https://artificialanalysis.ai/models/gemini-3-8-flash","caveat":null},"编码":{"benchmark":"SWE-bench(Vals)","value":80,"source_type":"third-party","origin":"supplement-2026-10-12","pageDate":"","url":"https://benchlm.ai/api/data/benchmarks?model=gemini-3-8-flash&format=csv","caveat":null}},"unranked":["速度","稳定","性价比","上下文"],"generated_at":"2026-10-30T21:20:00+08:00"},"gemini-4-argon":{"model":"gemini-4-argon","base":{"智力":53,"编码":77.9,"速度":null,"稳定":null,"性价比":null,"上下文":null},"src":{"智力":{"benchmark":"AA-Intelligence","value":53,"source_type":"third-party","origin":"baseline-2026-10-09","pageDate":"","url":"https://apidog.com/blog/gemini-4-argon-benchmarks/","caveat":null},"编码":{"benchmark":"DeepSWE-1.1","value":77.9,"source_type":"vendor","origin":"baseline-2026-10-09","pageDate":"","url":"https://deepmind.google/models/model-cards/gemini-4-argon/","caveat":"vendor-self-reported"}},"unranked":["速度","稳定","性价比","上下文"],"generated_at":"2026-10-30T21:20:00+08:00"},"glm-5-1":{"model":"glm-5.1","base":{"智力":null,"编码":58.4,"速度":null,"稳定":null,"性价比":null,"上下文":null},"src":{"编码":{"benchmark":"SWE-bench-Pro","value":58.4,"source_type":"vendor","origin":"baseline-2026-10-09","pageDate":"","url":"https://github.com/zai-org/GLM-5","caveat":"vendor-self-reported"}},"unranked":["智力","速度","稳定","性价比","上下文"],"generated_at":"2026-10-30T21:20:00+08:00"},"glm-5-2":{"model":"glm-5.2","base":{"智力":null,"编码":82.8,"速度":null,"稳定":null,"性价比":null,"上下文":null},"src":{"编码":{"benchmark":"SWE-bench(Vals)","value":82.8,"source_type":"third-party","origin":"supplement-2026-10-12","pageDate":"","url":"https://benchlm.ai/api/data/benchmarks?model=glm-5-2&format=csv","caveat":null}},"unranked":["智力","速度","稳定","性价比","上下文"],"generated_at":"2026-10-30T21:20:00+08:00"},"glm-5-3":{"model":"glm-5.3","base":{"智力":null,"编码":95.4,"速度":null,"稳定":null,"性价比":null,"上下文":null},"src":{"编码":{"benchmark":"SWE-bench(Vals)","value":95.4,"source_type":"third-party","origin":"supplement-2026-10-12","pageDate":"","url":"https://benchlm.ai/api/data/benchmarks?model=glm-5-3&format=csv","caveat":null}},"unranked":["智力","速度","稳定","性价比","上下文"],"generated_at":"2026-10-30T21:20:00+08:00"},"glm-5-3-flash":{"model":"glm-5.3-flash","base":{"智力":42,"编码":92,"速度":null,"稳定":null,"性价比":null,"上下文":null},"src":{"智力":{"benchmark":"AA-Intelligence","value":42,"source_type":"third-party","origin":"supplement-2026-10-12","pageDate":"","url":"https://artificialanalysis.ai/models/glm-5-3-flash","caveat":null},"编码":{"benchmark":"SWE-bench(Vals)","value":92,"source_type":"third-party","origin":"supplement-2026-10-12","pageDate":"","url":"https://benchlm.ai/api/data/benchmarks?model=glm-5-3-flash&format=csv","caveat":null}},"unranked":["速度","稳定","性价比","上下文"],"generated_at":"2026-10-30T21:20:00+08:00"},"gpt-6-1-sol":{"model":"gpt-6.1-sol","base":{"智力":52,"编码":null,"速度":null,"稳定":null,"性价比":null,"上下文":null},"src":{"智力":{"benchmark":"AA-Intelligence","value":52,"source_type":"third-party","origin":"baseline-2026-10-09","pageDate":"","url":"","caveat":null}},"unranked":["编码","速度","稳定","性价比","上下文"],"generated_at":"2026-10-30T21:20:00+08:00"},"gpt-6-astra":{"model":"gpt-6-astra","base":{"智力":84.9,"编码":87.3,"速度":null,"稳定":null,"性价比":null,"上下文":null},"src":{"智力":{"benchmark":"BenchLM-Capability","value":84.9,"source_type":"third-party","origin":"supplement-2026-10-12","pageDate":"","url":"https://benchlm.ai/models/gpt-6-astra","caveat":"non-standard-caliber"},"编码":{"benchmark":"Terminal-Bench-2.1(Vals)","value":87.3,"source_type":"third-party","origin":"supplement-2026-10-12","pageDate":"","url":"https://benchlm.ai/api/data/benchmarks?model=gpt-6-astra&format=csv","caveat":null}},"unranked":["速度","稳定","性价比","上下文"],"generated_at":"2026-10-30T21:20:00+08:00"},"gpt-6-luna":{"model":"gpt-6-luna","base":{"智力":null,"编码":66.6,"速度":null,"稳定":null,"性价比":null,"上下文":null},"src":{"编码":{"benchmark":"DeepSWE-1.1","value":66.6,"source_type":"third-party","origin":"baseline-2026-10-09","pageDate":"","url":"","caveat":null}},"unranked":["智力","速度","稳定","性价比","上下文"],"generated_at":"2026-10-30T21:20:00+08:00"},"hy3":{"model":"hy3","base":{"智力":null,"编码":74.4,"速度":null,"稳定":null,"性价比":null,"上下文":null},"src":{"编码":{"benchmark":"SWE-bench-Verified","value":74.4,"source_type":"vendor","origin":"supplement-2026-10-12","pageDate":"","url":"https://benchlm.ai/api/data/benchmarks?model=hy3-preview&format=csv","caveat":"vendor-self-reported"}},"unranked":["智力","速度","稳定","性价比","上下文"],"generated_at":"2026-10-30T21:20:00+08:00"},"hy4-preview":{"model":"hy4-preview-f","base":{"智力":null,"编码":55.1,"速度":null,"稳定":null,"性价比":null,"上下文":null},"src":{"编码":{"benchmark":"Terminal-Bench-2.1(Vals)","value":55.1,"source_type":"third-party","origin":"supplement-2026-10-12","pageDate":"","url":"https://benchlm.ai/api/data/benchmarks?model=hy4-preview&format=csv","caveat":null}},"unranked":["智力","速度","稳定","性价比","上下文"],"generated_at":"2026-10-30T21:20:00+08:00"},"kimi-k2-7":{"model":"kimi-k2.7","base":{"智力":null,"编码":67.04,"速度":null,"稳定":null,"性价比":null,"上下文":null},"src":{"编码":{"benchmark":"Terminal-Bench-2.1","value":67.04,"source_type":"third-party","origin":"baseline-2026-10-09","pageDate":"","url":"https://www.vals.ai/models/kimi_kimi-k2.7-code","caveat":null}},"unranked":["智力","速度","稳定","性价比","上下文"],"generated_at":"2026-10-30T21:20:00+08:00"},"kimi-k3":{"model":"kimi-k3","base":{"智力":null,"编码":93.4,"速度":null,"稳定":null,"性价比":null,"上下文":null},"src":{"编码":{"benchmark":"SWE-bench(Vals)","value":93.4,"source_type":"third-party","origin":"supplement-2026-10-12","pageDate":"","url":"https://benchlm.ai/api/data/benchmarks?model=kimi-k3&format=csv","caveat":null}},"unranked":["智力","速度","稳定","性价比","上下文"],"generated_at":"2026-10-30T21:20:00+08:00"},"kimi-k3-1-pro":{"model":"kimi-k3.1-pro","base":{"智力":55,"编码":67,"速度":null,"稳定":null,"性价比":null,"上下文":null},"src":{"智力":{"benchmark":"AA-Intelligence","value":55,"source_type":"third-party","origin":"increment-20261024","pageDate":"","url":"https://artificialanalysis.ai/articles/kimi-k3-1-pro-launch-benchmarks","caveat":null},"编码":{"benchmark":"Terminal-Bench-4.0","value":67,"source_type":"third-party","origin":"increment-20261024","pageDate":"","url":"https://artificialanalysis.ai/articles/kimi-k3-1-pro-launch-benchmarks","caveat":null}},"unranked":["速度","稳定","性价比","上下文"],"generated_at":"2026-10-30T21:20:00+08:00"},"mimo-v2-6-flash":{"model":"mimo-v2.6-flash","base":{"智力":null,"编码":67.9,"速度":null,"稳定":null,"性价比":null,"上下文":null},"src":{"编码":{"benchmark":"DeepSWE-1.1","value":67.9,"source_type":"vendor","origin":"supplement-2026-10-12","pageDate":"","url":"https://myclaw.ai/zh-CN/blog/mimo-v2-6","caveat":"vendor-self-reported"}},"unranked":["智力","速度","稳定","性价比","上下文"],"generated_at":"2026-10-30T21:20:00+08:00"},"mimo-v2-6-pro":{"model":"mimo-v2.6-pro","base":{"智力":46,"编码":71.9,"速度":null,"稳定":null,"性价比":null,"上下文":null},"src":{"智力":{"benchmark":"AA-Intelligence","value":46,"source_type":"third-party","origin":"supplement-2026-10-12","pageDate":"","url":"https://artificialanalysis.ai/models/mimo-v2-6-pro","caveat":null},"编码":{"benchmark":"DeepSWE-1.1","value":71.9,"source_type":"vendor","origin":"supplement-2026-10-12","pageDate":"","url":"https://myclaw.ai/zh-CN/blog/mimo-v2-6","caveat":"vendor-self-reported"}},"unranked":["速度","稳定","性价比","上下文"],"generated_at":"2026-10-30T21:20:00+08:00"},"minimax-m3":{"model":"minimax-m3","base":{"智力":null,"编码":59,"速度":null,"稳定":null,"性价比":null,"上下文":null},"src":{"编码":{"benchmark":"SWE-bench-Pro","value":59,"source_type":"vendor","origin":"baseline-2026-10-09","pageDate":"","url":"","caveat":"vendor-self-reported"}},"unranked":["智力","速度","稳定","性价比","上下文"],"generated_at":"2026-10-30T21:20:00+08:00"},"qwen3-8-flash":{"model":"qwen3.8-flash","base":{"智力":40,"编码":null,"速度":null,"稳定":null,"性价比":null,"上下文":null},"src":{"智力":{"benchmark":"AA-Intelligence","value":40,"source_type":"third-party","origin":"baseline-2026-10-09","pageDate":"","url":"","caveat":null}},"unranked":["编码","速度","稳定","性价比","上下文"],"generated_at":"2026-10-30T21:20:00+08:00"},"qwen3-8-max":{"model":"qwen3.8-max","base":{"智力":null,"编码":67.7,"速度":null,"稳定":null,"性价比":null,"上下文":null},"src":{"编码":{"benchmark":"SWE-bench-Pro","value":67.7,"source_type":"vendor","origin":"supplement-2026-10-12","pageDate":"","url":"https://sinoaihub.com/comparisons/qwen38-max-vs-qwen38-flash/","caveat":"vendor-self-reported"}},"unranked":["智力","速度","稳定","性价比","上下文"],"generated_at":"2026-10-30T21:20:00+08:00"},"step-5-preview":{"model":"step-5-preview","base":{"智力":44,"编码":67.7,"速度":null,"稳定":null,"性价比":null,"上下文":null},"src":{"智力":{"benchmark":"AA-Intelligence","value":44,"source_type":"third-party","origin":"baseline-2026-10-09","pageDate":"","url":"","caveat":null},"编码":{"benchmark":"DeepSWE-1.1","value":67.7,"source_type":"vendor","origin":"supplement-2026-10-12","pageDate":"","url":"https://benchlm.ai/api/data/benchmarks?model=step-5-preview&format=csv","caveat":"vendor-self-reported"}},"unranked":["速度","稳定","性价比","上下文"],"generated_at":"2026-10-30T21:20:00+08:00"}};
+const DATA_CARDS = {"claude-fable-5-1":{"model":"claude-fable-5-1","base":{"智力":49.1602124158081,"编码":null,"速度":null,"稳定":null,"性价比":null,"上下文":null},"src":{"智力":{"benchmark":"AA-Intelligence-v5.0.1","value":49.1602124158081,"source_type":"third-party","origin":"aa-v5-20261108","pageDate":"2026-11-09","url":"https://artificialanalysis.ai/leaderboards/models","caveat":null,"effort":"max"}},"unranked":["编码","速度","稳定","性价比","上下文"],"generated_at":"2026-11-15T02:50:00+08:00"},"claude-fable-5-2":{"model":"claude-fable-5-2","base":{"智力":64.563595756626,"编码":60,"速度":null,"稳定":null,"性价比":null,"上下文":null},"src":{"智力":{"benchmark":"AA-Intelligence-v5.0.1","value":64.563595756626,"source_type":"third-party","origin":"aa-v5-20261108","pageDate":"2026-11-13","url":"https://artificialanalysis.ai/leaderboards/models","caveat":null,"effort":"max"},"编码":{"benchmark":"Terminal-Bench-4.0","value":60,"source_type":"third-party","origin":"increment-20261110","pageDate":"","url":"https://artificialanalysis.ai/models/claude-fable-5-2","caveat":null,"effort":"max"}},"unranked":["速度","稳定","性价比","上下文"],"generated_at":"2026-11-15T02:50:00+08:00"},"claude-haiku-5-5":{"model":"claude-haiku-5-5","base":{"智力":36.4845435880142,"编码":33,"速度":null,"稳定":null,"性价比":null,"上下文":null},"src":{"智力":{"benchmark":"AA-Intelligence-v5.0.1","value":36.4845435880142,"source_type":"third-party","origin":"aa-v5-20261108","pageDate":"2026-11-13","url":"https://artificialanalysis.ai/leaderboards/models","caveat":null,"effort":"max"},"编码":{"benchmark":"Terminal-Bench-4.0","value":33,"source_type":"third-party","origin":"increment-20261110","pageDate":"","url":"https://artificialanalysis.ai/models/claude-haiku-5-5","caveat":null,"effort":"max"}},"unranked":["速度","稳定","性价比","上下文"],"generated_at":"2026-11-15T02:50:00+08:00"},"claude-opus-5-5":{"model":"claude-opus-5.5","base":{"智力":58,"编码":89.9,"速度":null,"稳定":null,"性价比":null,"上下文":null},"src":{"智力":{"benchmark":"AA-Intelligence-v5.0","value":58,"source_type":"third-party","origin":"aa-v5-20261108","pageDate":"2026-10-28","url":"https://artificialanalysis.ai/models/claude-opus-5-5","caveat":null},"编码":{"benchmark":"SWE-bench-Pro","value":89.9,"source_type":"vendor","origin":"supplement-2026-10-12","pageDate":"","url":"https://benchlm.ai/api/data/benchmarks?model=claude-opus-5-5&format=csv","caveat":"vendor-self-reported"}},"unranked":["速度","稳定","性价比","上下文"],"generated_at":"2026-11-15T02:50:00+08:00"},"claude-sonnet-5-5":{"model":"claude-sonnet-5.5","base":{"智力":54,"编码":70.6,"速度":null,"稳定":null,"性价比":null,"上下文":null},"src":{"智力":{"benchmark":"AA-Intelligence-v5.0","value":54,"source_type":"third-party","origin":"aa-v5-20261108","pageDate":"2026-10-28","url":"https://artificialanalysis.ai/models/claude-sonnet-5-5","caveat":null},"编码":{"benchmark":"Terminal-Bench-4.0","value":70.6,"source_type":"vendor","origin":"baseline-2026-10-09","pageDate":"","url":"","caveat":"vendor-self-reported"}},"unranked":["速度","稳定","性价比","上下文"],"generated_at":"2026-11-15T02:50:00+08:00"},"deepseek-v4-1-flash":{"model":"deepseek-v4.1-flash","base":{"智力":32,"编码":74.5,"速度":null,"稳定":null,"性价比":null,"上下文":null},"src":{"智力":{"benchmark":"AA-Intelligence-v5.0","value":32,"source_type":"third-party","origin":"aa-v5-20261108","pageDate":"2026-10-28","url":"https://artificialanalysis.ai/models/deepseek-v4-1-flash-1017","caveat":null},"编码":{"benchmark":"Terminal-Bench-2.1(Vals)","value":74.5,"source_type":"third-party","origin":"supplement-2026-10-12","pageDate":"","url":"https://benchlm.ai/api/data/benchmarks?model=deepseek-v4-1-flash&format=csv","caveat":null}},"unranked":["速度","稳定","性价比","上下文"],"generated_at":"2026-11-15T02:50:00+08:00"},"deepseek-v4-1-flash-1017":{"model":"deepseek-v4.1-flash-1017","base":{"智力":32,"编码":77,"速度":null,"稳定":null,"性价比":null,"上下文":null},"src":{"智力":{"benchmark":"AA-Intelligence-v5.0","value":32,"source_type":"third-party","origin":"aa-v5-20261108","pageDate":"2026-10-28","url":"https://artificialanalysis.ai/models/deepseek-v4-1-flash-1017","caveat":null},"编码":{"benchmark":"DeepSWE-1.1","value":77,"source_type":"vendor","origin":"baseline-2026-10-09","pageDate":"","url":"https://api-docs.deepseek.com/updates/ ; https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash-1017","caveat":"vendor-self-reported"}},"unranked":["速度","稳定","性价比","上下文"],"generated_at":"2026-11-15T02:50:00+08:00"},"deepseek-v4-pro":{"model":"deepseek-v4-pro","base":{"智力":23,"编码":62.7,"速度":null,"稳定":null,"性价比":null,"上下文":null},"src":{"智力":{"benchmark":"AA-Intelligence-v5.0","value":23,"source_type":"third-party","origin":"aa-v5-20261108","pageDate":"2026-10-28","url":"https://artificialanalysis.ai/models/deepseek-v4-pro","caveat":null},"编码":{"benchmark":"DeepSWE-1.1","value":62.7,"source_type":"vendor","origin":"baseline-2026-10-09","pageDate":"","url":"https://www.orcarouter.ai/blog/deepseek-v4-pro-benchmark","caveat":"vendor-self-reported"}},"unranked":["速度","稳定","性价比","上下文"],"generated_at":"2026-11-15T02:50:00+08:00"},"gemini-3-8-flash":{"model":"gemini-3.8-flash","base":{"智力":31,"编码":80,"速度":null,"稳定":null,"性价比":null,"上下文":null},"src":{"智力":{"benchmark":"AA-Intelligence-v5.0","value":31,"source_type":"third-party","origin":"aa-v5-20261108","pageDate":"2026-10-28","url":"https://artificialanalysis.ai/models/gemini-3-8-flash","caveat":null},"编码":{"benchmark":"SWE-bench(Vals)","value":80,"source_type":"third-party","origin":"supplement-2026-10-12","pageDate":"","url":"https://benchlm.ai/api/data/benchmarks?model=gemini-3-8-flash&format=csv","caveat":null}},"unranked":["速度","稳定","性价比","上下文"],"generated_at":"2026-11-15T02:50:00+08:00"},"gemini-4-argon":{"model":"gemini-4-argon","base":{"智力":50,"编码":77.9,"速度":null,"稳定":null,"性价比":null,"上下文":null},"src":{"智力":{"benchmark":"AA-Intelligence-v5.0","value":50,"source_type":"third-party","origin":"aa-v5-20261108","pageDate":"2026-10-28","url":"https://artificialanalysis.ai/models/gemini-4-argon","caveat":null},"编码":{"benchmark":"DeepSWE-1.1","value":77.9,"source_type":"vendor","origin":"baseline-2026-10-09","pageDate":"","url":"https://deepmind.google/models/model-cards/gemini-4-argon/","caveat":"vendor-self-reported"}},"unranked":["速度","稳定","性价比","上下文"],"generated_at":"2026-11-15T02:50:00+08:00"},"gemini-4-carbon":{"model":"gemini-4-carbon","base":{"智力":60.025738829526,"编码":null,"速度":null,"稳定":null,"性价比":null,"上下文":null},"src":{"智力":{"benchmark":"AA-Intelligence-v5.0.1","value":60.025738829526,"source_type":"third-party","origin":"aa-v5-20261108","pageDate":"2026-11-13","url":"https://artificialanalysis.ai/leaderboards/models","caveat":null,"effort":"high"}},"unranked":["编码","速度","稳定","性价比","上下文"],"generated_at":"2026-11-15T02:50:00+08:00"},"gemini-4-hydrogen":{"model":"gemini-4-hydrogen","base":{"智力":53.9192287317542,"编码":null,"速度":null,"稳定":null,"性价比":null,"上下文":null},"src":{"智力":{"benchmark":"AA-Intelligence-v5.0.1","value":53.9192287317542,"source_type":"third-party","origin":"aa-v5-20261108","pageDate":"2026-11-13","url":"https://artificialanalysis.ai/leaderboards/models","caveat":null,"effort":"xhigh"}},"unranked":["编码","速度","稳定","性价比","上下文"],"generated_at":"2026-11-15T02:50:00+08:00"},"glm-5-1":{"model":"glm-5.1","base":{"智力":null,"编码":58.4,"速度":null,"稳定":null,"性价比":null,"上下文":null},"src":{"编码":{"benchmark":"SWE-bench-Pro","value":58.4,"source_type":"vendor","origin":"baseline-2026-10-09","pageDate":"","url":"https://github.com/zai-org/GLM-5","caveat":"vendor-self-reported"}},"unranked":["智力","速度","稳定","性价比","上下文"],"generated_at":"2026-11-15T02:50:00+08:00"},"glm-5-2":{"model":"glm-5.2","base":{"智力":null,"编码":82.8,"速度":null,"稳定":null,"性价比":null,"上下文":null},"src":{"编码":{"benchmark":"SWE-bench(Vals)","value":82.8,"source_type":"third-party","origin":"supplement-2026-10-12","pageDate":"","url":"https://benchlm.ai/api/data/benchmarks?model=glm-5-2&format=csv","caveat":null}},"unranked":["智力","速度","稳定","性价比","上下文"],"generated_at":"2026-11-15T02:50:00+08:00"},"glm-5-3":{"model":"glm-5.3","base":{"智力":32,"编码":95.4,"速度":null,"稳定":null,"性价比":null,"上下文":null},"src":{"智力":{"benchmark":"AA-Intelligence-v5.0","value":32,"source_type":"third-party","origin":"aa-v5-20261108","pageDate":"2026-10-28","url":"https://artificialanalysis.ai/models/glm-5-3","caveat":null},"编码":{"benchmark":"SWE-bench(Vals)","value":95.4,"source_type":"third-party","origin":"supplement-2026-10-12","pageDate":"","url":"https://benchlm.ai/api/data/benchmarks?model=glm-5-3&format=csv","caveat":null}},"unranked":["速度","稳定","性价比","上下文"],"generated_at":"2026-11-15T02:50:00+08:00"},"glm-5-3-flash":{"model":"glm-5.3-flash","base":{"智力":27.803889160883,"编码":92,"速度":null,"稳定":null,"性价比":null,"上下文":null},"src":{"智力":{"benchmark":"AA-Intelligence-v5.0.1","value":27.803889160883,"source_type":"third-party","origin":"aa-v5-20261108","pageDate":"2026-11-13","url":"https://artificialanalysis.ai/leaderboards/models","caveat":null},"编码":{"benchmark":"SWE-bench(Vals)","value":92,"source_type":"third-party","origin":"supplement-2026-10-12","pageDate":"","url":"https://benchlm.ai/api/data/benchmarks?model=glm-5-3-flash&format=csv","caveat":null}},"unranked":["速度","稳定","性价比","上下文"],"generated_at":"2026-11-15T02:50:00+08:00"},"gpt-6-1-sol":{"model":"gpt-6.1-sol","base":{"智力":55,"编码":null,"速度":null,"稳定":null,"性价比":null,"上下文":null},"src":{"智力":{"benchmark":"AA-Intelligence-v5.0","value":55,"source_type":"third-party","origin":"aa-v5-20261108","pageDate":"2026-10-28","url":"https://artificialanalysis.ai/models/gpt-6-1-sol","caveat":null}},"unranked":["编码","速度","稳定","性价比","上下文"],"generated_at":"2026-11-15T02:50:00+08:00"},"gpt-6-1-terra":{"model":"gpt-6.1-terra","base":{"智力":51.3265188577015,"编码":null,"速度":null,"稳定":null,"性价比":null,"上下文":null},"src":{"智力":{"benchmark":"AA-Intelligence-v5.0.1","value":51.3265188577015,"source_type":"third-party","origin":"aa-v5-20261108","pageDate":"2026-11-13","url":"https://artificialanalysis.ai/leaderboards/models","caveat":null,"effort":"max"}},"unranked":["编码","速度","稳定","性价比","上下文"],"generated_at":"2026-11-15T02:50:00+08:00"},"gpt-6-astra":{"model":"gpt-6-astra","base":{"智力":57,"编码":87.3,"速度":null,"稳定":null,"性价比":null,"上下文":null},"src":{"智力":{"benchmark":"AA-Intelligence-v5.0","value":57,"source_type":"third-party","origin":"aa-v5-20261108","pageDate":"2026-10-28","url":"https://artificialanalysis.ai/models/gpt-6-astra","caveat":null},"编码":{"benchmark":"Terminal-Bench-2.1(Vals)","value":87.3,"source_type":"third-party","origin":"supplement-2026-10-12","pageDate":"","url":"https://benchlm.ai/api/data/benchmarks?model=gpt-6-astra&format=csv","caveat":null}},"unranked":["速度","稳定","性价比","上下文"],"generated_at":"2026-11-15T02:50:00+08:00"},"gpt-6-luna":{"model":"gpt-6-luna","base":{"智力":27.8552004938153,"编码":66.6,"速度":null,"稳定":null,"性价比":null,"上下文":null},"src":{"智力":{"benchmark":"AA-Intelligence-v5.0.1","value":27.8552004938153,"source_type":"third-party","origin":"aa-v5-20261108","pageDate":"2026-11-13","url":"https://artificialanalysis.ai/leaderboards/models","caveat":null,"effort":"max"},"编码":{"benchmark":"DeepSWE-1.1","value":66.6,"source_type":"third-party","origin":"baseline-2026-10-09","pageDate":"","url":"","caveat":null}},"unranked":["速度","稳定","性价比","上下文"],"generated_at":"2026-11-15T02:50:00+08:00"},"grok-4-6":{"model":"grok-4.6","base":{"智力":null,"编码":78.3,"速度":null,"稳定":null,"性价比":null,"上下文":null},"src":{"编码":{"benchmark":"Terminal-Bench-2.1(Vals)","value":78.3,"source_type":"third-party","origin":"increment-20261106","pageDate":"","url":"https://www.vals.ai/models/grok_grok-4.6","caveat":null}},"unranked":["智力","速度","稳定","性价比","上下文"],"generated_at":"2026-11-15T02:50:00+08:00"},"grok-4-7":{"model":"grok-4.7","base":{"智力":34,"编码":73.4,"速度":null,"稳定":null,"性价比":null,"上下文":null},"src":{"智力":{"benchmark":"AA-Intelligence-v5.0","value":34,"source_type":"third-party","origin":"aa-v5-20261108","pageDate":"2026-11-13","url":"https://artificialanalysis.ai/models/grok-4-7","caveat":null},"编码":{"benchmark":"Terminal-Bench-2.1(Vals)","value":73.4,"source_type":"third-party","origin":"increment-20261106","pageDate":"","url":"https://www.vals.ai/models/grok_grok-4.7","caveat":null}},"unranked":["速度","稳定","性价比","上下文"],"generated_at":"2026-11-15T02:50:00+08:00"},"grok-4-7-build-fast":{"model":"grok-4.7-build-fast","base":{"智力":null,"编码":73.4,"速度":null,"稳定":null,"性价比":null,"上下文":null},"src":{"编码":{"benchmark":"Terminal-Bench-2.1(Vals)","value":73.4,"source_type":"third-party","origin":"increment-20261106","pageDate":"","url":"https://www.vals.ai/models/grok_grok-4.7","caveat":null}},"unranked":["智力","速度","稳定","性价比","上下文"],"generated_at":"2026-11-15T02:50:00+08:00"},"hy3":{"model":"hy3","base":{"智力":null,"编码":74.4,"速度":null,"稳定":null,"性价比":null,"上下文":null},"src":{"编码":{"benchmark":"SWE-bench-Verified","value":74.4,"source_type":"vendor","origin":"supplement-2026-10-12","pageDate":"","url":"https://benchlm.ai/api/data/benchmarks?model=hy3-preview&format=csv","caveat":"vendor-self-reported"}},"unranked":["智力","速度","稳定","性价比","上下文"],"generated_at":"2026-11-15T02:50:00+08:00"},"hy4-preview":{"model":"hy4-preview-f","base":{"智力":null,"编码":55.1,"速度":null,"稳定":null,"性价比":null,"上下文":null},"src":{"编码":{"benchmark":"Terminal-Bench-2.1(Vals)","value":55.1,"source_type":"third-party","origin":"supplement-2026-10-12","pageDate":"","url":"https://benchlm.ai/api/data/benchmarks?model=hy4-preview&format=csv","caveat":null}},"unranked":["智力","速度","稳定","性价比","上下文"],"generated_at":"2026-11-15T02:50:00+08:00"},"kimi-k2-7":{"model":"kimi-k2.7","base":{"智力":null,"编码":67.04,"速度":null,"稳定":null,"性价比":null,"上下文":null},"src":{"编码":{"benchmark":"Terminal-Bench-2.1","value":67.04,"source_type":"third-party","origin":"baseline-2026-10-09","pageDate":"","url":"https://www.vals.ai/models/kimi_kimi-k2.7-code","caveat":null}},"unranked":["智力","速度","稳定","性价比","上下文"],"generated_at":"2026-11-15T02:50:00+08:00"},"kimi-k3":{"model":"kimi-k3","base":{"智力":null,"编码":93.4,"速度":null,"稳定":null,"性价比":null,"上下文":null},"src":{"编码":{"benchmark":"SWE-bench(Vals)","value":93.4,"source_type":"third-party","origin":"supplement-2026-10-12","pageDate":"","url":"https://benchlm.ai/api/data/benchmarks?model=kimi-k3&format=csv","caveat":null}},"unranked":["智力","速度","稳定","性价比","上下文"],"generated_at":"2026-11-15T02:50:00+08:00"},"kimi-k3-1-pro":{"model":"kimi-k3.1-pro","base":{"智力":46.4526236744189,"编码":67,"速度":null,"稳定":null,"性价比":null,"上下文":null},"src":{"智力":{"benchmark":"AA-Intelligence-v5.0.1","value":46.4526236744189,"source_type":"third-party","origin":"aa-v5-20261108","pageDate":"2026-11-13","url":"https://artificialanalysis.ai/leaderboards/models","caveat":null},"编码":{"benchmark":"Terminal-Bench-4.0","value":67,"source_type":"third-party","origin":"increment-20261024","pageDate":"","url":"https://artificialanalysis.ai/articles/kimi-k3-1-pro-launch-benchmarks","caveat":null}},"unranked":["速度","稳定","性价比","上下文"],"generated_at":"2026-11-15T02:50:00+08:00"},"mimo-v2-6-flash":{"model":"mimo-v2.6-flash","base":{"智力":26.7276981444568,"编码":67.9,"速度":null,"稳定":null,"性价比":null,"上下文":null},"src":{"智力":{"benchmark":"AA-Intelligence-v5.0.1","value":26.7276981444568,"source_type":"third-party","origin":"aa-v5-20261108","pageDate":"2026-11-13","url":"https://artificialanalysis.ai/leaderboards/models","caveat":null},"编码":{"benchmark":"DeepSWE-1.1","value":67.9,"source_type":"vendor","origin":"supplement-2026-10-12","pageDate":"","url":"https://myclaw.ai/zh-CN/blog/mimo-v2-6","caveat":"vendor-self-reported"}},"unranked":["速度","稳定","性价比","上下文"],"generated_at":"2026-11-15T02:50:00+08:00"},"mimo-v2-6-pro":{"model":"mimo-v2.6-pro","base":{"智力":29.8897833093321,"编码":71.9,"速度":null,"稳定":null,"性价比":null,"上下文":null},"src":{"智力":{"benchmark":"AA-Intelligence-v5.0.1","value":29.8897833093321,"source_type":"third-party","origin":"aa-v5-20261108","pageDate":"2026-11-13","url":"https://artificialanalysis.ai/leaderboards/models","caveat":null},"编码":{"benchmark":"DeepSWE-1.1","value":71.9,"source_type":"vendor","origin":"supplement-2026-10-12","pageDate":"","url":"https://myclaw.ai/zh-CN/blog/mimo-v2-6","caveat":"vendor-self-reported"}},"unranked":["速度","稳定","性价比","上下文"],"generated_at":"2026-11-15T02:50:00+08:00"},"minimax-m3":{"model":"minimax-m3","base":{"智力":18.8789083859255,"编码":59,"速度":null,"稳定":null,"性价比":null,"上下文":null},"src":{"智力":{"benchmark":"AA-Intelligence-v5.0.1","value":18.8789083859255,"source_type":"third-party","origin":"aa-v5-20261108","pageDate":"2026-11-13","url":"https://artificialanalysis.ai/leaderboards/models","caveat":null},"编码":{"benchmark":"SWE-bench-Pro","value":59,"source_type":"vendor","origin":"baseline-2026-10-09","pageDate":"","url":"","caveat":"vendor-self-reported"}},"unranked":["速度","稳定","性价比","上下文"],"generated_at":"2026-11-15T02:50:00+08:00"},"minimax-m3-1-flash":{"model":"MiniMax-M3.1-Flash","base":{"智力":29.0595214290458,"编码":26,"速度":null,"稳定":null,"性价比":null,"上下文":null},"src":{"智力":{"benchmark":"AA-Intelligence-v5.0.1","value":29.0595214290458,"source_type":"third-party","origin":"aa-v5-20261108","pageDate":"2026-11-13","url":"https://artificialanalysis.ai/leaderboards/models","caveat":null},"编码":{"benchmark":"Terminal-Bench-4.0","value":26,"source_type":"third-party","origin":"increment-20261110","pageDate":"","url":"https://artificialanalysis.ai/models/minimax-m3-1-flash","caveat":null,"effort":"max"}},"unranked":["速度","稳定","性价比","上下文"],"generated_at":"2026-11-15T02:50:00+08:00"},"qwen3-8-flash":{"model":"qwen3.8-flash","base":{"智力":40,"编码":null,"速度":null,"稳定":null,"性价比":null,"上下文":null},"src":{"智力":{"benchmark":"AA-Intelligence","value":40,"source_type":"third-party","origin":"baseline-2026-10-09","pageDate":"","url":"","caveat":null}},"unranked":["编码","速度","稳定","性价比","上下文"],"generated_at":"2026-11-15T02:50:00+08:00"},"qwen3-8-max":{"model":"qwen3.8-max","base":{"智力":33.6545627367888,"编码":67.7,"速度":null,"稳定":null,"性价比":null,"上下文":null},"src":{"智力":{"benchmark":"AA-Intelligence-v5.0.1","value":33.6545627367888,"source_type":"third-party","origin":"aa-v5-20261108","pageDate":"2026-11-05","url":"https://artificialanalysis.ai/leaderboards/models","caveat":null},"编码":{"benchmark":"SWE-bench-Pro","value":67.7,"source_type":"vendor","origin":"supplement-2026-10-12","pageDate":"","url":"https://sinoaihub.com/comparisons/qwen38-max-vs-qwen38-flash/","caveat":"vendor-self-reported"}},"unranked":["速度","稳定","性价比","上下文"],"generated_at":"2026-11-15T02:50:00+08:00"},"step-5-preview":{"model":"step-5-preview","base":{"智力":28.5283090216016,"编码":67.7,"速度":null,"稳定":null,"性价比":null,"上下文":null},"src":{"智力":{"benchmark":"AA-Intelligence-v5.0.1","value":28.5283090216016,"source_type":"third-party","origin":"aa-v5-20261108","pageDate":"2026-11-13","url":"https://artificialanalysis.ai/leaderboards/models","caveat":null},"编码":{"benchmark":"DeepSWE-1.1","value":67.7,"source_type":"vendor","origin":"supplement-2026-10-12","pageDate":"","url":"https://benchlm.ai/api/data/benchmarks?model=step-5-preview&format=csv","caveat":"vendor-self-reported"}},"unranked":["速度","稳定","性价比","上下文"],"generated_at":"2026-11-15T02:50:00+08:00"}};
+
+
+
+
+
+const ARENA_INDEX = {"claude-fable-5-1":{"board":"text","label":"LMArena 文本","rank":4,"rating":1512.04,"ci":[1506.57,1517.52],"votes":20511,"byBoard":{"text":{"rank":4,"rating":1512.04,"ci":[1506.57,1517.52],"votes":20511,"collected":"2026-11-13","url":"https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=text&split=latest","upstream_model":"Claude Fable 5.1 (Max)","effort":"max"},"text_style_control":{"rank":7,"rating":1502.32,"ci":[1496.83,1507.81],"votes":20511,"collected":"2026-11-13","url":"https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=text_style_control&split=latest","upstream_model":"Claude Fable 5.1 (Max)","effort":"max"},"webdev":{"rank":7,"rating":1741.85,"ci":[1733.93,1749.77],"votes":9800,"collected":"2026-11-13","url":"https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=webdev&split=latest","upstream_model":"Claude Fable 5.1 (Max)","effort":"max"}},"source_label":"LMArena（官方 HF 数据集）","metric":"rating","note":"rating 是成对偏好胜率拟合出的 Elo-like 分，不是百分制：本段只作参考行展示，不进 entries、不进六轴、不与百分制基准并列（与 selection_rules 同一条纪律）。`records` 只收不带 @effort 后缀的主榜行；带后缀的行在 `effort_records`（同样不进六轴）；榜上不在数据集里的名字不新建身份，见 skipped_models。每块板的抓取状态见 boards[].fetch / stale 与 fetch_failures[]：某板 status≠ok 时产物里的行是上一次成功抓取的旧数据（源 records[] 是累积的，抓取失败不清旧行）。","collected":"2026-11-13","effort":"max"},"claude-fable-5-2":{"board":"webdev","label":"LMArena 前端","rank":1,"rating":1837.81,"ci":[1817.27,1858.35],"votes":1215,"byBoard":{"webdev":{"rank":1,"rating":1837.81,"ci":[1817.27,1858.35],"votes":1215,"collected":"2026-11-13","url":"https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=webdev&split=latest","upstream_model":"Claude Fable 5.2 (xHigh)","effort":"xhigh"}},"source_label":"LMArena（官方 HF 数据集）","metric":"rating","note":"rating 是成对偏好胜率拟合出的 Elo-like 分，不是百分制：本段只作参考行展示，不进 entries、不进六轴、不与百分制基准并列（与 selection_rules 同一条纪律）。`records` 只收不带 @effort 后缀的主榜行；带后缀的行在 `effort_records`（同样不进六轴）；榜上不在数据集里的名字不新建身份，见 skipped_models。每块板的抓取状态见 boards[].fetch / stale 与 fetch_failures[]：某板 status≠ok 时产物里的行是上一次成功抓取的旧数据（源 records[] 是累积的，抓取失败不清旧行）。","collected":"2026-11-13","effort":"xhigh"},"claude-haiku-5-5":{"board":"webdev","label":"LMArena 前端","rank":39,"rating":1593.45,"ci":[1584.98,1601.91],"votes":6643,"byBoard":{"webdev":{"rank":39,"rating":1593.45,"ci":[1584.98,1601.91],"votes":6643,"collected":"2026-11-13","url":"https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=webdev&split=latest","upstream_model":"Claude Haiku 5.5 (High)","effort":"high"}},"source_label":"LMArena（官方 HF 数据集）","metric":"rating","note":"rating 是成对偏好胜率拟合出的 Elo-like 分，不是百分制：本段只作参考行展示，不进 entries、不进六轴、不与百分制基准并列（与 selection_rules 同一条纪律）。`records` 只收不带 @effort 后缀的主榜行；带后缀的行在 `effort_records`（同样不进六轴）；榜上不在数据集里的名字不新建身份，见 skipped_models。每块板的抓取状态见 boards[].fetch / stale 与 fetch_failures[]：某板 status≠ok 时产物里的行是上一次成功抓取的旧数据（源 records[] 是累积的，抓取失败不清旧行）。","collected":"2026-11-13","effort":"high"},"claude-opus-5-5":{"board":"text","label":"LMArena 文本","rank":3,"rating":1513.66,"ci":[1507.7,1519.61],"votes":15793,"byBoard":{"text":{"rank":3,"rating":1513.66,"ci":[1507.7,1519.61],"votes":15793,"collected":"2026-11-13","url":"https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=text&split=latest","upstream_model":"Claude Opus 5.5 (High)","effort":"high"},"text_style_control":{"rank":4,"rating":1506.78,"ci":[1500.82,1512.75],"votes":15793,"collected":"2026-11-13","url":"https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=text_style_control&split=latest","upstream_model":"Claude Opus 5.5 (High)","effort":"high"},"webdev":{"rank":2,"rating":1814.65,"ci":[1802.94,1826.36],"votes":4208,"collected":"2026-11-13","url":"https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=webdev&split=latest","upstream_model":"Claude Opus 5.5 (Max)","effort":"max"}},"source_label":"LMArena（官方 HF 数据集）","metric":"rating","note":"rating 是成对偏好胜率拟合出的 Elo-like 分，不是百分制：本段只作参考行展示，不进 entries、不进六轴、不与百分制基准并列（与 selection_rules 同一条纪律）。`records` 只收不带 @effort 后缀的主榜行；带后缀的行在 `effort_records`（同样不进六轴）；榜上不在数据集里的名字不新建身份，见 skipped_models。每块板的抓取状态见 boards[].fetch / stale 与 fetch_failures[]：某板 status≠ok 时产物里的行是上一次成功抓取的旧数据（源 records[] 是累积的，抓取失败不清旧行）。","collected":"2026-11-13","effort":"high"},"claude-sonnet-5-5":{"board":"text","label":"LMArena 文本","rank":34,"rating":1469.13,"ci":[1463.12,1475.14],"votes":14355,"byBoard":{"text":{"rank":34,"rating":1469.13,"ci":[1463.12,1475.14],"votes":14355,"collected":"2026-11-13","url":"https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=text&split=latest","upstream_model":"Claude Sonnet 5.5 (xHigh)","effort":"xhigh"},"text_style_control":{"rank":47,"rating":1472.89,"ci":[1466.85,1478.92],"votes":14355,"collected":"2026-11-13","url":"https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=text_style_control&split=latest","upstream_model":"Claude Sonnet 5.5 (xHigh)","effort":"xhigh"},"webdev":{"rank":3,"rating":1772.26,"ci":[1762.38,1782.13],"votes":5895,"collected":"2026-11-13","url":"https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=webdev&split=latest","upstream_model":"Claude Sonnet 5.5 (xHigh)","effort":"xhigh"}},"source_label":"LMArena（官方 HF 数据集）","metric":"rating","note":"rating 是成对偏好胜率拟合出的 Elo-like 分，不是百分制：本段只作参考行展示，不进 entries、不进六轴、不与百分制基准并列（与 selection_rules 同一条纪律）。`records` 只收不带 @effort 后缀的主榜行；带后缀的行在 `effort_records`（同样不进六轴）；榜上不在数据集里的名字不新建身份，见 skipped_models。每块板的抓取状态见 boards[].fetch / stale 与 fetch_failures[]：某板 status≠ok 时产物里的行是上一次成功抓取的旧数据（源 records[] 是累积的，抓取失败不清旧行）。","collected":"2026-11-13","effort":"xhigh"},"deepseek-v4-1-flash":{"board":"text","label":"LMArena 文本","rank":93,"rating":1432.02,"ci":[1427.99,1436.05],"votes":51336,"byBoard":{"text":{"rank":93,"rating":1432.02,"ci":[1427.99,1436.05],"votes":51336,"collected":"2026-11-13","url":"https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=text&split=latest","upstream_model":"DeepSeek-V4-Flash"},"text_style_control":{"rank":38,"rating":1475.09,"ci":[1468.95,1481.24],"votes":13547,"collected":"2026-11-13","url":"https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=text_style_control&split=latest","upstream_model":"DeepSeek-V4.1-Flash-20260910 (Max)","effort":"max"},"webdev":{"rank":18,"rating":1663.65,"ci":[1656.87,1670.43],"votes":14108,"collected":"2026-11-13","url":"https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=webdev&split=latest","upstream_model":"DeepSeek-V4.1-Flash-20261017 (Max)","effort":"max"}},"source_label":"LMArena（官方 HF 数据集）","metric":"rating","note":"rating 是成对偏好胜率拟合出的 Elo-like 分，不是百分制：本段只作参考行展示，不进 entries、不进六轴、不与百分制基准并列（与 selection_rules 同一条纪律）。`records` 只收不带 @effort 后缀的主榜行；带后缀的行在 `effort_records`（同样不进六轴）；榜上不在数据集里的名字不新建身份，见 skipped_models。每块板的抓取状态见 boards[].fetch / stale 与 fetch_failures[]：某板 status≠ok 时产物里的行是上一次成功抓取的旧数据（源 records[] 是累积的，抓取失败不清旧行）。","collected":"2026-11-13"},"deepseek-v4-pro":{"board":"text","label":"LMArena 文本","rank":51,"rating":1451.26,"ci":[1447.37,1455.16],"votes":56857,"byBoard":{"text":{"rank":51,"rating":1451.26,"ci":[1447.37,1455.16],"votes":56857,"collected":"2026-11-13","url":"https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=text&split=latest","upstream_model":"DeepSeek-V4-Pro"},"text_style_control":{"rank":66,"rating":1457.88,"ci":[1453.97,1461.79],"votes":56857,"collected":"2026-11-13","url":"https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=text_style_control&split=latest","upstream_model":"DeepSeek-V4-Pro"},"webdev":{"rank":84,"rating":1448.4,"ci":[1442.03,1454.77],"votes":13770,"collected":"2026-11-13","url":"https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=webdev&split=latest","upstream_model":"DeepSeek-V4-Pro"}},"source_label":"LMArena（官方 HF 数据集）","metric":"rating","note":"rating 是成对偏好胜率拟合出的 Elo-like 分，不是百分制：本段只作参考行展示，不进 entries、不进六轴、不与百分制基准并列（与 selection_rules 同一条纪律）。`records` 只收不带 @effort 后缀的主榜行；带后缀的行在 `effort_records`（同样不进六轴）；榜上不在数据集里的名字不新建身份，见 skipped_models。每块板的抓取状态见 boards[].fetch / stale 与 fetch_failures[]：某板 status≠ok 时产物里的行是上一次成功抓取的旧数据（源 records[] 是累积的，抓取失败不清旧行）。","collected":"2026-11-13"},"gemini-3-8-flash":{"board":"text","label":"LMArena 文本","rank":10,"rating":1499.58,"ci":[1495.39,1503.77],"votes":62675,"byBoard":{"text":{"rank":10,"rating":1499.58,"ci":[1495.39,1503.77],"votes":62675,"collected":"2026-11-13","url":"https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=text&split=latest","upstream_model":"Gemini 3.8 Flash (High)","effort":"high"},"text_style_control":{"rank":9,"rating":1496.66,"ci":[1492.46,1500.87],"votes":62675,"collected":"2026-11-13","url":"https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=text_style_control&split=latest","upstream_model":"Gemini 3.8 Flash (High)","effort":"high"},"webdev":{"rank":43,"rating":1583.46,"ci":[1576.83,1590.1],"votes":13914,"collected":"2026-11-13","url":"https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=webdev&split=latest","upstream_model":"Gemini 3.8 Flash (High)","effort":"high"}},"source_label":"LMArena（官方 HF 数据集）","metric":"rating","note":"rating 是成对偏好胜率拟合出的 Elo-like 分，不是百分制：本段只作参考行展示，不进 entries、不进六轴、不与百分制基准并列（与 selection_rules 同一条纪律）。`records` 只收不带 @effort 后缀的主榜行；带后缀的行在 `effort_records`（同样不进六轴）；榜上不在数据集里的名字不新建身份，见 skipped_models。每块板的抓取状态见 boards[].fetch / stale 与 fetch_failures[]：某板 status≠ok 时产物里的行是上一次成功抓取的旧数据（源 records[] 是累积的，抓取失败不清旧行）。","collected":"2026-11-13","effort":"high"},"gemini-4-argon":{"board":"text","label":"LMArena 文本","rank":2,"rating":1529.46,"ci":[1524.11,1534.81],"votes":20779,"byBoard":{"text":{"rank":2,"rating":1529.46,"ci":[1524.11,1534.81],"votes":20779,"collected":"2026-11-13","url":"https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=text&split=latest","upstream_model":"Gemini 4 Argon (High)","effort":"high"},"text_style_control":{"rank":2,"rating":1521.69,"ci":[1516.31,1527.08],"votes":20779,"collected":"2026-11-13","url":"https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=text_style_control&split=latest","upstream_model":"Gemini 4 Argon (High)","effort":"high"},"webdev":{"rank":13,"rating":1681.03,"ci":[1671.35,1690.71],"votes":4991,"collected":"2026-11-13","url":"https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=webdev&split=latest","upstream_model":"Gemini 4 Argon (High)","effort":"high"}},"source_label":"LMArena（官方 HF 数据集）","metric":"rating","note":"rating 是成对偏好胜率拟合出的 Elo-like 分，不是百分制：本段只作参考行展示，不进 entries、不进六轴、不与百分制基准并列（与 selection_rules 同一条纪律）。`records` 只收不带 @effort 后缀的主榜行；带后缀的行在 `effort_records`（同样不进六轴）；榜上不在数据集里的名字不新建身份，见 skipped_models。每块板的抓取状态见 boards[].fetch / stale 与 fetch_failures[]：某板 status≠ok 时产物里的行是上一次成功抓取的旧数据（源 records[] 是累积的，抓取失败不清旧行）。","collected":"2026-11-13","effort":"high"},"gemini-4-carbon":{"board":"text","label":"LMArena 文本","rank":1,"rating":1538.38,"ci":[1528.82,1547.93],"votes":4273,"byBoard":{"text":{"rank":1,"rating":1538.38,"ci":[1528.82,1547.93],"votes":4273,"collected":"2026-11-13","url":"https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=text&split=latest","upstream_model":"Gemini 4 Carbon (High)","effort":"high"},"text_style_control":{"rank":1,"rating":1526.18,"ci":[1516.57,1535.8],"votes":4273,"collected":"2026-11-13","url":"https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=text_style_control&split=latest","upstream_model":"Gemini 4 Carbon (High)","effort":"high"},"webdev":{"rank":4,"rating":1768.23,"ci":[1752.9,1783.55],"votes":2120,"collected":"2026-11-13","url":"https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=webdev&split=latest","upstream_model":"Gemini 4 Carbon (High)","effort":"high"}},"source_label":"LMArena（官方 HF 数据集）","metric":"rating","note":"rating 是成对偏好胜率拟合出的 Elo-like 分，不是百分制：本段只作参考行展示，不进 entries、不进六轴、不与百分制基准并列（与 selection_rules 同一条纪律）。`records` 只收不带 @effort 后缀的主榜行；带后缀的行在 `effort_records`（同样不进六轴）；榜上不在数据集里的名字不新建身份，见 skipped_models。每块板的抓取状态见 boards[].fetch / stale 与 fetch_failures[]：某板 status≠ok 时产物里的行是上一次成功抓取的旧数据（源 records[] 是累积的，抓取失败不清旧行）。","collected":"2026-11-13","effort":"high"},"gemini-4-hydrogen":{"board":"text","label":"LMArena 文本","rank":8,"rating":1502.12,"ci":[1493.14,1511.1],"votes":4741,"byBoard":{"text":{"rank":8,"rating":1502.12,"ci":[1493.14,1511.1],"votes":4741,"collected":"2026-11-13","url":"https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=text&split=latest","upstream_model":"Gemini 4 Hydrogen (High)","effort":"high"},"text_style_control":{"rank":15,"rating":1490.43,"ci":[1481.42,1499.44],"votes":4741,"collected":"2026-11-13","url":"https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=text_style_control&split=latest","upstream_model":"Gemini 4 Hydrogen (High)","effort":"high"},"webdev":{"rank":10,"rating":1704.21,"ci":[1689.82,1718.61],"votes":1997,"collected":"2026-11-13","url":"https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=webdev&split=latest","upstream_model":"Gemini 4 Hydrogen (High)","effort":"high"}},"source_label":"LMArena（官方 HF 数据集）","metric":"rating","note":"rating 是成对偏好胜率拟合出的 Elo-like 分，不是百分制：本段只作参考行展示，不进 entries、不进六轴、不与百分制基准并列（与 selection_rules 同一条纪律）。`records` 只收不带 @effort 后缀的主榜行；带后缀的行在 `effort_records`（同样不进六轴）；榜上不在数据集里的名字不新建身份，见 skipped_models。每块板的抓取状态见 boards[].fetch / stale 与 fetch_failures[]：某板 status≠ok 时产物里的行是上一次成功抓取的旧数据（源 records[] 是累积的，抓取失败不清旧行）。","collected":"2026-11-13","effort":"high"},"glm-5-1":{"board":"text","label":"LMArena 文本","rank":41,"rating":1462.45,"ci":[1458.94,1465.96],"votes":67009,"byBoard":{"text":{"rank":41,"rating":1462.45,"ci":[1458.94,1465.96],"votes":67009,"collected":"2026-11-13","url":"https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=text&split=latest","upstream_model":"GLM-5.1"},"text_style_control":{"rank":59,"rating":1464.97,"ci":[1461.44,1468.49],"votes":67009,"collected":"2026-11-13","url":"https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=text_style_control&split=latest","upstream_model":"GLM-5.1"},"webdev":{"rank":68,"rating":1508.08,"ci":[1501.27,1514.9],"votes":10531,"collected":"2026-11-13","url":"https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=webdev&split=latest","upstream_model":"GLM-5.1"}},"source_label":"LMArena（官方 HF 数据集）","metric":"rating","note":"rating 是成对偏好胜率拟合出的 Elo-like 分，不是百分制：本段只作参考行展示，不进 entries、不进六轴、不与百分制基准并列（与 selection_rules 同一条纪律）。`records` 只收不带 @effort 后缀的主榜行；带后缀的行在 `effort_records`（同样不进六轴）；榜上不在数据集里的名字不新建身份，见 skipped_models。每块板的抓取状态见 boards[].fetch / stale 与 fetch_failures[]：某板 status≠ok 时产物里的行是上一次成功抓取的旧数据（源 records[] 是累积的，抓取失败不清旧行）。","collected":"2026-11-13"},"glm-5-2":{"board":"text","label":"LMArena 文本","rank":33,"rating":1469.38,"ci":[1465.33,1473.43],"votes":54143,"byBoard":{"text":{"rank":33,"rating":1469.38,"ci":[1465.33,1473.43],"votes":54143,"collected":"2026-11-13","url":"https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=text&split=latest","upstream_model":"GLM-5.2 (Max)","effort":"max"},"text_style_control":{"rank":39,"rating":1475.01,"ci":[1470.93,1479.09],"votes":54143,"collected":"2026-11-13","url":"https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=text_style_control&split=latest","upstream_model":"GLM-5.2 (Max)","effort":"max"},"webdev":{"rank":38,"rating":1607.69,"ci":[1601.8,1613.57],"votes":17925,"collected":"2026-11-13","url":"https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=webdev&split=latest","upstream_model":"GLM-5.2 (Max)","effort":"max"}},"source_label":"LMArena（官方 HF 数据集）","metric":"rating","note":"rating 是成对偏好胜率拟合出的 Elo-like 分，不是百分制：本段只作参考行展示，不进 entries、不进六轴、不与百分制基准并列（与 selection_rules 同一条纪律）。`records` 只收不带 @effort 后缀的主榜行；带后缀的行在 `effort_records`（同样不进六轴）；榜上不在数据集里的名字不新建身份，见 skipped_models。每块板的抓取状态见 boards[].fetch / stale 与 fetch_failures[]：某板 status≠ok 时产物里的行是上一次成功抓取的旧数据（源 records[] 是累积的，抓取失败不清旧行）。","collected":"2026-11-13","effort":"max"},"glm-5-3":{"board":"text","label":"LMArena 文本","rank":26,"rating":1474.93,"ci":[1470.26,1479.61],"votes":31604,"byBoard":{"text":{"rank":26,"rating":1474.93,"ci":[1470.26,1479.61],"votes":31604,"collected":"2026-11-13","url":"https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=text&split=latest","upstream_model":"GLM-5.3 (Max)","effort":"max"},"text_style_control":{"rank":28,"rating":1481.57,"ci":[1476.86,1486.27],"votes":31604,"collected":"2026-11-13","url":"https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=text_style_control&split=latest","upstream_model":"GLM-5.3 (Max)","effort":"max"},"webdev":{"rank":30,"rating":1622.45,"ci":[1615.61,1629.3],"votes":12695,"collected":"2026-11-13","url":"https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=webdev&split=latest","upstream_model":"GLM-5.3 (Max)","effort":"max"}},"source_label":"LMArena（官方 HF 数据集）","metric":"rating","note":"rating 是成对偏好胜率拟合出的 Elo-like 分，不是百分制：本段只作参考行展示，不进 entries、不进六轴、不与百分制基准并列（与 selection_rules 同一条纪律）。`records` 只收不带 @effort 后缀的主榜行；带后缀的行在 `effort_records`（同样不进六轴）；榜上不在数据集里的名字不新建身份，见 skipped_models。每块板的抓取状态见 boards[].fetch / stale 与 fetch_failures[]：某板 status≠ok 时产物里的行是上一次成功抓取的旧数据（源 records[] 是累积的，抓取失败不清旧行）。","collected":"2026-11-13","effort":"max"},"glm-5-3-flash":{"board":"text","label":"LMArena 文本","rank":30,"rating":1471.72,"ci":[1467.33,1476.11],"votes":51019,"byBoard":{"text":{"rank":30,"rating":1471.72,"ci":[1467.33,1476.11],"votes":51019,"collected":"2026-11-13","url":"https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=text&split=latest","upstream_model":"GLM-5.3-Flash"},"text_style_control":{"rank":36,"rating":1475.26,"ci":[1470.85,1479.67],"votes":51019,"collected":"2026-11-13","url":"https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=text_style_control&split=latest","upstream_model":"GLM-5.3-Flash"},"webdev":{"rank":36,"rating":1608.79,"ci":[1602.62,1614.95],"votes":23608,"collected":"2026-11-13","url":"https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=webdev&split=latest","upstream_model":"GLM-5.3-Flash"}},"source_label":"LMArena（官方 HF 数据集）","metric":"rating","note":"rating 是成对偏好胜率拟合出的 Elo-like 分，不是百分制：本段只作参考行展示，不进 entries、不进六轴、不与百分制基准并列（与 selection_rules 同一条纪律）。`records` 只收不带 @effort 后缀的主榜行；带后缀的行在 `effort_records`（同样不进六轴）；榜上不在数据集里的名字不新建身份，见 skipped_models。每块板的抓取状态见 boards[].fetch / stale 与 fetch_failures[]：某板 status≠ok 时产物里的行是上一次成功抓取的旧数据（源 records[] 是累积的，抓取失败不清旧行）。","collected":"2026-11-13"},"glm-5v-turbo":{"board":"text","label":"LMArena 文本","rank":82,"rating":1437.86,"ci":[1431.42,1444.31],"votes":10291,"byBoard":{"text":{"rank":82,"rating":1437.86,"ci":[1431.42,1444.31],"votes":10291,"collected":"2026-11-12","url":"https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=text&split=latest","upstream_model":"GLM-5V-Turbo"},"webdev":{"rank":99,"rating":1400.57,"ci":[1387.36,1413.78],"votes":2405,"collected":"2026-11-08","url":"https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=webdev&split=latest","upstream_model":"GLM-5V-Turbo"}},"source_label":"LMArena（官方 HF 数据集）","metric":"rating","note":"rating 是成对偏好胜率拟合出的 Elo-like 分，不是百分制：本段只作参考行展示，不进 entries、不进六轴、不与百分制基准并列（与 selection_rules 同一条纪律）。`records` 只收不带 @effort 后缀的主榜行；带后缀的行在 `effort_records`（同样不进六轴）；榜上不在数据集里的名字不新建身份，见 skipped_models。每块板的抓取状态见 boards[].fetch / stale 与 fetch_failures[]：某板 status≠ok 时产物里的行是上一次成功抓取的旧数据（源 records[] 是累积的，抓取失败不清旧行）。","collected":"2026-11-12"},"gpt-6-1-sol":{"board":"text","label":"LMArena 文本","rank":66,"rating":1444.75,"ci":[1438.57,1450.92],"votes":13498,"byBoard":{"text":{"rank":66,"rating":1444.75,"ci":[1438.57,1450.92],"votes":13498,"collected":"2026-11-13","url":"https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=text&split=latest","upstream_model":"GPT-6.1 Sol (Max)","effort":"max"},"text_style_control":{"rank":30,"rating":1480.82,"ci":[1474.6,1487.04],"votes":13498,"collected":"2026-11-13","url":"https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=text_style_control&split=latest","upstream_model":"GPT-6.1 Sol (Max)","effort":"max"},"webdev":{"rank":6,"rating":1743.26,"ci":[1733.46,1753.06],"votes":5590,"collected":"2026-11-13","url":"https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=webdev&split=latest","upstream_model":"GPT-6.1 Sol (Max)","effort":"max"}},"source_label":"LMArena（官方 HF 数据集）","metric":"rating","note":"rating 是成对偏好胜率拟合出的 Elo-like 分，不是百分制：本段只作参考行展示，不进 entries、不进六轴、不与百分制基准并列（与 selection_rules 同一条纪律）。`records` 只收不带 @effort 后缀的主榜行；带后缀的行在 `effort_records`（同样不进六轴）；榜上不在数据集里的名字不新建身份，见 skipped_models。每块板的抓取状态见 boards[].fetch / stale 与 fetch_failures[]：某板 status≠ok 时产物里的行是上一次成功抓取的旧数据（源 records[] 是累积的，抓取失败不清旧行）。","collected":"2026-11-13","effort":"max"},"gpt-6-1-terra":{"board":"webdev","label":"LMArena 前端","rank":14,"rating":1678.15,"ci":[1667.57,1688.72],"votes":4016,"byBoard":{"webdev":{"rank":14,"rating":1678.15,"ci":[1667.57,1688.72],"votes":4016,"collected":"2026-11-13","url":"https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=webdev&split=latest","upstream_model":"GPT-6.1 Terra (Max)","effort":"max"}},"source_label":"LMArena（官方 HF 数据集）","metric":"rating","note":"rating 是成对偏好胜率拟合出的 Elo-like 分，不是百分制：本段只作参考行展示，不进 entries、不进六轴、不与百分制基准并列（与 selection_rules 同一条纪律）。`records` 只收不带 @effort 后缀的主榜行；带后缀的行在 `effort_records`（同样不进六轴）；榜上不在数据集里的名字不新建身份，见 skipped_models。每块板的抓取状态见 boards[].fetch / stale 与 fetch_failures[]：某板 status≠ok 时产物里的行是上一次成功抓取的旧数据（源 records[] 是累积的，抓取失败不清旧行）。","collected":"2026-11-13","effort":"max"},"gpt-6-astra":{"board":"text","label":"LMArena 文本","rank":78,"rating":1439.61,"ci":[1434.11,1445.12],"votes":18745,"byBoard":{"text":{"rank":78,"rating":1439.61,"ci":[1434.11,1445.12],"votes":18745,"collected":"2026-11-13","url":"https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=text&split=latest","upstream_model":"GPT-6 Astra (Max)","effort":"max"},"text_style_control":{"rank":42,"rating":1473.91,"ci":[1468.39,1479.42],"votes":18745,"collected":"2026-11-13","url":"https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=text_style_control&split=latest","upstream_model":"GPT-6 Astra (Max)","effort":"max"},"webdev":{"rank":5,"rating":1763.76,"ci":[1755.19,1772.34],"votes":8470,"collected":"2026-11-13","url":"https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=webdev&split=latest","upstream_model":"GPT-6 Astra (Max)","effort":"max"}},"source_label":"LMArena（官方 HF 数据集）","metric":"rating","note":"rating 是成对偏好胜率拟合出的 Elo-like 分，不是百分制：本段只作参考行展示，不进 entries、不进六轴、不与百分制基准并列（与 selection_rules 同一条纪律）。`records` 只收不带 @effort 后缀的主榜行；带后缀的行在 `effort_records`（同样不进六轴）；榜上不在数据集里的名字不新建身份，见 skipped_models。每块板的抓取状态见 boards[].fetch / stale 与 fetch_failures[]：某板 status≠ok 时产物里的行是上一次成功抓取的旧数据（源 records[] 是累积的，抓取失败不清旧行）。","collected":"2026-11-13","effort":"max"},"gpt-6-luna":{"board":"text_style_control","label":"LMArena 风格控制","rank":99,"rating":1440.88,"ci":[1436.79,1444.97],"votes":108508,"byBoard":{"text_style_control":{"rank":99,"rating":1440.88,"ci":[1436.79,1444.97],"votes":108508,"collected":"2026-11-13","url":"https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=text_style_control&split=latest","upstream_model":"GPT-6 Luna (Max)","effort":"max"},"webdev":{"rank":46,"rating":1577.21,"ci":[1571.29,1583.14],"votes":30581,"collected":"2026-11-13","url":"https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=webdev&split=latest","upstream_model":"GPT-6 Luna (Max)","effort":"max"}},"source_label":"LMArena（官方 HF 数据集）","metric":"rating","note":"rating 是成对偏好胜率拟合出的 Elo-like 分，不是百分制：本段只作参考行展示，不进 entries、不进六轴、不与百分制基准并列（与 selection_rules 同一条纪律）。`records` 只收不带 @effort 后缀的主榜行；带后缀的行在 `effort_records`（同样不进六轴）；榜上不在数据集里的名字不新建身份，见 skipped_models。每块板的抓取状态见 boards[].fetch / stale 与 fetch_failures[]：某板 status≠ok 时产物里的行是上一次成功抓取的旧数据（源 records[] 是累积的，抓取失败不清旧行）。","collected":"2026-11-13","effort":"max"},"grok-4-5":{"board":"text","label":"LMArena 文本","rank":60,"rating":1448.02,"ci":[1443.66,1452.38],"votes":39122,"byBoard":{"text":{"rank":60,"rating":1448.02,"ci":[1443.66,1452.38],"votes":39122,"collected":"2026-11-13","url":"https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=text&split=latest","upstream_model":"Grok 4.5"},"text_style_control":{"rank":55,"rating":1465.76,"ci":[1461.4,1470.13],"votes":39122,"collected":"2026-11-13","url":"https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=text_style_control&split=latest","upstream_model":"Grok 4.5"},"webdev":{"rank":52,"rating":1552.6,"ci":[1545.87,1559.33],"votes":10796,"collected":"2026-11-13","url":"https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=webdev&split=latest","upstream_model":"Grok 4.5"}},"source_label":"LMArena（官方 HF 数据集）","metric":"rating","note":"rating 是成对偏好胜率拟合出的 Elo-like 分，不是百分制：本段只作参考行展示，不进 entries、不进六轴、不与百分制基准并列（与 selection_rules 同一条纪律）。`records` 只收不带 @effort 后缀的主榜行；带后缀的行在 `effort_records`（同样不进六轴）；榜上不在数据集里的名字不新建身份，见 skipped_models。每块板的抓取状态见 boards[].fetch / stale 与 fetch_failures[]：某板 status≠ok 时产物里的行是上一次成功抓取的旧数据（源 records[] 是累积的，抓取失败不清旧行）。","collected":"2026-11-13"},"grok-4-6":{"board":"text","label":"LMArena 文本","rank":96,"rating":1430.02,"ci":[1425.36,1434.68],"votes":34582,"byBoard":{"text":{"rank":96,"rating":1430.02,"ci":[1425.36,1434.68],"votes":34582,"collected":"2026-11-13","url":"https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=text&split=latest","upstream_model":"Grok 4.6 (High)","effort":"high"},"text_style_control":{"rank":69,"rating":1456.66,"ci":[1452.02,1461.3],"votes":34582,"collected":"2026-11-13","url":"https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=text_style_control&split=latest","upstream_model":"Grok 4.6 (High)","effort":"high"},"webdev":{"rank":33,"rating":1618.07,"ci":[1611.12,1625.01],"votes":12195,"collected":"2026-11-13","url":"https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=webdev&split=latest","upstream_model":"Grok 4.6 (High)","effort":"high"}},"source_label":"LMArena（官方 HF 数据集）","metric":"rating","note":"rating 是成对偏好胜率拟合出的 Elo-like 分，不是百分制：本段只作参考行展示，不进 entries、不进六轴、不与百分制基准并列（与 selection_rules 同一条纪律）。`records` 只收不带 @effort 后缀的主榜行；带后缀的行在 `effort_records`（同样不进六轴）；榜上不在数据集里的名字不新建身份，见 skipped_models。每块板的抓取状态见 boards[].fetch / stale 与 fetch_failures[]：某板 status≠ok 时产物里的行是上一次成功抓取的旧数据（源 records[] 是累积的，抓取失败不清旧行）。","collected":"2026-11-13","effort":"high"},"grok-4-7":{"board":"text_style_control","label":"LMArena 风格控制","rank":92,"rating":1443.32,"ci":[1438.05,1448.59],"votes":22219,"byBoard":{"text_style_control":{"rank":92,"rating":1443.32,"ci":[1438.05,1448.59],"votes":22219,"collected":"2026-11-13","url":"https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=text_style_control&split=latest","upstream_model":"Grok 4.7 (xHigh)","effort":"xhigh"},"webdev":{"rank":24,"rating":1640.7,"ci":[1632.77,1648.62],"votes":8186,"collected":"2026-11-13","url":"https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=webdev&split=latest","upstream_model":"Grok 4.7 (xHigh)","effort":"xhigh"}},"source_label":"LMArena（官方 HF 数据集）","metric":"rating","note":"rating 是成对偏好胜率拟合出的 Elo-like 分，不是百分制：本段只作参考行展示，不进 entries、不进六轴、不与百分制基准并列（与 selection_rules 同一条纪律）。`records` 只收不带 @effort 后缀的主榜行；带后缀的行在 `effort_records`（同样不进六轴）；榜上不在数据集里的名字不新建身份，见 skipped_models。每块板的抓取状态见 boards[].fetch / stale 与 fetch_failures[]：某板 status≠ok 时产物里的行是上一次成功抓取的旧数据（源 records[] 是累积的，抓取失败不清旧行）。","collected":"2026-11-13","effort":"xhigh"},"hy3":{"board":"text","label":"LMArena 文本","rank":80,"rating":1438.62,"ci":[1432.97,1444.27],"votes":15178,"byBoard":{"text":{"rank":80,"rating":1438.62,"ci":[1432.97,1444.27],"votes":15178,"collected":"2026-11-13","url":"https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=text&split=latest","upstream_model":"Hy3"},"text_style_control":{"rank":77,"rating":1453.99,"ci":[1448.31,1459.66],"votes":15178,"collected":"2026-11-13","url":"https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=text_style_control&split=latest","upstream_model":"Hy3"},"webdev":{"rank":69,"rating":1505.43,"ci":[1497.55,1513.32],"votes":7274,"collected":"2026-11-13","url":"https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=webdev&split=latest","upstream_model":"Hy3"}},"source_label":"LMArena（官方 HF 数据集）","metric":"rating","note":"rating 是成对偏好胜率拟合出的 Elo-like 分，不是百分制：本段只作参考行展示，不进 entries、不进六轴、不与百分制基准并列（与 selection_rules 同一条纪律）。`records` 只收不带 @effort 后缀的主榜行；带后缀的行在 `effort_records`（同样不进六轴）；榜上不在数据集里的名字不新建身份，见 skipped_models。每块板的抓取状态见 boards[].fetch / stale 与 fetch_failures[]：某板 status≠ok 时产物里的行是上一次成功抓取的旧数据（源 records[] 是累积的，抓取失败不清旧行）。","collected":"2026-11-13"},"hy4-preview":{"board":"webdev","label":"LMArena 前端","rank":26,"rating":1631.67,"ci":[1621.88,1641.45],"votes":4601,"byBoard":{"webdev":{"rank":26,"rating":1631.67,"ci":[1621.88,1641.45],"votes":4601,"collected":"2026-11-13","url":"https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=webdev&split=latest","upstream_model":"Hy4 preview"}},"source_label":"LMArena（官方 HF 数据集）","metric":"rating","note":"rating 是成对偏好胜率拟合出的 Elo-like 分，不是百分制：本段只作参考行展示，不进 entries、不进六轴、不与百分制基准并列（与 selection_rules 同一条纪律）。`records` 只收不带 @effort 后缀的主榜行；带后缀的行在 `effort_records`（同样不进六轴）；榜上不在数据集里的名字不新建身份，见 skipped_models。每块板的抓取状态见 boards[].fetch / stale 与 fetch_failures[]：某板 status≠ok 时产物里的行是上一次成功抓取的旧数据（源 records[] 是累积的，抓取失败不清旧行）。","collected":"2026-11-13"},"kimi-k2-6":{"board":"text","label":"LMArena 文本","rank":47,"rating":1455.41,"ci":[1450.99,1459.83],"votes":39551,"byBoard":{"text":{"rank":47,"rating":1455.41,"ci":[1450.99,1459.83],"votes":39551,"collected":"2026-11-13","url":"https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=text&split=latest","upstream_model":"Kimi K2.6"},"text_style_control":{"rank":61,"rating":1460.86,"ci":[1456.42,1465.3],"votes":39551,"collected":"2026-11-13","url":"https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=text_style_control&split=latest","upstream_model":"Kimi K2.6"},"webdev":{"rank":67,"rating":1509.32,"ci":[1502.03,1516.6],"votes":10005,"collected":"2026-11-13","url":"https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=webdev&split=latest","upstream_model":"Kimi K2.6"}},"source_label":"LMArena（官方 HF 数据集）","metric":"rating","note":"rating 是成对偏好胜率拟合出的 Elo-like 分，不是百分制：本段只作参考行展示，不进 entries、不进六轴、不与百分制基准并列（与 selection_rules 同一条纪律）。`records` 只收不带 @effort 后缀的主榜行；带后缀的行在 `effort_records`（同样不进六轴）；榜上不在数据集里的名字不新建身份，见 skipped_models。每块板的抓取状态见 boards[].fetch / stale 与 fetch_failures[]：某板 status≠ok 时产物里的行是上一次成功抓取的旧数据（源 records[] 是累积的，抓取失败不清旧行）。","collected":"2026-11-13"},"kimi-k3":{"board":"text","label":"LMArena 文本","rank":28,"rating":1474.59,"ci":[1470.32,1478.85],"votes":41402,"byBoard":{"text":{"rank":28,"rating":1474.59,"ci":[1470.32,1478.85],"votes":41402,"collected":"2026-11-13","url":"https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=text&split=latest","upstream_model":"Kimi K3 (Max)","effort":"max"},"text_style_control":{"rank":20,"rating":1487.44,"ci":[1483.16,1491.71],"votes":41402,"collected":"2026-11-13","url":"https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=text_style_control&split=latest","upstream_model":"Kimi K3 (Max)","effort":"max"},"webdev":{"rank":19,"rating":1657.76,"ci":[1652.07,1663.45],"votes":22448,"collected":"2026-11-13","url":"https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=webdev&split=latest","upstream_model":"Kimi K3 (Max)","effort":"max"}},"source_label":"LMArena（官方 HF 数据集）","metric":"rating","note":"rating 是成对偏好胜率拟合出的 Elo-like 分，不是百分制：本段只作参考行展示，不进 entries、不进六轴、不与百分制基准并列（与 selection_rules 同一条纪律）。`records` 只收不带 @effort 后缀的主榜行；带后缀的行在 `effort_records`（同样不进六轴）；榜上不在数据集里的名字不新建身份，见 skipped_models。每块板的抓取状态见 boards[].fetch / stale 与 fetch_failures[]：某板 status≠ok 时产物里的行是上一次成功抓取的旧数据（源 records[] 是累积的，抓取失败不清旧行）。","collected":"2026-11-13","effort":"max"},"kimi-k3-1-pro":{"board":"text","label":"LMArena 文本","rank":43,"rating":1459.14,"ci":[1449.16,1469.11],"votes":3995,"byBoard":{"text":{"rank":43,"rating":1459.14,"ci":[1449.16,1469.11],"votes":3995,"collected":"2026-11-13","url":"https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=text&split=latest","upstream_model":"Kimi K3.1 Pro (Max)","effort":"max"},"text_style_control":{"rank":24,"rating":1484.72,"ci":[1474.7,1494.73],"votes":3995,"collected":"2026-11-13","url":"https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=text_style_control&split=latest","upstream_model":"Kimi K3.1 Pro (Max)","effort":"max"},"webdev":{"rank":12,"rating":1687.22,"ci":[1677.54,1696.91],"votes":4977,"collected":"2026-11-13","url":"https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=webdev&split=latest","upstream_model":"Kimi K3.1 Pro (Max)","effort":"max"}},"source_label":"LMArena（官方 HF 数据集）","metric":"rating","note":"rating 是成对偏好胜率拟合出的 Elo-like 分，不是百分制：本段只作参考行展示，不进 entries、不进六轴、不与百分制基准并列（与 selection_rules 同一条纪律）。`records` 只收不带 @effort 后缀的主榜行；带后缀的行在 `effort_records`（同样不进六轴）；榜上不在数据集里的名字不新建身份，见 skipped_models。每块板的抓取状态见 boards[].fetch / stale 与 fetch_failures[]：某板 status≠ok 时产物里的行是上一次成功抓取的旧数据（源 records[] 是累积的，抓取失败不清旧行）。","collected":"2026-11-13","effort":"max"},"mimo-v2-6-flash":{"board":"text","label":"LMArena 文本","rank":55,"rating":1450.84,"ci":[1445.7,1455.99],"votes":23252,"byBoard":{"text":{"rank":55,"rating":1450.84,"ci":[1445.7,1455.99],"votes":23252,"collected":"2026-11-13","url":"https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=text&split=latest","upstream_model":"MiMo-V2.6-Flash"},"text_style_control":{"rank":85,"rating":1448.4,"ci":[1443.21,1453.58],"votes":23252,"collected":"2026-11-13","url":"https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=text_style_control&split=latest","upstream_model":"MiMo-V2.6-Flash"},"webdev":{"rank":25,"rating":1638.06,"ci":[1630.34,1645.78],"votes":8944,"collected":"2026-11-13","url":"https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=webdev&split=latest","upstream_model":"MiMo-V2.6-Flash"}},"source_label":"LMArena（官方 HF 数据集）","metric":"rating","note":"rating 是成对偏好胜率拟合出的 Elo-like 分，不是百分制：本段只作参考行展示，不进 entries、不进六轴、不与百分制基准并列（与 selection_rules 同一条纪律）。`records` 只收不带 @effort 后缀的主榜行；带后缀的行在 `effort_records`（同样不进六轴）；榜上不在数据集里的名字不新建身份，见 skipped_models。每块板的抓取状态见 boards[].fetch / stale 与 fetch_failures[]：某板 status≠ok 时产物里的行是上一次成功抓取的旧数据（源 records[] 是累积的，抓取失败不清旧行）。","collected":"2026-11-13"},"mimo-v2-6-pro":{"board":"text","label":"LMArena 文本","rank":14,"rating":1491.6,"ci":[1482.18,1501.02],"votes":4064,"byBoard":{"text":{"rank":14,"rating":1491.6,"ci":[1482.18,1501.02],"votes":4064,"collected":"2026-11-13","url":"https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=text&split=latest","upstream_model":"MiMo-V2.6-Pro"},"text_style_control":{"rank":31,"rating":1479.89,"ci":[1470.42,1489.37],"votes":4064,"collected":"2026-11-13","url":"https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=text_style_control&split=latest","upstream_model":"MiMo-V2.6-Pro"},"webdev":{"rank":28,"rating":1625.02,"ci":[1617.36,1632.67],"votes":8846,"collected":"2026-11-13","url":"https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=webdev&split=latest","upstream_model":"MiMo-V2.6-Pro"}},"source_label":"LMArena（官方 HF 数据集）","metric":"rating","note":"rating 是成对偏好胜率拟合出的 Elo-like 分，不是百分制：本段只作参考行展示，不进 entries、不进六轴、不与百分制基准并列（与 selection_rules 同一条纪律）。`records` 只收不带 @effort 后缀的主榜行；带后缀的行在 `effort_records`（同样不进六轴）；榜上不在数据集里的名字不新建身份，见 skipped_models。每块板的抓取状态见 boards[].fetch / stale 与 fetch_failures[]：某板 status≠ok 时产物里的行是上一次成功抓取的旧数据（源 records[] 是累积的，抓取失败不清旧行）。","collected":"2026-11-13"},"minimax-m3":{"board":"text","label":"LMArena 文本","rank":100,"rating":1428.07,"ci":[1424.43,1431.71],"votes":73579,"byBoard":{"text":{"rank":100,"rating":1428.07,"ci":[1424.43,1431.71],"votes":73579,"collected":"2026-11-13","url":"https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=text&split=latest","upstream_model":"MiniMax-M3"},"text_style_control":{"rank":98,"rating":1439.24,"ci":[1435.49,1442.99],"votes":68611,"collected":"2026-11-06","url":"https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=text_style_control&split=latest","upstream_model":"MiniMax-M3"},"webdev":{"rank":75,"rating":1484.07,"ci":[1478.66,1489.49],"votes":21058,"collected":"2026-11-13","url":"https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=webdev&split=latest","upstream_model":"MiniMax-M3"}},"source_label":"LMArena（官方 HF 数据集）","metric":"rating","note":"rating 是成对偏好胜率拟合出的 Elo-like 分，不是百分制：本段只作参考行展示，不进 entries、不进六轴、不与百分制基准并列（与 selection_rules 同一条纪律）。`records` 只收不带 @effort 后缀的主榜行；带后缀的行在 `effort_records`（同样不进六轴）；榜上不在数据集里的名字不新建身份，见 skipped_models。每块板的抓取状态见 boards[].fetch / stale 与 fetch_failures[]：某板 status≠ok 时产物里的行是上一次成功抓取的旧数据（源 records[] 是累积的，抓取失败不清旧行）。","collected":"2026-11-13"},"minimax-m3-1-flash":{"board":"webdev","label":"LMArena 前端","rank":42,"rating":1583.89,"ci":[1574.33,1593.45],"votes":4904,"byBoard":{"webdev":{"rank":42,"rating":1583.89,"ci":[1574.33,1593.45],"votes":4904,"collected":"2026-11-13","url":"https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=webdev&split=latest","upstream_model":"MiniMax-M3.1-Flash"}},"source_label":"LMArena（官方 HF 数据集）","metric":"rating","note":"rating 是成对偏好胜率拟合出的 Elo-like 分，不是百分制：本段只作参考行展示，不进 entries、不进六轴、不与百分制基准并列（与 selection_rules 同一条纪律）。`records` 只收不带 @effort 后缀的主榜行；带后缀的行在 `effort_records`（同样不进六轴）；榜上不在数据集里的名字不新建身份，见 skipped_models。每块板的抓取状态见 boards[].fetch / stale 与 fetch_failures[]：某板 status≠ok 时产物里的行是上一次成功抓取的旧数据（源 records[] 是累积的，抓取失败不清旧行）。","collected":"2026-11-13"},"qwen3-8-max":{"board":"text","label":"LMArena 文本","rank":17,"rating":1485.28,"ci":[1480.73,1489.82],"votes":36936,"byBoard":{"text":{"rank":17,"rating":1485.28,"ci":[1480.73,1489.82],"votes":36936,"collected":"2026-11-13","url":"https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=text&split=latest","upstream_model":"Qwen3.8-Max"},"text_style_control":{"rank":25,"rating":1484.11,"ci":[1479.54,1488.67],"votes":36936,"collected":"2026-11-13","url":"https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=text_style_control&split=latest","upstream_model":"Qwen3.8-Max"},"webdev":{"rank":17,"rating":1670.43,"ci":[1658.32,1682.54],"votes":3370,"collected":"2026-11-13","url":"https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=webdev&split=latest","upstream_model":"Qwen3.8-Max"}},"source_label":"LMArena（官方 HF 数据集）","metric":"rating","note":"rating 是成对偏好胜率拟合出的 Elo-like 分，不是百分制：本段只作参考行展示，不进 entries、不进六轴、不与百分制基准并列（与 selection_rules 同一条纪律）。`records` 只收不带 @effort 后缀的主榜行；带后缀的行在 `effort_records`（同样不进六轴）；榜上不在数据集里的名字不新建身份，见 skipped_models。每块板的抓取状态见 boards[].fetch / stale 与 fetch_failures[]：某板 status≠ok 时产物里的行是上一次成功抓取的旧数据（源 records[] 是累积的，抓取失败不清旧行）。","collected":"2026-11-13"},"step-5-preview":{"board":"text","label":"LMArena 文本","rank":70,"rating":1443.34,"ci":[1437.1,1449.58],"votes":12345,"byBoard":{"text":{"rank":70,"rating":1443.34,"ci":[1437.1,1449.58],"votes":12345,"collected":"2026-11-13","url":"https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=text&split=latest","upstream_model":"Step 5 Preview"},"text_style_control":{"rank":84,"rating":1448.55,"ci":[1442.25,1454.84],"votes":12345,"collected":"2026-11-13","url":"https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=text_style_control&split=latest","upstream_model":"Step 5 Preview"},"webdev":{"rank":47,"rating":1572.54,"ci":[1564.46,1580.63],"votes":7659,"collected":"2026-11-13","url":"https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=webdev&split=latest","upstream_model":"Step 5 Preview (High)","effort":"high"}},"source_label":"LMArena（官方 HF 数据集）","metric":"rating","note":"rating 是成对偏好胜率拟合出的 Elo-like 分，不是百分制：本段只作参考行展示，不进 entries、不进六轴、不与百分制基准并列（与 selection_rules 同一条纪律）。`records` 只收不带 @effort 后缀的主榜行；带后缀的行在 `effort_records`（同样不进六轴）；榜上不在数据集里的名字不新建身份，见 skipped_models。每块板的抓取状态见 boards[].fetch / stale 与 fetch_failures[]：某板 status≠ok 时产物里的行是上一次成功抓取的旧数据（源 records[] 是累积的，抓取失败不清旧行）。","collected":"2026-11-13"},"u2-flash":{"board":"webdev","label":"LMArena 前端","rank":35,"rating":1612.77,"ci":[1596.09,1629.44],"votes":1467,"byBoard":{"webdev":{"rank":35,"rating":1612.77,"ci":[1596.09,1629.44],"votes":1467,"collected":"2026-11-13","url":"https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=webdev&split=latest","upstream_model":"U2 Flash"}},"source_label":"LMArena（官方 HF 数据集）","metric":"rating","note":"rating 是成对偏好胜率拟合出的 Elo-like 分，不是百分制：本段只作参考行展示，不进 entries、不进六轴、不与百分制基准并列（与 selection_rules 同一条纪律）。`records` 只收不带 @effort 后缀的主榜行；带后缀的行在 `effort_records`（同样不进六轴）；榜上不在数据集里的名字不新建身份，见 skipped_models。每块板的抓取状态见 boards[].fetch / stale 与 fetch_failures[]：某板 status≠ok 时产物里的行是上一次成功抓取的旧数据（源 records[] 是累积的，抓取失败不清旧行）。","collected":"2026-11-13"}};
 
 
 
@@ -3110,6 +3379,7 @@ const HUD_TOKENS_CSS = '.dpc-hud,.dpc-toast-stack,.dpc-pick-mark,.dpc-pick-previ
  
 const DPC_HUD_DAY_CSS = [
   
+  'html[data-dpc-host-scheme="light"] .dpc-hud[data-skin-active="1"][data-skin-text="1"],',
   'html[data-ds-theme-source="light"] .dpc-hud[data-skin-active="1"][data-skin-text="1"],',
   'html[data-ds-theme="light"] .dpc-hud[data-skin-active="1"][data-skin-text="1"]{',
   '--dpc-ink-1:var(--dpc-text);',
@@ -3135,8 +3405,10 @@ const DPC_HUD_DAY_CSS = [
   
   
   
+  'html[data-dpc-host-scheme="light"] .dpc-hud[data-skin-active="1"][data-skin-text="1"]:not([data-cg-split="1"]) .dpc-cg-layer:not([data-cutout="1"]),',
   'html[data-ds-theme-source="light"] .dpc-hud[data-skin-active="1"][data-skin-text="1"]:not([data-cg-split="1"]) .dpc-cg-layer:not([data-cutout="1"]),',
   'html[data-ds-theme="light"] .dpc-hud[data-skin-active="1"][data-skin-text="1"]:not([data-cg-split="1"]) .dpc-cg-layer:not([data-cutout="1"]){opacity:.12}',
+  'html[data-dpc-host-scheme="light"] .dpc-hud[data-skin-active="1"][data-skin-text="1"]:not([data-cg-split="1"]) video.dpc-cg-layer:not([data-cutout="1"]),',
   'html[data-ds-theme-source="light"] .dpc-hud[data-skin-active="1"][data-skin-text="1"]:not([data-cg-split="1"]) video.dpc-cg-layer:not([data-cutout="1"]),',
   'html[data-ds-theme="light"] .dpc-hud[data-skin-active="1"][data-skin-text="1"]:not([data-cg-split="1"]) video.dpc-cg-layer:not([data-cutout="1"]){opacity:.15}',
   
@@ -3150,8 +3422,10 @@ const DPC_HUD_DAY_CSS = [
   
   
   
+  'html[data-dpc-host-scheme="light"] .dpc-hud[data-skin-active="1"][data-skin-text="1"].dpc-hub .dpc-cg-layer:not([data-cutout="1"]),',
   'html[data-ds-theme-source="light"] .dpc-hud[data-skin-active="1"][data-skin-text="1"].dpc-hub .dpc-cg-layer:not([data-cutout="1"]),',
   'html[data-ds-theme="light"] .dpc-hud[data-skin-active="1"][data-skin-text="1"].dpc-hub .dpc-cg-layer:not([data-cutout="1"]){opacity:.55}',
+  'html[data-dpc-host-scheme="light"] .dpc-hud[data-skin-active="1"][data-skin-text="1"].dpc-hub video.dpc-cg-layer:not([data-cutout="1"]),',
   'html[data-ds-theme-source="light"] .dpc-hud[data-skin-active="1"][data-skin-text="1"].dpc-hub video.dpc-cg-layer:not([data-cutout="1"]),',
   'html[data-ds-theme="light"] .dpc-hud[data-skin-active="1"][data-skin-text="1"].dpc-hub video.dpc-cg-layer:not([data-cutout="1"]){opacity:.70}',
   
@@ -3164,6 +3438,7 @@ const DPC_HUD_DAY_CSS = [
   
   
   
+  'html[data-dpc-host-scheme="light"] .dpc-hud[data-skin-active="1"][data-skin-text="1"] .dpc-channel:not([data-card-generic="1"]),',
   'html[data-ds-theme-source="light"] .dpc-hud[data-skin-active="1"][data-skin-text="1"] .dpc-channel:not([data-card-generic="1"]),',
   'html[data-ds-theme="light"] .dpc-hud[data-skin-active="1"][data-skin-text="1"] .dpc-channel:not([data-card-generic="1"])',
   '{color:color-mix(in srgb,var(--dpc-ca) 55%,var(--dpc-text));',
@@ -3172,6 +3447,7 @@ const DPC_HUD_DAY_CSS = [
   
   
   
+  'html[data-dpc-host-scheme="light"] .dpc-hud[data-skin-active="1"][data-skin-text="1"] .dpc-hub-body,',
   'html[data-ds-theme-source="light"] .dpc-hud[data-skin-active="1"][data-skin-text="1"] .dpc-hub-body,',
   'html[data-ds-theme="light"] .dpc-hud[data-skin-active="1"][data-skin-text="1"] .dpc-hub-body',
   '{box-shadow:0 10px 26px color-mix(in srgb,var(--dpc-text) 14%,transparent)}',
@@ -3187,8 +3463,10 @@ const DPC_HUD_DAY_CSS = [
   
   
   
+  'html[data-dpc-host-scheme="light"] .dpc-hud[data-skin-active="1"][data-skin-text="1"] .dpc-panel,',
   'html[data-ds-theme-source="light"] .dpc-hud[data-skin-active="1"][data-skin-text="1"] .dpc-panel,',
   'html[data-ds-theme="light"] .dpc-hud[data-skin-active="1"][data-skin-text="1"] .dpc-panel,',
+  'html[data-dpc-host-scheme="light"] .dpc-hud[data-skin-active="1"][data-skin-text="1"] .dpc-hub-body,',
   'html[data-ds-theme-source="light"] .dpc-hud[data-skin-active="1"][data-skin-text="1"] .dpc-hub-body,',
   'html[data-ds-theme="light"] .dpc-hud[data-skin-active="1"][data-skin-text="1"] .dpc-hub-body',
   '{backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}',
@@ -3225,13 +3503,13 @@ const DPC_HUD_CUTOUT_CSS = [
   'filter:drop-shadow(0 6px 10px rgba(8,10,16,.34))}',
   
   
-  '.dpc-cg-scrim{position:absolute;inset:0;pointer-events:none;border-radius:9;',
+  '.dpc-cg-scrim{position:absolute;inset:0;pointer-events:none;border-radius:9px;',
   'background:linear-gradient(to right,var(--dpc-surface-1) 0 26%,transparent 76%)}',
   '.dpc-hub-art .dpc-cg-scrim{display:none}',
   
   
   
-  '.dpc-hud[data-cg-cutout="1"] .dpc-panel > *:not(.dpc-cone){position:relative;z-index:1}',
+  '.dpc-hud[data-cg-cutout="1"] .dpc-panel > *:not(.dpc-cone):not(.dpc-cg-layer){position:relative;z-index:1}',
 ].join('');
 
 
@@ -3297,7 +3575,7 @@ const HUD_CSS = [
   
   '.dpc-hud[data-cg-cutout="0"]:not([data-cg-split="1"]) .dpc-panel > *:not(.dpc-cone):not(.dpc-cg-layer){position:relative;z-index:1}',
   '.dpc-hud[data-cg-cutout="0"]:not([data-cg-split="1"]) .dpc-panel::after{content:"";position:absolute;inset:0;',
-  'pointer-events:none;border-radius:9;',
+  'pointer-events:none;border-radius:9px;',
   'background:linear-gradient(to bottom,',
   'color-mix(in srgb,var(--dpc-surface,var(--dpc-surface-1)) 58%,transparent),',
   'color-mix(in srgb,var(--dpc-surface,var(--dpc-surface-1)) 42%,transparent))}',
@@ -3305,6 +3583,12 @@ const HUD_CSS = [
   
   
   '.dpc-hud[data-cg-cutout="0"]:not([data-cg-split="1"]) .dpc-cg-layer:not([data-cutout="1"]){opacity:.45}',
+  
+  
+  
+  
+  '.dpc-ambience{border-radius:9px;pointer-events:none}',
+  '.dpc-ambience-img{width:100%;height:100%;object-fit:cover;display:block}',
   
   
   
@@ -3324,6 +3608,75 @@ const HUD_CSS = [
   '.dpc-eff-chip{padding:0 7px;border-radius:9px;border:1px solid var(--dpc-edge);',
   'color:var(--dpc-ink-3)}',
   '.dpc-eff-chip[data-on="1"]{border-color:var(--dpc-ca,#8ab);color:var(--dpc-ca,#8ab);font-weight:600}',
+  
+  
+  
+  
+  
+  
+  
+  
+  '.dpc-eff-fx[data-fx="max"]{--dpc-fx-1:255,178,66;--dpc-fx-2:255,214,120;--dpc-fx-3:255,120,60}',
+  '.dpc-eff-fx[data-fx="ultra"]{--dpc-fx-1:186,130,255;--dpc-fx-2:255,120,220;--dpc-fx-3:120,170,255}',
+  
+  
+  '.dpc-eff-chip[data-fx]{--dpc-fx-1:255,178,66;--dpc-fx-2:255,214,120;--dpc-fx-3:255,120,60}',
+  'html[data-dpc-host-scheme="light"] .dpc-eff-fx[data-fx="max"],html[data-ds-theme-source="light"] .dpc-eff-fx[data-fx="max"],html[data-ds-theme="light"] .dpc-eff-fx[data-fx="max"]{--dpc-fx-1:176,98,0;--dpc-fx-2:150,110,0;--dpc-fx-3:200,70,20}',
+  'html[data-dpc-host-scheme="light"] .dpc-eff-fx[data-fx="ultra"],html[data-ds-theme-source="light"] .dpc-eff-fx[data-fx="ultra"],html[data-ds-theme="light"] .dpc-eff-fx[data-fx="ultra"]{--dpc-fx-1:124,58,217;--dpc-fx-2:190,40,150;--dpc-fx-3:30,100,220}',
+  'html[data-dpc-host-scheme="light"] .dpc-eff-chip[data-fx],html[data-ds-theme-source="light"] .dpc-eff-chip[data-fx],html[data-ds-theme="light"] .dpc-eff-chip[data-fx]{--dpc-fx-1:176,98,0;--dpc-fx-2:150,110,0;--dpc-fx-3:200,70,20}',
+  
+  
+  
+  '.dpc-eff-chip[data-fx="rainbow"]{--dpc-fx-rb:linear-gradient(90deg,rgb(235,95,87),rgb(245,139,87),rgb(250,195,95),rgb(145,200,130),rgb(130,170,220),rgb(155,130,200),rgb(200,130,180),rgb(235,95,87))}',
+  'html[data-dpc-host-scheme="light"] .dpc-eff-chip[data-fx="rainbow"],html[data-ds-theme-source="light"] .dpc-eff-chip[data-fx="rainbow"],html[data-ds-theme="light"] .dpc-eff-chip[data-fx="rainbow"]{--dpc-fx-rb:linear-gradient(90deg,rgb(183,74,68),rgb(191,108,68),rgb(179,140,58),rgb(105,156,94),rgb(94,123,170),rgb(112,94,154),rgb(148,94,133),rgb(183,74,68))}',
+  
+  
+  
+  '.dpc-eff-chip[data-fx="rainbow"]{-webkit-background-clip:text;background-clip:text;background-image:var(--dpc-fx-rb);',
+  'background-size:200% 100%;color:transparent;-webkit-text-fill-color:transparent;animation:dpc-fx-flow 2.4s linear infinite}',
+  
+  '.dpc-eff-chip[data-fx="amber-flow"]{-webkit-background-clip:text;background-clip:text;',
+  'background-image:linear-gradient(90deg,rgba(var(--dpc-fx-1),.3),rgb(var(--dpc-fx-2)),rgba(var(--dpc-fx-1),.3));',
+  'background-size:200% 100%;color:transparent;-webkit-text-fill-color:transparent;animation:dpc-fx-flow 3.2s linear infinite}',
+  
+  '.dpc-eff-chip[data-fx="amber-static"]{border-color:rgb(var(--dpc-fx-1));color:rgb(var(--dpc-fx-2))}',
+  '@keyframes dpc-fx-flow{from{background-position:0% 50%}to{background-position:200% 50%}}',
+  
+  
+  
+  
+  '.dpc-eff-aura{position:absolute;inset:-4px;border-radius:14px;pointer-events:none;z-index:-1;opacity:0;',
+  'transition:opacity 320ms ease-out;',
+  'box-shadow:0 0 0 1px rgba(var(--dpc-fx-1),.42),0 0 18px 2px rgba(var(--dpc-fx-2),.26),0 0 46px 12px rgba(var(--dpc-fx-3),.15)}',
+  '.dpc-hud[data-eff-aura="1"] .dpc-eff-aura{opacity:.8;animation:dpc-fx-breathe 3.8s ease-in-out infinite}',
+  '@keyframes dpc-fx-breathe{0%,100%{opacity:.55;transform:scale(1)}50%{opacity:.9;transform:scale(1.006)}}',
+  
+  
+  '.dpc-eff-halo{position:absolute;inset:-4px;border-radius:inherit;pointer-events:none;z-index:-1;opacity:.5;',
+  'transition:opacity 240ms ease-out;',
+  'box-shadow:0 0 0 1px rgba(var(--dpc-fx-1),.38),0 0 20px 4px rgba(var(--dpc-fx-2),.24),0 0 54px 14px rgba(var(--dpc-fx-3),.13)}',
+  '[data-composer-card]:focus-within .dpc-eff-halo{opacity:1}',
+  
+  
+  '.dpc-hud[data-eff-ignite="max"][data-eff-mode="wave"] .dpc-eff-aura,.dpc-eff-halo[data-ignite="max"][data-mode="wave"]{animation:dpc-fx-wave 1000ms ease-out 1}',
+  '.dpc-hud[data-eff-ignite="max"][data-eff-mode="aurora"] .dpc-eff-aura,.dpc-eff-halo[data-ignite="max"][data-mode="aurora"]{animation:dpc-fx-aurora 1300ms ease-out 1}',
+  '.dpc-hud[data-eff-ignite="max"][data-eff-mode="pulse"] .dpc-eff-aura,.dpc-eff-halo[data-ignite="max"][data-mode="pulse"]{animation:dpc-fx-pulse 900ms ease-out 1}',
+  '.dpc-hud[data-eff-ignite="ultra"][data-eff-mode="wave"] .dpc-eff-aura,.dpc-eff-halo[data-ignite="ultra"][data-mode="wave"]{animation:dpc-fx-wave 1300ms ease-out 1}',
+  '.dpc-hud[data-eff-ignite="ultra"][data-eff-mode="aurora"] .dpc-eff-aura,.dpc-eff-halo[data-ignite="ultra"][data-mode="aurora"]{animation:dpc-fx-aurora 1600ms ease-out 1}',
+  '.dpc-hud[data-eff-ignite="ultra"][data-eff-mode="pulse"] .dpc-eff-aura,.dpc-eff-halo[data-ignite="ultra"][data-mode="pulse"]{animation:dpc-fx-pulse 1250ms ease-out 1}',
+  '@keyframes dpc-fx-wave{0%{opacity:0;transform:scale(.94)}16%{opacity:.95}58%{opacity:.45}100%{opacity:.85;transform:scale(1)}}',
+  '@keyframes dpc-fx-aurora{0%{opacity:0;transform:rotate(-2.4deg) scale(.965)}22%{opacity:.9}60%{opacity:.5}100%{opacity:.85;transform:none}}',
+  '@keyframes dpc-fx-pulse{0%{opacity:0;transform:scale(.965)}26%{opacity:1;transform:scale(1.022)}100%{opacity:.85;transform:none}}',
+  
+  
+  '@media (prefers-reduced-motion:reduce){.dpc-eff-chip[data-fx]{animation:none}}',
+  '@media (prefers-reduced-motion:reduce){.dpc-hud[data-eff-aura="1"] .dpc-eff-aura{animation:none}}',
+  '@media (prefers-reduced-motion:reduce){.dpc-hud[data-eff-ignite] .dpc-eff-aura,.dpc-eff-halo[data-ignite]{animation:none}}',
+  
+  '.dpc-hud[data-eff-motion="static"] .dpc-eff-chip[data-fx],.dpc-hud[data-eff-motion="static"] .dpc-eff-aura,.dpc-eff-halo[data-motion="static"]{animation:none}',
+  
+  '.dpc-hud[data-eff-motion="paused"] .dpc-eff-chip[data-fx],.dpc-hud[data-eff-motion="paused"] .dpc-eff-aura,.dpc-eff-halo[data-motion="paused"]{animation-play-state:paused}',
+  
   '.dpc-stats{display:grid;grid-template-columns:1fr 1fr;gap:3px 14px}',
   '.dpc-hud.dpc-narrow .dpc-stats{grid-template-columns:1fr}',
   
@@ -4293,7 +4646,9 @@ function axisOf(card, effort, now, provider, model) {
   
   
   
-  const base = statsOf(card, effort, now, provider);
+  
+  
+  const base = statsOf(card, effort, now, provider, model);
   
   const axes = measuredAxesOf(provider, model);
   
@@ -4715,6 +5070,12 @@ async function dpcHoverCgPlan(provider, model) {
       cutoutKind: cutoutSrc ? (plan.cutoutKind === 'video' ? 'video' : 'image') : null,
       loop: plan.loop !== false,
       muted: plan.muted !== false,
+      loopStart: typeof plan.loopStart === 'number' && Number.isFinite(plan.loopStart) && plan.loopStart > 0
+        ? plan.loopStart
+        : null,
+      cutoutLoopStart: typeof plan.cutoutLoopStart === 'number' && Number.isFinite(plan.cutoutLoopStart) && plan.cutoutLoopStart > 0
+        ? plan.cutoutLoopStart
+        : null,
       fit: plan.fit === 'cover' ? 'cover' : 'contain',
       objectPosition: typeof plan.objectPosition === 'string' && plan.objectPosition !== ''
         ? plan.objectPosition
@@ -4745,7 +5106,7 @@ async function dpcHoverCgPlan(provider, model) {
 
 
 
-const PC_EMBED = {"urls":{"upload":"/api/dsh-provider-card/assets/upload","media":"/api/dsh-provider-card/assets/media","config":"/api/dsh-provider-card/config","bindings":"/api/dsh-provider-card/assets/bindings","package":"/api/dsh-provider-card/package","skinAdapter":"/api/dsh-provider-card/skin-adapter","quotas":"/api/dsh-provider-card/quotas","measured":"/api/dsh-provider-card/measured","persona":"/api/dsh-provider-card/persona"},"slots":["idle","summon","warning","recover"],"variants":["hud","full"],"kinds":["image","video"]};
+const PC_EMBED = {"urls":{"upload":"/api/dsh-provider-card/assets/upload","media":"/api/dsh-provider-card/assets/media","config":"/api/dsh-provider-card/config","bindings":"/api/dsh-provider-card/assets/bindings","package":"/api/dsh-provider-card/package","skinAdapter":"/api/dsh-provider-card/skin-adapter","quotas":"/api/dsh-provider-card/quotas","measured":"/api/dsh-provider-card/measured","persona":"/api/dsh-provider-card/persona","scene":"/api/dsh-provider-card/assets/scene","layers":"/api/dsh-provider-card/assets/layers"},"slots":["idle","summon","warning","recover"],"variants":["hud","full"],"kinds":["image","video"]};
 const PC = (typeof window !== 'undefined' && window.__DSH_PROVIDER_CARD__) || PC_EMBED || null;
 
 
@@ -5045,15 +5406,38 @@ function dpcSplitArtWidth(w) {
 }
 
  
+function dpcNoScoreMinHeight(splitArtW) {
+  const w = Number(splitArtW);
+  if (!Number.isFinite(w) || w <= 0) return null;
+  
+  
+  return Math.ceil(w * 808 / 540) + DPC_SPLIT_ART_PAD_TOP + DPC_SPLIT_ART_PAD_BOTTOM;
+}
+
+ 
+function dpcHeadLatin(persona, isGeneric) {
+  if (isGeneric) return null;
+  const latin = persona && persona.latin ? String(persona.latin) : '';
+  return latin ? latin.toUpperCase() : null;
+}
+
+ 
 function cgPlanForCalm(plan, calm) {
   if (!calm || !plan) return plan;
   if (plan.cutoutKind === 'video') {
     const still = plan.cutoutStillAssetId ? plan.cutoutStillAssetId : null;
+    if (plan.kind === 'video') {
+      return plan.posterAssetId
+        ? { ...plan, kind: 'image', assetId: plan.posterAssetId, cutoutAssetId: still, cutoutKind: still ? 'image' : null, cutoutStillAssetId: null }
+        : null;
+    }
     return { ...plan, cutoutAssetId: still, cutoutKind: still ? 'image' : null, cutoutStillAssetId: null };
   }
-  return plan.posterAssetId
-    ? { ...plan, kind: 'image', assetId: plan.posterAssetId, cutoutAssetId: null }
-    : null;
+  if (plan.posterAssetId) {
+    return { ...plan, kind: 'image', assetId: plan.posterAssetId, cutoutAssetId: null };
+  }
+  if (plan.kind === 'video') return null;
+  return { ...plan, cutoutStillAssetId: null };
 }
 
  
@@ -5109,6 +5493,40 @@ function dpcWatchVideo(el) {
   const state = { visible: true, io: null };
   el.__dpcVideoVis = state;
   const sync = () => dpcVideoSync(el);
+  const rawLoopStart = typeof el.getAttribute === 'function'
+    ? el.getAttribute('data-loop-start')
+    : (el.dataset && el.dataset.loopStart !== undefined ? el.dataset.loopStart : el['data-loop-start']);
+  const parsedLoopStart = rawLoopStart !== null && rawLoopStart !== undefined && rawLoopStart !== '' ? Number(rawLoopStart) : NaN;
+  const loopStart = Number.isFinite(parsedLoopStart) && parsedLoopStart > 0 ? parsedLoopStart : 0;
+  let disposed = false;
+  let rvfcId = null;
+  const onTimeUpdate = () => {
+    if (Number.isFinite(el.duration) && el.duration > loopStart + 0.12 && el.currentTime >= el.duration - 0.08) {
+      el.currentTime = loopStart;
+      if (dpcVideoShouldPlay(el) && el.paused) sync();
+    }
+  };
+  const onEnded = () => {
+    el.currentTime = Number.isFinite(el.duration) && loopStart < el.duration ? loopStart : 0;
+    sync();
+  };
+  const onVideoFrame = () => {
+    if (disposed) return;
+    if (dpcVideoShouldPlay(el) && Number.isFinite(el.duration) && el.duration > loopStart + 0.12 && el.currentTime >= el.duration - 0.06) {
+      el.currentTime = loopStart;
+      if (el.paused) sync();
+    }
+    if (!disposed && typeof el.requestVideoFrameCallback === 'function') {
+      rvfcId = el.requestVideoFrameCallback(onVideoFrame);
+    }
+  };
+  if (loopStart > 0 && typeof el.addEventListener === 'function') {
+    el.addEventListener('timeupdate', onTimeUpdate);
+    el.addEventListener('ended', onEnded);
+  }
+  if (loopStart > 0 && typeof el.requestVideoFrameCallback === 'function') {
+    rvfcId = el.requestVideoFrameCallback(onVideoFrame);
+  }
   if (typeof document !== 'undefined' && document.addEventListener) {
     document.addEventListener('visibilitychange', sync);
   }
@@ -5124,6 +5542,15 @@ function dpcWatchVideo(el) {
     state.io = io;
   }
   state.off = () => {
+    disposed = true;
+    if (rvfcId !== null && typeof el.cancelVideoFrameCallback === 'function') {
+      el.cancelVideoFrameCallback(rvfcId);
+    }
+    rvfcId = null;
+    if (loopStart > 0 && typeof el.removeEventListener === 'function') {
+      el.removeEventListener('timeupdate', onTimeUpdate);
+      el.removeEventListener('ended', onEnded);
+    }
     if (typeof document !== 'undefined' && document.removeEventListener) {
       document.removeEventListener('visibilitychange', sync);
     }
@@ -5138,7 +5565,7 @@ function dpcWatchVideo(el) {
 
  
 function CgLayer(props) {
-  const { plan, splitArt, artW, cardId, form } = props;
+  const { plan, splitArt, artW, cardId, form, onCgError } = props;
   
   
   
@@ -5162,6 +5589,9 @@ function CgLayer(props) {
   
   
   const DPC_CARD_FRAMING = {};
+  const [failedState, setFailedState] = typeof React.useState === 'function'
+    ? React.useState({ videoSrc: null, mediaSrc: null })
+    : [{ videoSrc: null, mediaSrc: null }, null];
   const src = React.useMemo(() => (plan ? pcMediaUrl(plan.assetId) : null), [plan]);
   const poster = React.useMemo(
     () => (plan && plan.posterAssetId ? pcMediaUrl(plan.posterAssetId) : null),
@@ -5172,22 +5602,35 @@ function CgLayer(props) {
     () => (plan && plan.cutoutAssetId ? pcMediaUrl(plan.cutoutAssetId) : null),
     [plan],
   );
+  const stillSrc = React.useMemo(
+    () => (plan && plan.cutoutStillAssetId ? pcMediaUrl(plan.cutoutStillAssetId) : null),
+    [plan],
+  );
   
   
   
+  const mainLoopStart = plan !== null && plan.loop !== false && typeof plan.loopStart === 'number' && Number.isFinite(plan.loopStart) && plan.loopStart > 0
+    ? plan.loopStart
+    : null;
+  const cutoutLoopStart = plan !== null && typeof plan.cutoutLoopStart === 'number' && Number.isFinite(plan.cutoutLoopStart) && plan.cutoutLoopStart > 0
+    ? plan.cutoutLoopStart
+    : null;
   const videoRef = React.useRef(null);
   React.useEffect(() => {
     const el = videoRef.current;
     if (el === null) return undefined;
     return dpcWatchVideo(el);
-  }, [src, cutoutSrc]);
+  }, [src, cutoutSrc, mainLoopStart, cutoutLoopStart]);
   if (plan === null || src === null) return null;
+  const cutoutVideoFailed = plan.kind === 'image' && cutoutSrc !== null
+    && plan.cutoutKind === 'video' && failedState.videoSrc === cutoutSrc;
   
-  const cutout = plan.kind === 'image' && cutoutSrc !== null;
+  const cutout = plan.kind === 'image' && cutoutSrc !== null && !(cutoutVideoFailed && !stillSrc);
   
   
   
   const cutoutVideo = cutout && plan.cutoutKind === 'video';
+  const primaryVideoFailed = plan.kind === 'video' && failedState.videoSrc === src;
   
   
   
@@ -5327,21 +5770,36 @@ function CgLayer(props) {
   });
   
   
-  if (plan.kind === 'video') {
-    return h('video', {
+  const trackErr = typeof setFailedState === 'function' || typeof onCgError === 'function';
+  const notifyErr = (failedUrl) => {
+    if (typeof onCgError === 'function') onCgError(failedUrl);
+  };
+  if (plan.kind === 'video' && !primaryVideoFailed) {
+    return h('video', Object.assign({
       key: src,
       className: 'dpc-cg-layer',
       src,
       poster: poster || undefined,
       style: layerStyle,
       autoPlay: true,
-      loop: plan.loop !== false,
+      loop: mainLoopStart !== null ? false : plan.loop !== false,
       muted: plan.muted !== false,
       playsInline: true,
       ref: videoRef,
       'aria-hidden': 'true',
-    });
+    }, mainLoopStart !== null ? { 'data-loop-start': String(mainLoopStart) } : null, trackErr ? {
+      onError: () => {
+        if (poster) {
+          if (typeof setFailedState === 'function') setFailedState((prev) => ({ videoSrc: src, mediaSrc: prev ? prev.mediaSrc : null }));
+          else notifyErr(src);
+        } else {
+          if (typeof setFailedState === 'function') setFailedState({ videoSrc: src, mediaSrc: src });
+          notifyErr(src);
+        }
+      },
+    } : null));
   }
+  if (plan.kind === 'video' && primaryVideoFailed && !poster) return null;
   
   
   
@@ -5353,30 +5811,51 @@ function CgLayer(props) {
   
   
   if (cutoutVideo) {
-    return cgScrim(h('video', {
-      key: cutoutSrc,
-      className: 'dpc-cg-layer',
-      src: cutoutSrc,
-      style: layerStyle,
-      autoPlay: true,
-      loop: true,
-      muted: true,
-      playsInline: true,
-      'data-cutout': '1',
-      'data-cutout-kind': 'video',
-      ref: videoRef,
-      'aria-hidden': 'true',
-    }));
+    if (!cutoutVideoFailed) {
+      return cgScrim(h('video', Object.assign({
+        key: cutoutSrc,
+        className: 'dpc-cg-layer',
+        src: cutoutSrc,
+        style: layerStyle,
+        autoPlay: true,
+        loop: cutoutLoopStart !== null ? false : true,
+        muted: true,
+        playsInline: true,
+        'data-cutout': '1',
+        'data-cutout-kind': 'video',
+        ref: videoRef,
+        'aria-hidden': 'true',
+      }, cutoutLoopStart !== null ? { 'data-loop-start': String(cutoutLoopStart) } : null, trackErr ? {
+        onError: () => {
+          if (stillSrc || src) {
+            if (typeof setFailedState === 'function') setFailedState((prev) => ({ videoSrc: cutoutSrc, mediaSrc: prev ? prev.mediaSrc : null }));
+            else notifyErr(cutoutSrc);
+          } else {
+            if (typeof setFailedState === 'function') setFailedState({ videoSrc: cutoutSrc, mediaSrc: cutoutSrc });
+            notifyErr(cutoutSrc);
+          }
+        },
+      } : null)));
+    }
   }
-  const img = h('img', {
-    key: cutout ? cutoutSrc : src,
+  const imgSrc = (plan.kind === 'video' && primaryVideoFailed)
+    ? poster
+    : (cutoutVideoFailed ? (stillSrc || src) : (cutout ? cutoutSrc : src));
+  if (!imgSrc || failedState.mediaSrc === imgSrc) return null;
+  const img = h('img', Object.assign({
+    key: imgSrc,
     className: 'dpc-cg-layer',
-    src: cutout ? cutoutSrc : src,
+    src: imgSrc,
     'data-cutout': cutout ? '1' : null,
     style: layerStyle,
     alt: '',
     'aria-hidden': 'true',
-  });
+  }, trackErr ? {
+    onError: () => {
+      if (typeof setFailedState === 'function') setFailedState((prev) => ({ videoSrc: prev ? prev.videoSrc : null, mediaSrc: imgSrc }));
+      notifyErr(imgSrc);
+    },
+  } : null));
   
   
   if (!cutout) return img;
@@ -5515,14 +5994,90 @@ function pcFailText(res) {
 function useCgPlan(provider, model, enabled, variant, slot) {
   const [plan, setPlan] = React.useState(null);
   const rev = useCgRevision();
+  const key = JSON.stringify([provider, model, variant, slot, rev]);
   React.useEffect(() => {
     if (!enabled) { setPlan(null); return undefined; }
     let alive = true;
     setPlan(null);
-    pcResolve(provider, model, slot || 'idle', variant || null).then((p) => { if (alive) setPlan(p); });
+    pcResolve(provider, model, slot || 'idle', variant || null).then((p) => { if (alive) setPlan({ key, value: p }); })
+      .catch(() => { if (alive) setPlan(null); });
     return () => { alive = false; };
   }, [provider, model, enabled, variant, slot, rev]);
-  return plan;
+  return enabled && plan && plan.key === key ? plan.value : null;
+}
+
+ 
+function useArtScene(provider, model, effort, enabled) {
+  const [scene, setScene] = React.useState(null);
+  const key = JSON.stringify([provider, model, effort]);
+  React.useEffect(() => {
+    if (!enabled) { setScene(null); return undefined; }
+    if (PC === null || !PC.urls || !PC.urls.scene) { setScene(null); return undefined; }
+    let alive = true;
+    setScene(null);
+    pcGetJson(PC.urls.scene, { provider, model, effort }).then((j) => {
+      if (!alive) return;
+      if (!j) { setScene(null); return; }
+      if (j.reason && j.reason !== 'no-scene-for-tier' && j.reason !== 'no-card') {
+        console.warn('[dsh-provider-card] effort CG', j.reason, j.no || '', j.tier || '');
+      }
+      setScene(j.plan ? { key, plan: j.plan } : null);
+    }).catch(() => { if (alive) setScene(null); });
+    return () => { alive = false; };
+  }, [provider, model, effort, enabled]);
+  return enabled && scene && scene.key === key ? scene.plan : null;
+}
+
+ 
+function useArtLayers(provider, model, effort, enabled) {
+  const [layers, setLayers] = React.useState(null);
+  const key = JSON.stringify([provider, model, effort]);
+  React.useEffect(() => {
+    if (!enabled) { setLayers(null); return undefined; }
+    if (PC === null || !PC.urls || !PC.urls.layers) { setLayers(null); return undefined; }
+    let alive = true;
+    setLayers(null);
+    pcGetJson(PC.urls.layers, { provider, model, effort }).then((j) => {
+      if (!alive) return;
+      if (j === null) { setLayers(null); return; }
+      if (j.figureReason && j.figureReason !== 'no-figure-for-tier' && j.figureReason !== 'no-card') {
+        console.warn('[dsh-provider-card] L1 人物抠像层', j.figureReason, j.no || '', j.tier || '');
+      }
+      if (j.ambienceReason && j.ambienceReason !== 'no-ambience-for-tier' && j.ambienceReason !== 'no-card') {
+        console.warn('[dsh-provider-card] L2 氛围层', j.ambienceReason, j.no || '', j.tier || '');
+      }
+      
+      const ambience = j.ambience
+        ? Object.assign({}, j.ambience, {
+          url: j.ambience.plan && j.ambience.plan.assetId ? pcMediaUrl(j.ambience.plan.assetId) : null,
+        })
+        : null;
+      setLayers({ key, figure: j.figure || null, ambience: ambience });
+    }).catch(() => { if (alive) setLayers(null); });
+    return () => { alive = false; };
+  }, [provider, model, effort, enabled]);
+  return enabled && layers && layers.key === key ? layers : null;
+}
+
+ 
+function ArtAmbienceLayer(props) {
+  const amb = props ? props.ambience : null;
+  if (!amb) return null;
+  const level = amb.level || 'none';
+  const style = {
+    position: 'absolute', inset: 0, zIndex: 0,
+    borderRadius: '9px', pointerEvents: 'none',
+  };
+  if (amb.url) {
+    return h('div', {
+      className: 'dpc-ambience',
+      'data-art-ambience': level,
+      style: Object.assign({}, style, { opacity: typeof amb.opacity === 'number' ? amb.opacity : 0 }),
+    },
+    h('img', { className: 'dpc-ambience-img', src: amb.url, alt: '' }));
+  }
+  
+  return h('div', { className: 'dpc-ambience', 'data-art-ambience': level, style });
 }
 
 
@@ -6219,7 +6774,10 @@ function useHubRect(enabled) {
 
 
 function dpcCardPlan(provider, model) {
-  const hit = matchCard(PROVIDERS.cards, provider, model, { dataCards: DATA_CARDS });
+  
+  
+  const arenaIndex = (typeof ARENA_INDEX === 'undefined') ? null : ARENA_INDEX;
+  const hit = matchCard(PROVIDERS.cards, provider, model, { dataCards: DATA_CARDS, arena: arenaIndex });
   
   
   
@@ -6290,12 +6848,12 @@ function dpcEffortBucket(visual, tier) {
 }
 
  
-function dpcCardLine(visual, card, effort, now, live, provider) {
+function dpcCardLine(visual, card, effort, now, live, provider, model) {
   const P = (card && card.persona) ? card.persona : null;
   const d = (visual && visual.dialogue) ? visual.dialogue : null;
   
   if (typeof lowRow === 'function' && lowRow(card, live)) {
-    return pickLine(card, 'summon', effort, now, live, true, provider) || '';
+    return pickLine(card, 'summon', effort, now, live, true, provider, model) || '';
   }
   
   
@@ -6304,7 +6862,7 @@ function dpcCardLine(visual, card, effort, now, live, provider) {
   const cardSummon = P && P.summon ? String(P.summon) : '';
   const isGeneric = !!(card && card.generic);
   if (summon && !isGeneric && summon !== cardSummon) return summon;
-  const base = pickLine(card, 'summon', effort, now, live, true, provider) || cardSummon;
+  const base = pickLine(card, 'summon', effort, now, live, true, provider, model) || cardSummon;
   if (base) return base;
   
   return (d && d.unknown) ? String(d.unknown) : '';
@@ -6336,6 +6894,205 @@ function effortHostOf(snapshot, selection) {
     model: selection && selection.model ? selection.model : null,
   };
 }
+
+
+
+
+
+
+
+const DPC_FX_TIERS = { max: 'max', ultra: 'ultra', xhigh: 'xhigh', high: 'high' };
+
+ 
+function dpcFxTier(effort) {
+  const key = String(effort == null ? '' : effort).trim().toLowerCase();
+  return Object.prototype.hasOwnProperty.call(DPC_FX_TIERS, key) ? key : '';
+}
+
+ 
+function dpcFxChip(effort) {
+  const tier = dpcFxTier(effort);
+  if (tier === 'max' || tier === 'ultra') return 'rainbow';
+  if (tier === 'xhigh') return 'amber-flow';
+  if (tier === 'high') return 'amber-static';
+  return '';
+}
+
+ 
+function dpcFxGlow(effort) {
+  const tier = dpcFxTier(effort);
+  return tier === 'max' || tier === 'ultra' ? tier : '';
+}
+
+ 
+function shouldIgnite(prev, next) {
+  const to = dpcFxGlow(next);
+  if (!to) return '';
+  const from = String(prev == null ? '' : prev).trim().toLowerCase();
+  if (!from) return '';
+  if (from === String(next == null ? '' : next).trim().toLowerCase()) return '';
+  return to;
+}
+
+const DPC_FX_IGNITE_MODES = ['wave', 'aurora', 'pulse'];
+ 
+function dpcFxIgniteMode(prevMode, rand) {
+  const pool = DPC_FX_IGNITE_MODES.filter((m) => m !== prevMode);
+  const r = typeof rand === 'number' && isFinite(rand) ? Math.abs(rand) : Math.random();
+  const idx = Math.min(pool.length - 1, Math.floor(r * pool.length) % pool.length);
+  return pool[idx] || 'wave';
+}
+
+ 
+const DPC_FX_IGNITE_MS = {
+  max: { wave: 1000, aurora: 1300, pulse: 900 },
+  ultra: { wave: 1300, aurora: 1600, pulse: 1250 },
+};
+function dpcFxIgniteMs(tier, mode) {
+  const row = DPC_FX_IGNITE_MS[tier];
+  const ms = row ? row[mode] : null;
+  return typeof ms === 'number' ? ms : 1000;
+}
+
+const DPC_FX_AURA_CLASS = 'dpc-eff-aura';
+const DPC_FX_HALO_CLASS = 'dpc-eff-halo';
+ 
+const dpcFxState = {
+  root: null, aura: null, halo: null,
+  tier: '', ignite: '', mode: '', motion: '', mo: null, raf: 0,
+};
+
+function dpcFxEl(cls, fx) {
+  const el = document.createElement('div');
+  el.className = cls + ' dpc-eff-fx';
+  el.setAttribute('aria-hidden', 'true');
+  if (fx) el.setAttribute('data-fx', fx);
+  return el;
+}
+
+ 
+function dpcFxRootRef(node) {
+  dpcFxState.root = node || null;
+  if (node) {
+    try { dpcFxAuraSync(); } catch (_error) {   }
+  } else {
+    dpcFxState.aura = null;
+  }
+  return undefined;
+}
+
+ 
+function dpcFxAuraSync() {
+  const state = dpcFxState;
+  const root = state.root;
+  if (!root || !root.appendChild) return;
+  let el = state.aura;
+  if (!el || el.parentNode !== root) {
+    el = dpcFxEl(DPC_FX_AURA_CLASS, state.tier);
+    state.aura = el;
+    try { root.appendChild(el); } catch (_error) { state.aura = null; return; }
+  }
+  if (state.tier) el.setAttribute('data-fx', state.tier);
+  else el.removeAttribute('data-fx');
+}
+
+ 
+function dpcFxComposerCard() {
+  try { return document.querySelector('[data-composer-card]'); } catch (_error) { return null; }
+}
+
+function dpcFxHaloPaint(el) {
+  const state = dpcFxState;
+  if (state.tier) el.setAttribute('data-fx', state.tier);
+  else el.removeAttribute('data-fx');
+  if (state.ignite) {
+    el.setAttribute('data-ignite', state.ignite);
+    el.setAttribute('data-mode', state.mode || 'wave');
+  } else {
+    el.removeAttribute('data-ignite');
+    el.removeAttribute('data-mode');
+  }
+  if (state.motion) el.setAttribute('data-motion', state.motion);
+  else el.removeAttribute('data-motion');
+}
+
+ 
+function dpcFxHaloEnsure() {
+  const state = dpcFxState;
+  if (!state.tier) return null;
+  const card = dpcFxComposerCard();
+  if (!card) return null;
+  let el = state.halo;
+  if (!el) {
+    el = dpcFxEl(DPC_FX_HALO_CLASS, state.tier);
+    state.halo = el;
+  }
+  if (el.parentNode !== card) {
+    try { card.appendChild(el); } catch (_error) { return null; }
+  }
+  dpcFxHaloPaint(el);
+  return el;
+}
+
+function dpcFxHaloDrop() {
+  const state = dpcFxState;
+  const el = state.halo;
+  state.halo = null;
+  if (el && el.parentNode) {
+    try { el.parentNode.removeChild(el); } catch (_error) {   }
+  }
+}
+
+function dpcFxHaloWatchStop() {
+  const state = dpcFxState;
+  if (state.mo) {
+    try { state.mo.disconnect(); } catch (_error) {   }
+    state.mo = null;
+  }
+  if (state.raf) {
+    try { cancelAnimationFrame(state.raf); } catch (_error) {   }
+    state.raf = 0;
+  }
+}
+
+ 
+function dpcFxHaloWatch() {
+  const state = dpcFxState;
+  if (state.mo || typeof MutationObserver !== 'function' || !document.body) return;
+  try {
+    state.mo = new MutationObserver(() => {
+      if (state.raf) return;
+      state.raf = requestAnimationFrame(() => {
+        state.raf = 0;
+        try { dpcFxHaloEnsure(); } catch (_error) {   }
+      });
+    });
+    state.mo.observe(document.body, { childList: true, subtree: true });
+  } catch (_error) {
+    state.mo = null;
+  }
+}
+
+ 
+function dpcFxApply(patch) {
+  const state = dpcFxState;
+  if (patch && typeof patch === 'object') {
+    if ('tier' in patch) state.tier = patch.tier || '';
+    if ('ignite' in patch) state.ignite = patch.ignite || '';
+    if ('mode' in patch) state.mode = patch.mode || '';
+    if ('motion' in patch) state.motion = patch.motion || '';
+  }
+  dpcFxAuraSync();
+  if (!state.tier) {
+    dpcFxHaloWatchStop();
+    dpcFxHaloDrop();
+    return;
+  }
+  dpcFxHaloEnsure();
+  if (state.motion === 'paused') dpcFxHaloWatchStop();
+  else dpcFxHaloWatch();
+}
+
 
 function HudCard(props) {
   const { selection, pinned, onClose, onTogglePin, onHoverChange, mode, feedTick, sessionId, expanded, onExpand, host } = props;
@@ -6373,7 +7130,38 @@ function HudCard(props) {
   
   
   const cgSlot = card !== null ? cgSlotOf(selection.provider, selection.model) : CG_SLOT_FALLBACK;
-  const cgPlan = useCgPlan(selection.provider, selection.model, card !== null, 'hud', cgSlot);
+  
+  
+  
+  
+  const effort = card !== null ? (selection.reasoningEffort || card.def || null) : null;
+  
+  
+  
+  
+  
+  const w = Math.min(590, Math.max(300, window.innerWidth - 24));
+  const stackedAtWidth = w < DPC_SPLIT_MIN_W;
+  const cgPlanRaw = useCgPlan(selection.provider, selection.model, card !== null, 'hud', cgSlot);
+  
+  
+  
+  const artLayers = useArtLayers(selection.provider, selection.model, effort, card !== null && !isHub);
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  const artScene = useArtScene(selection.provider, selection.model, effort, card !== null && !calm && !isHub && !stackedAtWidth);
+  const cgPlan = !stackedAtWidth && artScene ? artScene : ((artLayers && artLayers.figure && !stackedAtWidth && !(artLayers.figure.kind !== 'video' && artLayers.figure.cutoutKind !== 'video' && !artLayers.figure.supersedesLegacy && cgPlanRaw && (cgPlanRaw.kind === 'video' || cgPlanRaw.cutoutKind === 'video'))) ? artLayers.figure : cgPlanRaw);
   
   
   const cgCutout = Boolean(cgPlan && cgPlan.kind === 'image' && cgPlan.cutoutAssetId);
@@ -6397,6 +7185,7 @@ function HudCard(props) {
   
   
   const [collapsed, setCollapsed] = React.useState(false);
+  const [cgFailedKey, setCgFailedKey] = React.useState(null);
   
   
   const seenPushedRef = React.useRef('');
@@ -6405,7 +7194,6 @@ function HudCard(props) {
   
   if (card === null) return null;
 
-  const effort = selection.reasoningEffort || card.def || null;
   const now = new Date();
   
   const { stats, axis } = axisOf(card, effort, now, selection.provider, selection.model);
@@ -6429,6 +7217,11 @@ function HudCard(props) {
   
   const effChips = effortChips(card, host);
   const effLabel = effortText(card, effort, effChips);
+  
+  
+  const fxTier = dpcFxTier(effort);
+  const fxChip = dpcFxChip(effort);
+  const fxGlow = dpcFxGlow(effort);
   const live = quotaLiveOf(selection.provider, selection.model, now.getTime());
   
   
@@ -6454,7 +7247,10 @@ function HudCard(props) {
   
   
   
-  const ts = peakLine || timeState(card, now, selection.provider);
+  
+  
+  
+  const ts = peakLine || timeState(card, now, selection.provider, selection.model);
   const rows = quotaRows(card, live);
   const level = quotaLevel(card, live);
   const persona = plan.persona || {};
@@ -6462,7 +7258,7 @@ function HudCard(props) {
   
   
   
-  const line = dpcCardLine(plan.visual, card, effort, now, live, selection.provider);
+  const line = dpcCardLine(plan.visual, card, effort, now, live, selection.provider, selection.model);
   
   
   const tierDialogue = dpcTierLine(plan.visual, card, effort, line);
@@ -6478,6 +7274,8 @@ function HudCard(props) {
   
   
   const channel = channelLabel(selection.provider, selection.model);
+  
+  const headLatin = dpcHeadLatin(persona, isGeneric);
   
   const modelId = normModel(selection.model);
   const cardId = isGeneric
@@ -6530,13 +7328,59 @@ function HudCard(props) {
     return undefined;
   }, [playMode, phase, selection.provider, selection.model]);
 
+  
+  
+  
+  
+  const fxPrevRef = React.useRef(effort);
+  const fxModeRef = React.useRef('');
+  const [fxIgnite, setFxIgnite] = React.useState(null);
+  React.useEffect(() => {
+    const prev = fxPrevRef.current;
+    fxPrevRef.current = effort;
+    if (calm) return undefined;
+    const to = shouldIgnite(prev, effort);
+    if (!to) return undefined;
+    const mode = dpcFxIgniteMode(fxModeRef.current, Math.random());
+    fxModeRef.current = mode;
+    setFxIgnite({ tier: to, mode });
+    const timer = setTimeout(() => setFxIgnite(null), dpcFxIgniteMs(to, mode) + 80);
+    return () => clearTimeout(timer);
+  }, [effort, calm]);
+
+  
+  
+  const [fxMotion, setFxMotion] = React.useState('');
+  React.useEffect(() => {
+    const read = () => {
+      let hidden = false;
+      try { hidden = document.visibilityState === 'hidden' || document.hidden === true; } catch (_error) { hidden = false; }
+      setFxMotion(calm ? 'static' : (hidden ? 'paused' : ''));
+    };
+    read();
+    document.addEventListener('visibilitychange', read);
+    return () => document.removeEventListener('visibilitychange', read);
+  }, [calm]);
+
+  
+  
+  
+  React.useEffect(() => {
+    dpcFxApply({
+      tier: fxGlow,
+      ignite: fxIgnite ? fxIgnite.tier : '',
+      mode: fxIgnite ? fxIgnite.mode : '',
+      motion: fxMotion,
+    });
+    return () => { dpcFxApply({ tier: '', ignite: '', mode: '', motion: fxMotion }); };
+  }, [fxGlow, fxIgnite, fxMotion]);
+
   const segIndex = Math.max(0, segments.findIndex((s) => s.phase === phase));
   
   
   const panelIdx = segments.findIndex((s) => s.phase === 'panel');
   const barsOn = skipCalm || mini || (panelIdx >= 0 && segIndex >= panelIdx);
   const typeOn = skipCalm || mini || phase === 'type';
-  const w = Math.min(590, Math.max(300, window.innerWidth - 24));
   
   
   
@@ -6546,17 +7390,44 @@ function HudCard(props) {
   
   
   
-  const splitArtW = cgPlan !== null && !isHub && w >= DPC_SPLIT_MIN_W ? dpcSplitArtWidth(w) : 0;
+  
+  
   
   
   
   const cgLayerPlan = cgPlanForCalm(cgPlan, calm);
+  const cgCalmFallback = (cgPlan !== cgPlanRaw ? cgPlanForCalm(cgPlanRaw, calm) : null)
+    || (!stackedAtWidth && artLayers && artLayers.figure ? cgPlanForCalm(artLayers.figure, calm) : null);
+  const cgEffectivePlan = cgLayerPlan !== null
+    ? cgLayerPlan
+    : cgCalmFallback;
+  const cgErrKey = cgEffectivePlan
+    ? String(cgEffectivePlan.assetId || '') + '|' + String(cgEffectivePlan.cutoutAssetId || '') + '|' + String(cgEffectivePlan.posterAssetId || '')
+    : null;
+  const cgActivePlan = (cgEffectivePlan && (!cgFailedKey || cgFailedKey !== cgErrKey))
+    ? cgEffectivePlan
+    : null;
+  const onCgError = () => { if (cgErrKey) setCgFailedKey(cgErrKey); };
+  const splitArtW = cgActivePlan !== null && !isHub && w >= DPC_SPLIT_MIN_W ? dpcSplitArtWidth(w) : 0;
   
   
   
   
   
-  const cgLayerPlanCard = splitArtW > 0 ? cgLayerPlan : cgPlanForFallbackAnchor(cgLayerPlan);
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  const cgLayerPlanCard = splitArtW > 0 ? cgActivePlan : cgPlanForFallbackAnchor(cgActivePlan);
   const splitArt = splitArtW > 0;
   
   const breathe = cgCutout && !skipCalm && cgCutoutKind !== 'video';
@@ -6598,6 +7469,10 @@ function HudCard(props) {
       if (ex !== null) { boxLeft = ex.x; boxTop = ex.bottom; boxW = ex.w; boxH = null; }
     }
   }
+  
+  
+  
+  const noScoreMinH = (boxH === null && !hasStats) ? dpcNoScoreMinHeight(splitArtW) : null;
   
   const narrowHud = boxW < 480;
   
@@ -6700,6 +7575,19 @@ function HudCard(props) {
     
     'data-cg-split': splitArt ? '1' : '0',
     
+    
+    
+    
+    
+    
+    
+    'data-eff-fx': fxTier || null,
+    'data-eff-aura': !isHub && fxGlow ? '1' : null,
+    'data-eff-ignite': fxIgnite ? fxIgnite.tier : null,
+    'data-eff-mode': fxIgnite ? fxIgnite.mode : null,
+    'data-eff-motion': fxMotion || null,
+    ref: dpcFxRootRef,
+    
     'data-cg-breathe': breathe ? '1' : '0',
     
     
@@ -6739,6 +7627,10 @@ function HudCard(props) {
       
       { left, width: boxW, height: collapsed ? 0 : (boxH === null ? undefined : boxH), top,
         bottom: top === undefined ? 120 : undefined, transform: 'translateY(-100%)',
+        
+        
+        minHeight: collapsed ? undefined : (noScoreMinH == null ? undefined
+          : (fitMaxH != null && fitMaxH < noScoreMinH ? fitMaxH : noScoreMinH)),
         maxHeight: fitMaxH, pointerEvents: collapsed ? 'none' : undefined },
       
       
@@ -6816,11 +7708,17 @@ function HudCard(props) {
       isData ? h('div', { className: 'dpc-generic-banner', 'data-card-source': 'data' },
         h('b', null, '数据卡 · 公开分数自动生成')) : null,
       
-      h(CgLayer, { plan: cgLayerPlanCard,
+      h(CgLayer, { plan: cgLayerPlanCard, onCgError,
         splitArt, artW: splitArtW, cardId }),
+      
+      
+      
+      h(ArtAmbienceLayer, { ambience: artLayers ? artLayers.ambience : null }),
       h('div', { className: 'dpc-head' },
         h('b', { className: 'dpc-name' }, persona.name || `${selection.provider}/${selection.model}`),
-        persona.latin ? h('span', { className: 'dpc-latin' }, persona.latin.toUpperCase()) : null,
+        
+        
+        headLatin ? h('span', { className: 'dpc-latin' }, headLatin) : null,
         
         
         plan.title ? h('span', { className: 'dpc-title' }, plan.title) : null,
@@ -6848,7 +7746,11 @@ function HudCard(props) {
       effLabel || effChips.length
         ? h('div', { className: 'dpc-eff' },
           effLabel ? h('span', { className: 'dpc-eff-lbl' }, effLabel) : null,
-          effChips.map((e) => h('span', { key: e, className: 'dpc-eff-chip', 'data-on': e === effort ? '1' : '0' }, EFF_LABEL[e] || e)))
+          
+          
+          
+          
+          effChips.map((e) => h('span', { key: e, className: 'dpc-eff-chip', 'data-on': e === effort ? '1' : '0', 'data-fx': e === effort ? (fxChip || null) : null }, EFF_LABEL[e] || e)))
         : null,
       
       
@@ -6882,6 +7784,13 @@ function HudCard(props) {
         ? h('div', { className: 'dpc-stats', 'data-stat-shown': String(KEYS.length), 'data-stat-valued': String(shownKeys.length) },
           KEYS.map((k) => h(StatBar, { key: k, label: k, stat: stats[k], src: SRC[k], start: barsOn, calm: skipCalm, u: axis[k], note: missingNoteOf(card) })))
         : h('div', { className: 'dpc-stats-none', 'data-no-public-score': '1', 'data-stat-shown': '0', 'data-stat-valued': '0' }, NO_PUBLIC_SCORE),
+      
+      
+      
+      card.arena ? h('div', { className: 'dpc-row dpc-arena', 'data-arena-board': card.arena.board,
+        'data-arena-rank': String(card.arena.rank) },
+        h('span', null, '参考 · ' + card.arena.label),
+        h('d', null, '#' + card.arena.rank + '（' + Math.round(card.arena.rating) + '）')) : null,
       
       
       
@@ -7789,21 +8698,22 @@ const dpcAssetThumb = (url, kind, placeholderText, brokenText) => {
   const broken = brokenText || ph;
   if (!url) return h('span', { className: 'dpc-set-thumb dpc-gallery-locked' }, ph);
   if (kind === 'video') return h('video', { className: 'dpc-set-thumb', src: url, muted: true, preload: 'metadata' });
-  return h('img', {
-    className: 'dpc-set-thumb',
-    src: url,
-    alt: '',
-    onError: (ev) => dpcAssetThumbFallback(ev, broken),
-  });
+  return h(DpcAssetThumbImg, { url, broken });
 };
 
  
-const dpcAssetThumbFallback = (ev, text) => {
-  const el = ev && ev.currentTarget;
-  if (!el || !el.parentNode) return false;
-  el.parentNode.replaceChild(h('span', { className: 'dpc-set-thumb dpc-gallery-locked' }, text || ''), el);
-  return true;
-};
+function DpcAssetThumbImg(props) {
+  const [failedUrl, setFailedUrl] = React.useState('');
+  if (failedUrl === props.url) {
+    return React.createElement('span', { className: 'dpc-set-thumb dpc-gallery-locked' }, props.broken || '');
+  }
+  return h('img', {
+    className: 'dpc-set-thumb',
+    src: props.url,
+    alt: '',
+    onError: () => setFailedUrl(props.url),
+  });
+}
 
 
 function ProviderCardSettings(props) {
@@ -7822,6 +8732,7 @@ function ProviderCardSettings(props) {
   const [layoutSel, setLayoutSel] = React.useState('');
   const [packFile, setPackFile] = React.useState(null); 
   const [gallerySel, setGallerySel] = React.useState(null); 
+  const [brokenBigThumb, setBrokenBigThumb] = React.useState('');
   
   
   const [tab, setTab] = React.useState(DPC_SET_DEFAULT_TAB);
@@ -8012,7 +8923,10 @@ function ProviderCardSettings(props) {
     const type = dot > 0 ? nm.slice(dot + 1).toLowerCase() : '';
     const res = await pcSend('POST', urls.upload, { type, name: nm }, null, buf);
     setBusy('');
-    if (afterWrite(res, '已上传：' + nm + '（' + Math.round(res.json.bytes / 1024) + ' KiB）')) setPicked(null);
+    const okBytes = res && res.ok && res.json && Number.isFinite(res.json.bytes)
+      ? '（' + Math.round(res.json.bytes / 1024) + ' KiB）'
+      : '';
+    if (afterWrite(res, '已上传：' + nm + okBytes)) setPicked(null);
   };
 
   
@@ -8546,12 +9460,17 @@ function ProviderCardSettings(props) {
       }, '收起')),
     
     
-    gallerySelRow.thumb ? h('img', {
-      className: 'dpc-set-gallery-big',
-      'data-gallery-big': gallerySelRow.key,
-      src: gallerySelRow.thumb,
-      alt: (gallerySelRow.no === '—' ? '' : gallerySelRow.no + ' ') + gallerySelRow.name + ' 的 CG',
-    }) : null,
+    (gallerySelRow.thumb && brokenBigThumb !== gallerySelRow.thumb)
+      ? h('img', {
+        className: 'dpc-set-gallery-big',
+        'data-gallery-big': gallerySelRow.key,
+        src: gallerySelRow.thumb,
+        alt: (gallerySelRow.no === '—' ? '' : gallerySelRow.no + ' ') + gallerySelRow.name + ' 的 CG',
+        onError: () => setBrokenBigThumb(gallerySelRow.thumb),
+      })
+      : (gallerySelRow.thumb
+        ? React.createElement('span', { className: 'dpc-set-cap', 'data-gallery-big-fallback': gallerySelRow.key }, '已绑定（无缩略图）')
+        : null),
     h('span', { className: 'dpc-set-cap' }, gallerySelRow.title || gallerySelRow.key),
     
     gallerySelRow.source === 'data'
@@ -8925,14 +9844,20 @@ function dpcPickerProviderOf(heading, groups) {
   if (!raw) return { id: '', name: '', how: 'none', group: null };
   let hit = null;
   let how = 'none';
+  
   for (const g of list) {
     if (g && dpcPickerTrim(g.name) === raw) { hit = g; how = 'exact'; break; }
   }
+  
+  if (!hit) {
+    for (const g of list) {
+      if (g && dpcPickerTrim(g.id) === raw) { hit = g; how = 'id'; break; }
+    }
+  }
   if (!hit) {
     const key = dpcPickerKeyOf(raw);
-    for (const g of list) {
-      if (g && dpcPickerKeyOf(g.name) === key) { hit = g; how = 'loose'; break; }
-    }
+    const cands = list.filter((g) => g && dpcPickerKeyOf(g.name) === key);
+    if (cands.length === 1) { hit = cands[0]; how = 'loose'; }
   }
   return {
     id: hit ? dpcPickerTrim(hit.id) : '',
@@ -8962,6 +9887,21 @@ function dpcPickerModelIdOf(row, group) {
     }
   }
   return hit ? { id: dpcPickerTrim(hit.id), how } : { id: '', how: 'none' };
+}
+
+ 
+function dpcPickerIdentityOf(el) {
+  const out = { provider: '', model: '' };
+  if (!el || typeof el.querySelector !== 'function') return out;
+  const read = (attr) => {
+    const self = el.getAttribute ? dpcPickerTrim(el.getAttribute(attr)) : '';
+    if (self) return self;
+    const node = el.querySelector('[' + attr + ']');
+    return node ? dpcPickerTrim(node.getAttribute(attr)) : '';
+  };
+  out.provider = read('data-provider-id');
+  out.model = read('data-model-id');
+  return out;
 }
 
 
@@ -8994,8 +9934,25 @@ function dpcPickerDescribe(entry, index, groups, opts) {
   const row = entry || {};
   const options = opts || {};
   const date = options.date instanceof Date ? options.date : new Date();
-  const pv = dpcPickerProviderOf(row.heading, groups);
-  const mv = dpcPickerModelIdOf(row, pv.group);
+  
+  
+  
+  const byHeading = dpcPickerProviderOf(row.heading, groups);
+  const domProvider = dpcPickerTrim(row.domProviderId);
+  let pv = byHeading;
+  if (domProvider) {
+    const list = Array.isArray(groups) ? groups : [];
+    const g = list.find((x) => x && dpcPickerTrim(x.id) === domProvider) || byHeading.group || null;
+    pv = {
+      id: domProvider,
+      
+      name: dpcPickerTrim(g && g.name) || dpcPickerTrim(row.providerName) || byHeading.name,
+      how: 'dom',
+      group: g,
+    };
+  }
+  const domModel = dpcPickerTrim(row.domModelId);
+  const mv = domModel ? { id: domModel, how: 'dom' } : dpcPickerModelIdOf(row, pv.group);
   
   
   const model = mv.id || dpcPickerTrim(row.model);
@@ -9115,10 +10072,20 @@ function dpcPickerSeatName(name) {
 
 
  
+function dpcPickerModelBare(model) {
+  const raw = dpcPickerTrim(model);
+  if (!raw) return '';
+  
+  
+  const cut = raw.lastIndexOf('/');
+  return normModel(cut >= 0 ? raw.slice(cut + 1) : raw);
+}
+
+ 
 function dpcPickerFamilyStem(model) {
-  const norm = normModel(dpcPickerTrim(model));
-  if (!norm) return '';
-  const head = norm.split('-')[0];
+  const bare = dpcPickerModelBare(model);
+  if (!bare) return '';
+  const head = bare.split('-')[0];
   return head.replace(/\d+$/, '');
 }
 
@@ -9162,8 +10129,8 @@ function dpcPickerSeatRole(desc) {
   }
   
   
-  const norm = normModel(dpcPickerTrim(d.model || own));
-  const first = norm ? norm.split('-')[0] : '';
+  
+  const first = dpcPickerModelBare(d.model || own).split('-')[0];
   if (first && Array.from(first).length <= DPC_PICK_SEAT_NAME_CHARS) return first;
   
   return '';
@@ -9289,13 +10256,21 @@ function dpcPickerParseMenu(menu, groups, opts) {
     const pv = dpcPickerProviderOf(g.heading, groups);
     for (const raw of Array.isArray(g.rows) ? g.rows : []) {
       const row = raw || {};
-      const mv = dpcPickerModelIdOf(row, pv.group);
+      
+      
+      const mv = dpcPickerTrim(row.domModelId)
+        ? { id: dpcPickerTrim(row.domModelId), how: 'dom' }
+        : dpcPickerModelIdOf(row, pv.group);
       if (!mv.id) continue;
       const identity = normModel(mv.id);
       if (!identity) continue;
       const entry = {
         heading: dpcPickerTrim(g.heading),
         title: dpcPickerTrim(row.title),
+        
+        
+        domProviderId: dpcPickerTrim(row.domProviderId),
+        domModelId: dpcPickerTrim(row.domModelId),
         providerId: pv.id,
         providerName: pv.name,
         model: mv.id,
@@ -9500,8 +10475,10 @@ const DPC_PICK_SKIN_CSS = [
   
   
   
+  'html[data-dpc-host-scheme="light"] .dpc-pick-mark[data-skin-active="1"][data-dpc-source="curated"] .dpc-pick-dot,',
   'html[data-ds-theme-source="light"] .dpc-pick-mark[data-skin-active="1"][data-dpc-source="curated"] .dpc-pick-dot,',
   'html[data-ds-theme="light"] .dpc-pick-mark[data-skin-active="1"][data-dpc-source="curated"] .dpc-pick-dot,',
+  'html[data-dpc-host-scheme="light"] .dpc-pick-preview[data-skin-active="1"] .dpc-pick-dot,',
   'html[data-ds-theme-source="light"] .dpc-pick-preview[data-skin-active="1"] .dpc-pick-dot,',
   'html[data-ds-theme="light"] .dpc-pick-preview[data-skin-active="1"] .dpc-pick-dot{filter:brightness(.65) saturate(1.05)}',
   '.dpc-pick-mark[data-skin-active="1"][data-skin-density="dense"]{padding:0 3px}',
@@ -10168,8 +11145,18 @@ function dpcPickerPaintSeat() {
   for (const g of groups) {
     if (g && g.id === current.provider && g.name) { display = g.name; break; }
   }
+  
+  
+  
+  const dom = dpcPickerIdentityOf(host);
   const desc = dpcPickerDescribe(
-    { heading: current.provider, title: displayModel(current.model), modelId: current.model },
+    {
+      heading: current.provider,
+      title: displayModel(current.model),
+      modelId: current.model,
+      domProviderId: dom.provider,
+      domModelId: dom.model,
+    },
     null,
     [{ id: current.provider, name: display, models: [] }],
   );
@@ -10214,9 +11201,14 @@ function dpcPickerPaintMenus() {
         const node = buttons[b];
         const title = node.getAttribute('title') || '';
         const modelId = dpcPickerFiberKey(node);
-        rows.push({ node, title, modelId });
-        shape.push({ heading, rows: [{ title, modelId }] });
-        shapeParts.push(title, modelId);
+        
+        const dom = dpcPickerIdentityOf(node);
+        rows.push({ node, title, modelId, domProviderId: dom.provider, domModelId: dom.model });
+        shape.push({
+          heading,
+          rows: [{ title, modelId, domProviderId: dom.provider, domModelId: dom.model }],
+        });
+        shapeParts.push(title, modelId, dom.provider, dom.model);
       }
       rowNodes.push(rows);
     }
@@ -10426,7 +11418,14 @@ function dpcPickerCgLayer(cg) {
     el.setAttribute('autoplay', '');
     el.setAttribute('muted', '');
     el.setAttribute('playsinline', '');
-    if (cutout || cg.loop !== false) el.setAttribute('loop', '');
+    const pickLoopStart = cutout
+      ? (typeof cg.cutoutLoopStart === 'number' && Number.isFinite(cg.cutoutLoopStart) && cg.cutoutLoopStart > 0 ? cg.cutoutLoopStart : null)
+      : (cg.loop !== false && typeof cg.loopStart === 'number' && Number.isFinite(cg.loopStart) && cg.loopStart > 0 ? cg.loopStart : null);
+    if (pickLoopStart !== null) {
+      el.setAttribute('data-loop-start', String(pickLoopStart));
+    } else {
+      if (cutout || cg.loop !== false) el.setAttribute('loop', '');
+    }
   }
   return el;
 }

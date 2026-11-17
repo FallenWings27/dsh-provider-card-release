@@ -90,6 +90,110 @@
               }
             }
           }
+        },
+        "hydrogen": {
+          "alias": "氢光浮游猫",
+          "theme": "balloon",
+          "grade": 2,
+          "availability": "listed",
+          "persona": {
+            "name": "氢浮",
+            "latin": "HYDRO",
+            "title": "一点就着的浮空氢气猫",
+            "summon": "别急着点我，本喵还没飘到位呢——……好了，火给我，这一仗轰轰烈烈地算。",
+            "effort": {
+              "low": "轻轻飘一下就够，本喵连尾巴都不用甩。",
+              "medium": "气球系紧了，稍微认真一点。",
+              "high": "点火——整片天空都是本喵的上升气流！"
+            },
+            "lowQuota": "气球瘪了……{lbl} 只剩 {left}%，{reset} 后本喵再飘回来。",
+            "skills": [
+              [
+                "上升气流",
+                "轻是轻，可本喵飘得比谁都快。",
+                "宿主 magpie 目录实读 google/gemini-4-hydrogen 与 google-vertex/gemini-4-hydrogen；contextWindow 与 reasoningEfforts 未核实（该段无此键）"
+              ],
+              [
+                "一点就着",
+                "给我一点火，我把整片天空点成推力。",
+                "同第一条出处；能力面未核实"
+              ]
+            ]
+          },
+          "dialogue": {
+            "effort": {
+              "low": {
+                "level": "form",
+                "lines": [
+                  "轻轻飘一下就够，本喵连尾巴都不用甩。"
+                ]
+              },
+              "medium": {
+                "level": "form",
+                "lines": [
+                  "气球系紧了，稍微认真一点。"
+                ]
+              },
+              "high": {
+                "level": "form",
+                "lines": [
+                  "点火——整片天空都是本喵的上升气流！"
+                ]
+              }
+            }
+          }
+        },
+        "carbon": {
+          "alias": "碳晶钻石猫",
+          "theme": "diamond",
+          "grade": 2,
+          "availability": "listed",
+          "persona": {
+            "name": "碳璧",
+            "latin": "CARBON",
+            "title": "把万物结成晶的钻石猫",
+            "summon": "别碰，刚切的棱面还没抛光。……坐吧，把题给我，我给它定型。",
+            "effort": {
+              "low": "先切个面看看，别急着下刀。",
+              "medium": "晶格对齐了，这题开始成型。",
+              "high": "硬度拉满，谁也别想在这上面留划痕！"
+            },
+            "lowQuota": "棱面暗了……{lbl} 只剩 {left}%，{reset} 后再来重新抛光。",
+            "skills": [
+              [
+                "晶格定型",
+                "结构先立住，剩下的才谈得上快。",
+                "宿主 magpie 目录实读 google/gemini-4-carbon；contextWindow 与 reasoningEfforts 未核实（该段无此键）"
+              ],
+              [
+                "钻石硬度",
+                "切面越多，越难在上面留划痕。",
+                "同第一条出处；能力面未核实"
+              ]
+            ]
+          },
+          "dialogue": {
+            "effort": {
+              "low": {
+                "level": "form",
+                "lines": [
+                  "先切个面看看，别急着下刀。"
+                ]
+              },
+              "medium": {
+                "level": "form",
+                "lines": [
+                  "晶格对齐了，这题开始成型。"
+                ]
+              },
+              "high": {
+                "level": "form",
+                "lines": [
+                  "硬度拉满，谁也别想在这上面留划痕！"
+                ]
+              }
+            }
+          }
         }
       },
       "formRules": [
@@ -102,7 +206,22 @@
           "kind": "token",
           "token": "argon",
           "form": "argon"
+        },
+        {
+          "kind": "token",
+          "token": "hydrogen",
+          "form": "hydrogen"
+        },
+        {
+          "kind": "token",
+          "token": "carbon",
+          "form": "carbon"
         }
+      ],
+      "alsoCovers": [
+        "gemini-4-argon",
+        "gemini-4-carbon",
+        "gemini-4-hydrogen"
       ],
       "ctx": "1M",
       "efforts": [
@@ -729,7 +848,7 @@
       "efforts": [],
       "def": null,
       "base": {
-        "智力": 39,
+        "智力": 32,
         "编码": 74.5,
         "速度": null,
         "稳定": null,
@@ -737,7 +856,7 @@
         "上下文": null
       },
       "baseSrc": {
-        "智力": "AA-Intelligence = 39（第三方评测，origin supplement-2026-10-12）",
+        "智力": "AA-Intelligence-v5.0 = 32（origin aa-v5-20261028）",
         "编码": "Terminal-Bench-2.1(Vals) = 74.5（第三方评测，origin supplement-2026-10-12）"
       },
       "unranked": [
@@ -790,10 +909,12 @@
       "family": true,
       "members": [
         "hy3",
-        "hy4-preview"
+        "hy4-preview",
+        "hy4"
       ],
       "tiers": {
         "hy4-preview": 0,
+        "hy4": 0,
         "hy3": 1
       },
       "ctx": "192K",
@@ -844,7 +965,7 @@
           ],
           [
             "新老两双靴",
-            "探新雪线的是 hy4-preview，踩实老路的是 hy3，雪地里留的是同一串企鹅脚印。"
+            "探新雪线的是 hy4 和它的前哨 hy4-preview，踩实老路的是 hy3，雪地里留的是同一串企鹅脚印。"
           ]
         ]
       }
@@ -869,6 +990,7 @@
         "claude-opus-5-5",
         "claude-sonnet-5-5",
         "claude-fable-5-1",
+        "claude-fable-5-2",
         "claude-haiku-5-5"
       ],
       "tiers": {
@@ -1082,7 +1204,9 @@
         "gpt-6.1-astra",
         "gpt-6.1-luna",
         "gpt-6.1-terra",
-        "gpt-6-terra"
+        "gpt-6-terra",
+        "gpt-5.6-terra",
+        "gpt-5.6-luna"
       ],
       "tiers": {
         "astra": 0,
@@ -1572,6 +1696,9 @@
         "xhigh"
       ],
       "def": "medium",
+      "alsoCovers": [
+        "sensenova-6.8-flash"
+      ],
       "base": {
         "智力": null,
         "编码": null,

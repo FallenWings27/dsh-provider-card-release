@@ -10,7 +10,9 @@
 - 同一个模型第一次召唤时播完整登场动画，之后再切回来只播精简小卡（切换推理档位不算换新模型）。看过的卡记在 `localStorage` 和本机 `seen.json` 里，最多留 512 条，满了从最早看过的开始裁。
 - 当前正在用的模型不弹额度气泡，只在 HUD 原地更新状态灯；只有刚切走的那个模型额度告急或恢复时才提醒。额度分 5 小时窗和周窗各自算，取更紧的一档，读数过期判 `unknown`。
 - 宿主自带的模型选择器也会挂上卡面：触发按钮显示色点和角色名（窄屏下只留 6px 圆点）；展开菜单里同一家族的成员连在一起排，鼠标停上去会在右侧弹出 180px 的竖版小窗预览整张卡。选择逻辑还是宿主原来的 `select()`，插件只管画，不接点击事件。
-- 支持静态图（`png` / `gif` / `jpg` / `webp`）和循环视频（`mp4` / `webm`），也支持叠一层带透明通道的切口立绘（昼间背景压暗时人物不跟着变暗，带 5 秒呼吸动效）。界面动画跟随系统的「减少动效」设置。
+- 座位和菜单认身份时，**以宿主写的 `data-provider-id` / `data-model-id` 为准**（读不到属性时回落到原来的组标题匹配，旧宿主不需要升级）。所以同一网关下按分组路由的通道不会认错族：`dsh-magpie-connector-wb-hub-cn` 上的 `wb-hub-cn/deepseek-v4.1-flash` 会显示对应卡的角色名与卡号，而不是把通道前缀 `wb` 当成机型、退到通用卡。
+- 支持静态图（`png` / `gif` / `jpg` / `webp`）和循环视频（`mp4` / `webm`）。卡面按思考档位分三层演出：透明切口立绘（L1，与现役立绘占同一槽位、遵循同一断点布局）、氛围层（L2）、循环场景背景（L3，只有多档卡才出）。四个视觉档「素 / 常 / 深 / 极」分别对应配饰 0 / 1–3 / 2–3 / 3–5 件，档位按全局绝对表定位（`none`/`low` → 素、`medium` → 常、`high` → 深、`xhigh`/`max` → 极）；目标档缺件时沿阶梯回落并在响应里标出来。界面动画跟随系统的「减少动效」设置。
+- 高档位有专属特效：最高档的档位芯片走彩虹流光、次高档走琥珀流光、再低一档只做静态描边；另有卡框光晕、输入框聚焦光晕与切档点火动画（只在档位由低变高时播一次，首次挂载不点火）。全部只动 `transform` / `opacity`，深浅主题各有色板，也跟随「减少动效」与插件自己的静止 / 暂停开关。
 - 设置页的「角色卡」面板有五个页签：
   - `概览`：切 HUD 版式（`mini` / `card`）、切界面与卡面语言（中文 / English，即点即改不用刷新）、看素材空间占用。
   - `角色卡`：内置图鉴。点开任意一张卡就能给它的四个状态槽（`idle` 待机 / `summon` 登场 / `warning` 告急 / `recover` 恢复）换图。
@@ -28,7 +30,7 @@
 | 数据卡 | 库里没有，但公开基准集里有分数 | 由 `data/benchmarks.json` 派生（编号恒为 `—`，不占精选编号） |
 | 通用卡 | 都没有 | 按 provider 名确定性哈希着色 |
 
-精选卡现在有 23 张（其中 17 张是家族卡；Claude 花音、Codex 雪珑等 6 张卡带细分形态，共 16 个形态），落在 15 个 provider 上；基准集收了 35 个模型的公开分数，生成时间写在 `data/benchmarks.json` 里。身份归一化有反例保护：只压点号不改数字（`v4` 不等于 `v4.1`），预览版不并入正式版（`hy4-preview` 不等于 `hy4`），参数量后缀（`32b`、`a3b`）原样保留。
+精选卡现在有 23 张（其中 17 张是家族卡；Claude 花音、Codex 雪珑等 6 张卡带细分形态，共 16 个形态），落在 15 个 provider 上；基准集收了 37 个模型的条目（其中 28 个有公开分，其余 9 个只登记身份、卡面显示「？」），生成时间写在 `data/benchmarks.json` 里。智力轴自 2026-10-31 起取 Artificial Analysis Intelligence Index **v5.0**（2026-10-27 换过题库，与旧版 v4.3.2 的分不可直接比较，旧值仍完整留在 `entries` 里，产物另有 `aa_index_v5` 段）。身份归一化有反例保护：只压点号不改数字（`v4` 不等于 `v4.1`），预览版不并入正式版（`hy4-preview` 不等于 `hy4`），参数量后缀（`32b`、`a3b`）原样保留。
 
 六轴数值条满分 100，六个轴固定占满六行，没分数的轴写「？」，不写 0：
 - `智力`、`编码` 取自公开基准成绩（厂商自报分数带 caveat 标注，未裁决的冲突两个值都留着；Codeforces Elo 单独挂在卡面 `elo` 字段，不混进轴分）。
@@ -39,15 +41,16 @@
 ## 已知问题
 
 - 在左侧会话栏关掉会话后，角色卡会意外弹出一次。
+- 档位特效目前按字面档名判定（`max` / `ultra` / `xhigh` / `high`）；素材侧的「按模型自己阶梯相对映射」尚未随本版发布（实现已验收，但沉在另一条分支未合入），当前素材档位同样走全局绝对表。两轴语义一致，等相对映射合入后一起对齐，届时不改配置、不改素材。
 
 ## 安装
 
-本插件是 DSH 宿主的 bundle 插件，发布在 npm：`@mirai27/dsh-provider-card`。宿主按 `package.json` 的 `name` 认这个包，按 `dsh.bundle.patch` 指向的 `cordis.patch.yml` 注册。这个 id 同时写在五处——`package.json` 的 `name`、`cordis.patch.yml` 的 `name:`、`index.js` 的 `TAG`、`src/client.template.js` 的模块 id 与 locale 路径（以及由模板生成的 `src/client.js`）——改一处就得五处一起改，`tests/test_plugin_contract.py::test_包名跨文件一致` 会拦。
+本插件是 DSH 宿主的 bundle 插件，发布在 npm：`@mirai27/dsh-provider-card`。宿主按 `package.json` 的 `name` 认这个包，按 `dsh.bundle.patch` 指向的 `cordis.patch.yml` 注册。这个 id 同时写在五处——`package.json` 的 `name`、`cordis.patch.yml` 的 `name:`、`index.js` 的 `TAG`、`src/client.template.js` 的模块 id 与 locale 路径（以及由模板生成的 `src/client.js`）——改一处就得五处一起改，契约守卫（包名跨文件一致性）会拦。
 
 取包有两条路，**包 id 相同，只选一条装**——两条路给的是同一个 bundle id，都装等于同一插件装两份，同一位置会弹两张卡：
 
-- **npm 包**（推荐，当前 `latest` = `0.1.1`）：只有代码，约 2 MB。`npm install @mirai27/dsh-provider-card@0.1.1 --prefix <PLUGIN_PARENT>`，装到 `<PLUGIN_PARENT>/node_modules/@mirai27/dsh-provider-card`（宿主每次启动都要读它，别放临时目录）。
-- **发布仓**（要内置素材时）：同一份代码外加 `seed/` 首装素材库（393 件立绘与视频），约 535 MiB，克隆前留足磁盘。`git clone git@github.com:FallenWings27/dsh-provider-card-release.git <PLUGIN_DIR>`。
+- **npm 包**（推荐）：只有代码，约 2 MB。`npm install @mirai27/dsh-provider-card --prefix <PLUGIN_PARENT>`（默认取 `latest`），装到 `<PLUGIN_PARENT>/node_modules/@mirai27/dsh-provider-card`（宿主每次启动都要读它，别放临时目录）。
+- **发布仓**（要内置素材时）：同一份代码外加 `seed/` 首装素材库（420 件立绘与视频），约 535 MiB，克隆前留足磁盘。`git clone git@github.com:FallenWings27/dsh-provider-card-release.git <PLUGIN_DIR>`。
 
 `@local/dsh-provider-card` 是 2026-10 之前的历史包名，现在两条路都用 `@mirai27/dsh-provider-card`。改 id 要五处一起改（`package.json` 的 `name`、`cordis.patch.yml` 的 `name:`、`index.js` 的 `TAG`、`src/client.js` 里的模块 id 与 locale 路径）。
 
@@ -66,7 +69,7 @@ cordis.patch.yml        宿主注册 patch
 LICENSE / ASSET_LICENSE.md / README.md
 ```
 
-发布仓额外带 `seed/`（首装素材库：立绘、CG、视频与绑定清单）和 `scripts/`（开发工具，不进 npm 包）。
+发布仓额外带 `seed/`（首装素材库：立绘、CG、视频与绑定清单）和一套开发工具目录（只在发布仓，不进 npm 包）。
 
 登记进 profile 三步。profile 目录指 `<DSH_HOME>/profiles/<名字>`，Web 宿主一般是 `web`，官方桌面版是 `desktop`。
 

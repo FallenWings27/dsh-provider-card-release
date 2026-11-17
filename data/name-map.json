@@ -1,7 +1,7 @@
 {
   "$schema_version": 1,
   "version": 1,
-  "updated_at": "2026-10-24",
+  "updated_at": "2026-11-15",
   "provider_routes": [
     {
       "provider": "cc-z-ai",
@@ -34,6 +34,14 @@
     {
       "provider": "minimax-code-2",
       "route": "minimax/m3.1-2"
+    },
+    {
+      "provider": "grok",
+      "route": "grok/grok-4.7"
+    },
+    {
+      "provider": "sensenova",
+      "route": "sn/ds"
     }
   ],
   "entries": [
@@ -94,7 +102,7 @@
       "confirmed": false
     },
     {
-      "route": "wb-cn/bunny",
+      "route": "auto/wbhub-cn/space-bunny",
       "provider": "wbhub-cn",
       "model": "space-bunny",
       "dataset_model": null,
@@ -131,7 +139,7 @@
       ]
     },
     {
-      "route": "wb-cn/step5",
+      "route": "auto/dsh-magpie-connector-wb-hub-cn/wb-hub-cn-step-5-preview",
       "provider": "wbhub-cn",
       "model": "step-5-preview",
       "dataset_model": "step-5-preview",
@@ -333,10 +341,31 @@
       "confirmed": true
     },
     {
-      "route": null,
+      "route": "auto/wbhub-cn/kimi-k3.1-pro",
       "provider": "wbhub-cn",
       "model": "kimi-k3.1-pro",
       "dataset_model": "kimi-k3.1-pro",
+      "confirmed": true
+    },
+    {
+      "route": "auto/wbhub-cn/hy4free",
+      "provider": "wbhub-cn",
+      "model": "hy4free",
+      "dataset_model": "hy4-preview-f",
+      "confirmed": true
+    },
+    {
+      "route": null,
+      "provider": "wbhub-cn",
+      "model": "glm-5.3",
+      "dataset_model": "glm-5.3",
+      "confirmed": true
+    },
+    {
+      "route": null,
+      "provider": "wbhub-cn",
+      "model": "minimax-m3.1-flash",
+      "dataset_model": "MiniMax-M3.1-Flash-Preview",
       "confirmed": true
     }
   ]

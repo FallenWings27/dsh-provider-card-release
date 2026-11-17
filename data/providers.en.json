@@ -89,6 +89,92 @@
               }
             }
           }
+        },
+        "hydrogen": {
+          "alias": "Hydrogen-Light Drifting Cat",
+          "persona": {
+            "name": "HYDRO",
+            "title": "The Floating Hydrogen Cat Who Ignites at a Touch",
+            "summon": "Don't light me yet, this kitty hasn't drifted into place — …All right, give me the spark; this battle we'll settle with a bang.",
+            "effort": {
+              "low": "A gentle drift is enough; I won't even need to swish my tail.",
+              "medium": "Balloon string tightened — a little more serious now.",
+              "high": "Light it up! The whole sky is my updraft!"
+            },
+            "lowQuota": "The balloon's deflating… {lbl} has {left}% left — I'll drift back after {reset}.",
+            "skills": [
+              [
+                "Rising Draft",
+                "Light I may be, but I drift faster than anyone."
+              ],
+              [
+                "One Spark Away",
+                "Give me a spark and I'll turn the whole sky into thrust."
+              ]
+            ]
+          },
+          "dialogue": {
+            "effort": {
+              "low": {
+                "lines": [
+                  "A gentle drift is enough; I won't even need to swish my tail."
+                ]
+              },
+              "medium": {
+                "lines": [
+                  "Balloon string tightened — a little more serious now."
+                ]
+              },
+              "high": {
+                "lines": [
+                  "Light it up! The whole sky is my updraft!"
+                ]
+              }
+            }
+          }
+        },
+        "carbon": {
+          "alias": "Carbon-Crystal Diamond Cat",
+          "persona": {
+            "name": "CARBON",
+            "title": "The Diamond Cat Who Crystallizes Everything",
+            "summon": "Don't touch it, the facet I just cut isn't polished yet. …Sit, hand me the problem — I'll give it a shape.",
+            "effort": {
+              "low": "Let me cut one facet first; don't rush me with the blade.",
+              "medium": "The lattice is aligned — this problem is starting to take shape.",
+              "high": "Hardness maxed out — nobody leaves a scratch on this!"
+            },
+            "lowQuota": "The facets have gone dark… {lbl} has {left}% left — I'll polish it over again after {reset}.",
+            "skills": [
+              [
+                "Lattice Setting",
+                "Get the structure standing first; only then does speed mean anything."
+              ],
+              [
+                "Diamond Hardness",
+                "The more facets I cut, the harder it is to leave a scratch."
+              ]
+            ]
+          },
+          "dialogue": {
+            "effort": {
+              "low": {
+                "lines": [
+                  "Let me cut one facet first; don't rush me with the blade."
+                ]
+              },
+              "medium": {
+                "lines": [
+                  "The lattice is aligned — this problem is starting to take shape."
+                ]
+              },
+              "high": {
+                "lines": [
+                  "Hardness maxed out — nobody leaves a scratch on this!"
+                ]
+              }
+            }
+          }
         }
       }
     },
@@ -358,7 +444,7 @@
           ],
           [
             "Two Pairs of Snow Boots",
-            "hy4-preview breaks the fresh snowline while hy3 packs the old trail — both leave the same penguin tracks."
+            "hy4 and its outrider hy4-preview break the fresh snowline while hy3 packs the old trail — one and the same set of penguin tracks."
           ]
         ]
       }

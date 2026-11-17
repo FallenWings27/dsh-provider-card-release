@@ -1,6 +1,6 @@
 {
   "name": "@mirai27/dsh-provider-card",
-  "version": "0.1.2",
+  "version": "2.0.0",
   "description": "DSH 插件：切换模型时在会话输入框旁展示一张角色卡",
   "keywords": [
     "dsh",
@@ -43,11 +43,6 @@
   "repository": "github:FallenWings27/dsh-provider-card-release",
   "publishConfig": {
     "access": "public"
-  },
-  "scripts": {
-    "build:client": "node scripts/build-client.cjs",
-    "test:publish": "node --test tests/publish.test.cjs tests/publish-content.test.cjs",
-    "prepublishOnly": "npm run test:publish"
   },
   "dsh": {
     "bundle": {

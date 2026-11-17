@@ -1,0 +1,148 @@
+{
+  "version": 1,
+  "note": "R87-K1 · 卡 ↔ 视觉档 ↔ L3 背景视频绑定表（sha256 指向素材库里的那一条资产）。由 scripts/gen-art-scenes.mjs 生成；素材本体在素材库（仓外，只读），仓里只留绑定。rejected 段是历史留档：带 REJECTED 的废片永不进 scenes。 2026-11-02：家族卡条目 form 标明素材所属成员（sourceModel 为原生产目标），只匹配同一形态；缺件保留 1.0 形象。可在 forms[家族/成员][scenes|figures|ambience][档位] 登记其他成员专属素材。",
+  "base": "pilot-<no>/video/<file>",
+  "scenes": {},
+  "rejected": [
+    {
+      "no": "009",
+      "file": "B-009-v3-REJECTED-shortskirt-540x810.webm",
+      "sha256": "da38ca65778c4510217724a5c1aa38b8d3c4947190a01397a82ca0bd7f70d1ab",
+      "bytes": 1861887
+    },
+    {
+      "no": "009",
+      "file": "B-009-v3-REJECTED-shortskirt-raw",
+      "sha256": "947904639be73bd833b0ac6dafc65afa5b53c7e4a60ab4eb22ca035861d895e3",
+      "bytes": 4708422
+    },
+    {
+      "no": "013",
+      "file": "B-013-v3-raw-REJECTED-skirt",
+      "sha256": "cced082fddeecec3c4320bb8a787c0e2d619450f7c93456363ab3cb5dfa2d32c",
+      "bytes": 4215252
+    }
+  ],
+  "forms": {
+    "anthropic/fable": {
+      "scenes": {
+        "deep": {
+          "sha256": "a47ff46b1a2943156c24283b1694a42be36f534276f999922ce7b855d4e5d8cb",
+          "bytes": 917380,
+          "name": "009-fable-deep-scene.jpg",
+          "source": "pilot-009/scene/009-fable-deep-scene.jpg",
+          "effort": "high",
+          "artTier": "deep",
+          "bindTier": "deep",
+          "form": "anthropic/fable",
+          "sourceModel": "claude-fable-5-1"
+        }
+      }
+    },
+    "anthropic/sonnet": {
+      "scenes": {
+        "deep": {
+          "sha256": "aee0a2560bdf1f51810022fc90d9674599b7328a788d33c50e39b99c8ff4840e",
+          "bytes": 846689,
+          "name": "009-sonnet-deep-scene.jpg",
+          "source": "pilot-009/scene/009-sonnet-deep-scene.jpg",
+          "effort": "high",
+          "artTier": "deep",
+          "bindTier": "deep",
+          "form": "anthropic/sonnet",
+          "sourceModel": "claude-sonnet-5-5"
+        }
+      }
+    },
+    "anthropic/haiku": {
+      "scenes": {
+        "deep": {
+          "sha256": "d1a9204f02367a43b9ccaeb6b3603c7bb1dc1e86bd636b26eb990345e7f1ff75",
+          "bytes": 873064,
+          "name": "009-haiku-deep-scene.jpg",
+          "source": "pilot-009/scene/009-haiku-deep-scene.jpg",
+          "effort": "high",
+          "artTier": "deep",
+          "bindTier": "deep",
+          "form": "anthropic/haiku",
+          "sourceModel": "claude-haiku-5-5"
+        }
+      }
+    },
+    "openai/astra": {
+      "scenes": {
+        "deep": {
+          "sha256": "19084019e23848d8640aa8f15feb18ce336a35b97abea299daf471ac1e5dd39c",
+          "bytes": 892588,
+          "name": "010-astra-deep-scene.jpg",
+          "source": "pilot-010/scene/010-astra-deep-scene.jpg",
+          "effort": "high",
+          "artTier": "deep",
+          "bindTier": "deep",
+          "form": "openai/astra",
+          "sourceModel": "gpt-6-astra"
+        }
+      }
+    },
+    "openai/terra": {
+      "scenes": {
+        "deep": {
+          "sha256": "81d7edcf3fb819b33d21edfdb289ab195732422baee13ccdf14aa896e75f1db6",
+          "bytes": 906405,
+          "name": "010-terra-deep-scene.jpg",
+          "source": "pilot-010/scene/010-terra-deep-scene.jpg",
+          "effort": "high",
+          "artTier": "deep",
+          "bindTier": "deep",
+          "form": "openai/terra",
+          "sourceModel": "gpt-6.1-terra"
+        }
+      }
+    },
+    "openai/luna": {
+      "scenes": {
+        "deep": {
+          "sha256": "e1d2f5bc95d3f64123278b75e80be2f26aca3a2a92f3e68facb0150f72886348",
+          "bytes": 814378,
+          "name": "010-luna-deep-scene.jpg",
+          "source": "pilot-010/scene/010-luna-deep-scene.jpg",
+          "effort": "high",
+          "artTier": "deep",
+          "bindTier": "deep",
+          "form": "openai/luna",
+          "sourceModel": "gpt-6-luna"
+        }
+      }
+    },
+    "glm/flagship": {
+      "scenes": {
+        "extreme": {
+          "sha256": "2c2ed9ba226c9a79ecc819372ec4df6e2581e174a3620059c57ae622bd4e9227",
+          "bytes": 908904,
+          "name": "003-glm-flagship-extreme-scene.jpg",
+          "source": "pilot-003/scene/003-glm-flagship-extreme-scene.jpg",
+          "effort": "max",
+          "artTier": "extreme",
+          "bindTier": "extreme",
+          "form": "glm/flagship",
+          "sourceModel": "glm-5.3"
+        }
+      }
+    },
+    "deepseek/pro": {
+      "scenes": {
+        "plain": {
+          "sha256": "843aa14fc5192f883d5626819df3497c7ce98121bd9af2fa4769286f4f75f721",
+          "bytes": 936388,
+          "name": "007-ds-pro-plain-scene.jpg",
+          "source": "pilot-007/scene/007-ds-pro-plain-scene.jpg",
+          "effort": "max",
+          "artTier": "extreme",
+          "bindTier": "plain",
+          "form": "deepseek/pro",
+          "sourceModel": "deepseek-v4-pro"
+        }
+      }
+    }
+  }
+}

@@ -15,10 +15,10 @@
     {
       "file": "public-benchmarks-20261009.json",
       "locator": "本机路径见 scripts/export-benchmarks.cjs 的 SOURCES[*].path（该文件是导出正本，发布包不含本机绝对路径）",
-      "sha256": "8D4E18FFDC88A46545AC92A218E29900F3F0B83EDF1F3011CD0EA43B66F99A4C",
-      "records": 94,
-      "latestCollected": "2026-10-28",
-      "role": "基线源：用户贴出的公开成绩汇总（只读，未改动）。2026-10-24 起它的记录已固化在 SEED 基座里，只作身份/字节核验，不再重复合并（重复合并会产生重复候选）"
+      "sha256": "D52A3C258F1E4B91D6AAC0F806D2E2B4FDE5C71DC58BCE8904C66EC63B747090",
+      "records": 522,
+      "latestCollected": "2026-11-13",
+      "role": "基线源：用户贴出的公开成绩汇总（只读，未改动）。2026-10-24 起它的记录已固化在 SEED 基座里，只作身份/字节核验，不再重复合并（重复合并会产生重复候选）；2026-10-31 起另取其 `AA-Intelligence-v5.0` 记录进产物 `aa_index_v5` 段；2026-11-08 起另取其 `AA-Intelligence-v5.0.1`（新）与 `Arena-*` 主榜行进产物 `aa_index_v5` / `arena` 段（都只新增段，不动 entries）"
     },
     {
       "file": "increment-20261024.json",
@@ -27,9 +27,25 @@
       "collectedAt": "2026-10-24",
       "records": 5,
       "role": "增量源：SEED 基座之后新采集的分数（只许新增模型；与基座同名 ⇒ 退出 1）"
+    },
+    {
+      "file": "increment-20261106.json",
+      "locator": "本机路径见 scripts/export-benchmarks.cjs 的 SOURCES[*].path（该文件是导出正本，发布包不含本机绝对路径）",
+      "sha256": "FAAD4596D569CAD85FADF22D0ACF16910DA801316F5F8322EE2B64F853B54261",
+      "collectedAt": "2026-11-06",
+      "records": 4,
+      "role": "增量源：只许新增模型"
+    },
+    {
+      "file": "increment-20261110.json",
+      "locator": "本机路径见 scripts/export-benchmarks.cjs 的 SOURCES[*].path（该文件是导出正本，发布包不含本机绝对路径）",
+      "sha256": "109A4B64986E01655CF32B8891B11A3E2CAC4A23D452B1E54EDBC7219272B52E",
+      "collectedAt": "2026-11-10",
+      "records": 12,
+      "role": "增量源：2026-11-10 AA 活体采集的 3 个模型（claude-fable-5-2 / claude-haiku-5-5 / MiniMax-M3.1-Flash）× 4 条子基准，只许新增模型"
     }
   ],
-  "generated_at": "2026-10-30T21:20:00+08:00",
+  "generated_at": "2026-11-15T02:50:00+08:00",
   "unit_rules": {
     "percent_default": "max=null 表示百分制（0-100）",
     "non_percent": {
@@ -50,14 +66,2796 @@
     "self_computed_excluded": "BenchLM-Capability / ModelDial-custom / Leaderboard.cn 综合分不可与标准基准并列"
   },
   "counts": {
-    "models": 37,
+    "models": 43,
     "conflict_benchmarks": 7,
     "rounding_benchmarks": 4,
     "corroborated_benchmarks": 1,
     "vendor_only_benchmarks": 107,
     "no_public_models": 9
   },
+  "aa_index_v5": {
+    "benchmark": "AA-Intelligence-v5.0.1",
+    "label": "Artificial Analysis Intelligence Index v5.0.1",
+    "effective": "2026-10-27",
+    "collected": "2026-11-13",
+    "source_label": "Artificial Analysis",
+    "source_type": "third-party",
+    "origin": "aa-v5-20261108",
+    "url": "https://artificialanalysis.ai/methodology/intelligence-benchmarking",
+    "question_bank_changed": true,
+    "versions": [
+      {
+        "benchmark": "AA-Intelligence-v5.0.1",
+        "records": 8,
+        "collected": "2026-11-13"
+      },
+      {
+        "benchmark": "AA-Intelligence-v5.0",
+        "records": 11,
+        "collected": "2026-10-28"
+      }
+    ],
+    "skipped_models": [
+      "Gemini 3.5 Flash-Lite",
+      "Granite 4.2 3B",
+      "GPT-6.1 Terra (Non-reasoning)",
+      "Nemotron 3.5 Lightning",
+      "Command A+",
+      "Qwen3.8 27B (Non-reasoning)",
+      "Mistral Small 4 (Reasoning)",
+      "Nanbeige4.3-33B",
+      "Ling 3.1 Flash 1019",
+      "DeepSeek V4.1 Flash 1017 (Non-reasoning)",
+      "Nemotron 3 Ultra 550B A55B (Reasoning)",
+      "GPT-6 Luna (Non-reasoning)",
+      "Beam 1.0",
+      "Inkling Small",
+      "NVIDIA Nemotron 3 Nano 4B",
+      "Granite 4.2 8B",
+      "K2 Horizon 375B A23B",
+      "Gemma 4 31B (Reasoning)",
+      "Tencent Hy4",
+      "DeepSeek V4 Pro 0813 (Non-reasoning)",
+      "Mistral Medium 3.5",
+      "Nemotron 3.5 Super VL",
+      "North Mini Code",
+      "Inkling 2 Small",
+      "K-EXAONE 2.0",
+      "Agnes 2.5 Pro Theta",
+      "Apodex 1.1",
+      "Solar Pro 4",
+      "Qwen3.8-Flash-Next",
+      "JT-4.1 Flash 236B A21B"
+    ],
+    "records": [
+      {
+        "model": "MiniMax-M3.1-Flash",
+        "benchmark": "AA-Intelligence-v5.0.1",
+        "score": 29.0595214290458,
+        "upstream_model": "MiniMax-M3.1-Flash",
+        "url": "https://artificialanalysis.ai/leaderboards/models",
+        "collected": "2026-11-13"
+      },
+      {
+        "model": "claude-opus-5.5",
+        "benchmark": "AA-Intelligence-v5.0",
+        "score": 58,
+        "upstream_model": "Claude Opus 5.5 (Max, Default Fallback)",
+        "url": "https://artificialanalysis.ai/models/claude-opus-5-5",
+        "collected": "2026-10-28"
+      },
+      {
+        "model": "claude-sonnet-5.5",
+        "benchmark": "AA-Intelligence-v5.0",
+        "score": 54,
+        "upstream_model": "Claude Sonnet 5.5 (Max, Default Fallback)",
+        "url": "https://artificialanalysis.ai/models/claude-sonnet-5-5",
+        "collected": "2026-10-28"
+      },
+      {
+        "model": "deepseek-v4-pro",
+        "benchmark": "AA-Intelligence-v5.0",
+        "score": 23,
+        "upstream_model": "DeepSeek V4 Pro 0813 (Max)",
+        "url": "https://artificialanalysis.ai/models/deepseek-v4-pro",
+        "collected": "2026-10-28"
+      },
+      {
+        "model": "deepseek-v4.1-flash",
+        "benchmark": "AA-Intelligence-v5.0",
+        "score": 32,
+        "upstream_model": "DeepSeek V4.1 Flash 1017 (Max)",
+        "url": "https://artificialanalysis.ai/models/deepseek-v4-1-flash-1017",
+        "collected": "2026-10-28"
+      },
+      {
+        "model": "deepseek-v4.1-flash-1017",
+        "benchmark": "AA-Intelligence-v5.0",
+        "score": 32,
+        "upstream_model": "DeepSeek V4.1 Flash 1017 (Max)",
+        "url": "https://artificialanalysis.ai/models/deepseek-v4-1-flash-1017",
+        "collected": "2026-10-28"
+      },
+      {
+        "model": "gemini-3.8-flash",
+        "benchmark": "AA-Intelligence-v5.0",
+        "score": 31,
+        "upstream_model": "Gemini 3.8 Flash (High)",
+        "url": "https://artificialanalysis.ai/models/gemini-3-8-flash",
+        "collected": "2026-10-28"
+      },
+      {
+        "model": "gemini-4-argon",
+        "benchmark": "AA-Intelligence-v5.0",
+        "score": 50,
+        "upstream_model": "Gemini 4 Argon (High)",
+        "url": "https://artificialanalysis.ai/models/gemini-4-argon",
+        "collected": "2026-10-28"
+      },
+      {
+        "model": "glm-5.3",
+        "benchmark": "AA-Intelligence-v5.0",
+        "score": 32,
+        "upstream_model": "GLM-5.3 (Max)",
+        "url": "https://artificialanalysis.ai/models/glm-5-3",
+        "collected": "2026-10-28"
+      },
+      {
+        "model": "glm-5.3-flash",
+        "benchmark": "AA-Intelligence-v5.0.1",
+        "score": 27.803889160883,
+        "upstream_model": "GLM-5.3-Flash",
+        "url": "https://artificialanalysis.ai/leaderboards/models",
+        "collected": "2026-11-13"
+      },
+      {
+        "model": "gpt-6-astra",
+        "benchmark": "AA-Intelligence-v5.0",
+        "score": 57,
+        "upstream_model": "GPT-6 Astra (Max)",
+        "url": "https://artificialanalysis.ai/models/gpt-6-astra",
+        "collected": "2026-10-28"
+      },
+      {
+        "model": "gpt-6.1-sol",
+        "benchmark": "AA-Intelligence-v5.0",
+        "score": 55,
+        "upstream_model": "GPT-6.1 Sol (Max)",
+        "url": "https://artificialanalysis.ai/models/gpt-6-1-sol",
+        "collected": "2026-10-28"
+      },
+      {
+        "model": "grok-4.7",
+        "benchmark": "AA-Intelligence-v5.0",
+        "score": 34,
+        "upstream_model": "",
+        "url": "https://artificialanalysis.ai/models/grok-4-7",
+        "collected": ""
+      },
+      {
+        "model": "kimi-k3.1-pro",
+        "benchmark": "AA-Intelligence-v5.0.1",
+        "score": 46.4526236744189,
+        "upstream_model": "Kimi K3.1 Pro",
+        "url": "https://artificialanalysis.ai/leaderboards/models",
+        "collected": "2026-11-13"
+      },
+      {
+        "model": "mimo-v2.6-flash",
+        "benchmark": "AA-Intelligence-v5.0.1",
+        "score": 26.7276981444568,
+        "upstream_model": "MiMo-V2.6-Flash",
+        "url": "https://artificialanalysis.ai/leaderboards/models",
+        "collected": "2026-11-13"
+      },
+      {
+        "model": "mimo-v2.6-pro",
+        "benchmark": "AA-Intelligence-v5.0.1",
+        "score": 29.8897833093321,
+        "upstream_model": "MiMo-V2.6-Pro",
+        "url": "https://artificialanalysis.ai/leaderboards/models",
+        "collected": "2026-11-13"
+      },
+      {
+        "model": "minimax-m3",
+        "benchmark": "AA-Intelligence-v5.0.1",
+        "score": 18.8789083859255,
+        "upstream_model": "MiniMax-M3",
+        "url": "https://artificialanalysis.ai/leaderboards/models",
+        "collected": "2026-11-13"
+      },
+      {
+        "model": "qwen3.8-max",
+        "benchmark": "AA-Intelligence-v5.0.1",
+        "score": 33.6545627367888,
+        "upstream_model": "Qwen3.8 Max (0902)",
+        "url": "https://artificialanalysis.ai/leaderboards/models",
+        "collected": "2026-11-05"
+      },
+      {
+        "model": "step-5-preview",
+        "benchmark": "AA-Intelligence-v5.0.1",
+        "score": 28.5283090216016,
+        "upstream_model": "Step 5 Preview",
+        "url": "https://artificialanalysis.ai/leaderboards/models",
+        "collected": "2026-11-13"
+      }
+    ],
+    "effort_records": [
+      {
+        "model": "claude-fable-5-1",
+        "benchmark": "AA-Intelligence-v5.0.1",
+        "effort": "max",
+        "score": 49.1602124158081,
+        "upstream_model": "Claude Fable 5.1 (Max, Default Fallback)",
+        "url": "https://artificialanalysis.ai/leaderboards/models",
+        "collected": "2026-11-09",
+        "benchmark_raw": "AA-Intelligence-v5.0.1@max"
+      },
+      {
+        "model": "claude-fable-5-1",
+        "benchmark": "AA-Intelligence-v5.0.1",
+        "effort": "xhigh",
+        "score": 50.0216384248632,
+        "upstream_model": "Claude Fable 5.1 (Xhigh, Default Fallback)",
+        "url": "https://artificialanalysis.ai/leaderboards/models",
+        "collected": "2026-11-09",
+        "benchmark_raw": "AA-Intelligence-v5.0.1@xhigh"
+      },
+      {
+        "model": "claude-fable-5-1",
+        "benchmark": "AA-Intelligence-v5.0.1",
+        "effort": "high",
+        "score": 47.174988245604,
+        "upstream_model": "Claude Fable 5.1 (High, Default Fallback)",
+        "url": "https://artificialanalysis.ai/leaderboards/models",
+        "collected": "2026-11-09",
+        "benchmark_raw": "AA-Intelligence-v5.0.1@high"
+      },
+      {
+        "model": "claude-fable-5-1",
+        "benchmark": "AA-Intelligence-v5.0.1",
+        "effort": "medium",
+        "score": 43.171597828284,
+        "upstream_model": "Claude Fable 5.1 (Medium, Default Fallback)",
+        "url": "https://artificialanalysis.ai/leaderboards/models",
+        "collected": "2026-11-09",
+        "benchmark_raw": "AA-Intelligence-v5.0.1@medium"
+      },
+      {
+        "model": "claude-fable-5-1",
+        "benchmark": "AA-Intelligence-v5.0.1",
+        "effort": "low",
+        "score": 38.683648810734,
+        "upstream_model": "Claude Fable 5.1 (Low, Default Fallback)",
+        "url": "https://artificialanalysis.ai/leaderboards/models",
+        "collected": "2026-11-09",
+        "benchmark_raw": "AA-Intelligence-v5.0.1@low"
+      },
+      {
+        "model": "claude-fable-5-2",
+        "benchmark": "AA-Intelligence-v5.0.1",
+        "effort": "max",
+        "score": 64.563595756626,
+        "upstream_model": "Claude Fable 5.2 (Max, Default Fallback)",
+        "url": "https://artificialanalysis.ai/leaderboards/models",
+        "collected": "2026-11-13",
+        "benchmark_raw": "AA-Intelligence-v5.0.1@max"
+      },
+      {
+        "model": "claude-fable-5-2",
+        "benchmark": "AA-Intelligence-v5.0.1",
+        "effort": "xhigh",
+        "score": 62.2167392403357,
+        "upstream_model": "Claude Fable 5.2 (Xhigh, Default Fallback)",
+        "url": "https://artificialanalysis.ai/leaderboards/models",
+        "collected": "2026-11-13",
+        "benchmark_raw": "AA-Intelligence-v5.0.1@xhigh"
+      },
+      {
+        "model": "claude-fable-5-2",
+        "benchmark": "AA-Intelligence-v5.0.1",
+        "effort": "high",
+        "score": 61.8218785440284,
+        "upstream_model": "Claude Fable 5.2 (High, Default Fallback)",
+        "url": "https://artificialanalysis.ai/leaderboards/models",
+        "collected": "2026-11-13",
+        "benchmark_raw": "AA-Intelligence-v5.0.1@high"
+      },
+      {
+        "model": "claude-fable-5-2",
+        "benchmark": "AA-Intelligence-v5.0.1",
+        "effort": "medium",
+        "score": 56.4083157101519,
+        "upstream_model": "Claude Fable 5.2 (Medium, Default Fallback)",
+        "url": "https://artificialanalysis.ai/leaderboards/models",
+        "collected": "2026-11-13",
+        "benchmark_raw": "AA-Intelligence-v5.0.1@medium"
+      },
+      {
+        "model": "claude-fable-5-2",
+        "benchmark": "AA-Intelligence-v5.0.1",
+        "effort": "low",
+        "score": 53.9249388799182,
+        "upstream_model": "Claude Fable 5.2 (Low, Default Fallback)",
+        "url": "https://artificialanalysis.ai/leaderboards/models",
+        "collected": "2026-11-13",
+        "benchmark_raw": "AA-Intelligence-v5.0.1@low"
+      },
+      {
+        "model": "claude-haiku-5-5",
+        "benchmark": "AA-Intelligence-v5.0.1",
+        "effort": "max",
+        "score": 36.4845435880142,
+        "upstream_model": "Claude Haiku 5.5 (Max)",
+        "url": "https://artificialanalysis.ai/leaderboards/models",
+        "collected": "2026-11-13",
+        "benchmark_raw": "AA-Intelligence-v5.0.1@max"
+      },
+      {
+        "model": "claude-haiku-5-5",
+        "benchmark": "AA-Intelligence-v5.0.1",
+        "effort": "xhigh",
+        "score": 34.6387759486628,
+        "upstream_model": "Claude Haiku 5.5 (Xhigh)",
+        "url": "https://artificialanalysis.ai/leaderboards/models",
+        "collected": "2026-11-13",
+        "benchmark_raw": "AA-Intelligence-v5.0.1@xhigh"
+      },
+      {
+        "model": "claude-haiku-5-5",
+        "benchmark": "AA-Intelligence-v5.0.1",
+        "effort": "high",
+        "score": 29.874315467743,
+        "upstream_model": "Claude Haiku 5.5 (High)",
+        "url": "https://artificialanalysis.ai/leaderboards/models",
+        "collected": "2026-11-13",
+        "benchmark_raw": "AA-Intelligence-v5.0.1@high"
+      },
+      {
+        "model": "claude-haiku-5-5",
+        "benchmark": "AA-Intelligence-v5.0.1",
+        "effort": "medium",
+        "score": 24.6013254343023,
+        "upstream_model": "Claude Haiku 5.5 (Medium)",
+        "url": "https://artificialanalysis.ai/leaderboards/models",
+        "collected": "2026-11-13",
+        "benchmark_raw": "AA-Intelligence-v5.0.1@medium"
+      },
+      {
+        "model": "claude-haiku-5-5",
+        "benchmark": "AA-Intelligence-v5.0.1",
+        "effort": "low",
+        "score": 18.6180055310996,
+        "upstream_model": "Claude Haiku 5.5 (Low)",
+        "url": "https://artificialanalysis.ai/leaderboards/models",
+        "collected": "2026-11-13",
+        "benchmark_raw": "AA-Intelligence-v5.0.1@low"
+      },
+      {
+        "model": "claude-opus-5.5",
+        "benchmark": "AA-Intelligence-v5.0.1",
+        "effort": "max",
+        "score": 59.1060336078904,
+        "upstream_model": "Claude Opus 5.5 (Max, Default Fallback)",
+        "url": "https://artificialanalysis.ai/leaderboards/models",
+        "collected": "2026-11-13",
+        "benchmark_raw": "AA-Intelligence-v5.0.1@max"
+      },
+      {
+        "model": "claude-opus-5.5",
+        "benchmark": "AA-Intelligence-v5.0.1",
+        "effort": "xhigh",
+        "score": 57.4447060170507,
+        "upstream_model": "Claude Opus 5.5 (Xhigh, Default Fallback)",
+        "url": "https://artificialanalysis.ai/leaderboards/models",
+        "collected": "2026-11-13",
+        "benchmark_raw": "AA-Intelligence-v5.0.1@xhigh"
+      },
+      {
+        "model": "claude-opus-5.5",
+        "benchmark": "AA-Intelligence-v5.0.1",
+        "effort": "high",
+        "score": 51.8359958227294,
+        "upstream_model": "Claude Opus 5.5 (High, Default Fallback)",
+        "url": "https://artificialanalysis.ai/leaderboards/models",
+        "collected": "2026-11-13",
+        "benchmark_raw": "AA-Intelligence-v5.0.1@high"
+      },
+      {
+        "model": "claude-opus-5.5",
+        "benchmark": "AA-Intelligence-v5.0.1",
+        "effort": "medium",
+        "score": 48.2081024960691,
+        "upstream_model": "Claude Opus 5.5 (Medium, Default Fallback)",
+        "url": "https://artificialanalysis.ai/leaderboards/models",
+        "collected": "2026-11-13",
+        "benchmark_raw": "AA-Intelligence-v5.0.1@medium"
+      },
+      {
+        "model": "claude-opus-5.5",
+        "benchmark": "AA-Intelligence-v5.0.1",
+        "effort": "low",
+        "score": 34.752785007759,
+        "upstream_model": "Claude Opus 5.5 (Low, Default Fallback)",
+        "url": "https://artificialanalysis.ai/leaderboards/models",
+        "collected": "2026-11-13",
+        "benchmark_raw": "AA-Intelligence-v5.0.1@low"
+      },
+      {
+        "model": "claude-sonnet-5.5",
+        "benchmark": "AA-Intelligence-v5.0.1",
+        "effort": "max",
+        "score": 54.54133407109,
+        "upstream_model": "Claude Sonnet 5.5 (Max, Default Fallback)",
+        "url": "https://artificialanalysis.ai/leaderboards/models",
+        "collected": "2026-11-13",
+        "benchmark_raw": "AA-Intelligence-v5.0.1@max"
+      },
+      {
+        "model": "claude-sonnet-5.5",
+        "benchmark": "AA-Intelligence-v5.0.1",
+        "effort": "xhigh",
+        "score": 49.9240327787242,
+        "upstream_model": "Claude Sonnet 5.5 (Xhigh, Default Fallback)",
+        "url": "https://artificialanalysis.ai/leaderboards/models",
+        "collected": "2026-11-13",
+        "benchmark_raw": "AA-Intelligence-v5.0.1@xhigh"
+      },
+      {
+        "model": "claude-sonnet-5.5",
+        "benchmark": "AA-Intelligence-v5.0.1",
+        "effort": "high",
+        "score": 41.515109087048,
+        "upstream_model": "Claude Sonnet 5.5 (High, Default Fallback)",
+        "url": "https://artificialanalysis.ai/leaderboards/models",
+        "collected": "2026-11-13",
+        "benchmark_raw": "AA-Intelligence-v5.0.1@high"
+      },
+      {
+        "model": "claude-sonnet-5.5",
+        "benchmark": "AA-Intelligence-v5.0.1",
+        "effort": "medium",
+        "score": 30.8195522148431,
+        "upstream_model": "Claude Sonnet 5.5 (Medium, Default Fallback)",
+        "url": "https://artificialanalysis.ai/leaderboards/models",
+        "collected": "2026-11-13",
+        "benchmark_raw": "AA-Intelligence-v5.0.1@medium"
+      },
+      {
+        "model": "claude-sonnet-5.5",
+        "benchmark": "AA-Intelligence-v5.0.1",
+        "effort": "low",
+        "score": 25.649704549789,
+        "upstream_model": "Claude Sonnet 5.5 (Low, Default Fallback)",
+        "url": "https://artificialanalysis.ai/leaderboards/models",
+        "collected": "2026-11-13",
+        "benchmark_raw": "AA-Intelligence-v5.0.1@low"
+      },
+      {
+        "model": "deepseek-v4-pro",
+        "benchmark": "AA-Intelligence-v5.0.1",
+        "effort": "max",
+        "score": 23.0632981493003,
+        "upstream_model": "DeepSeek V4 Pro 0813 (Max)",
+        "url": "https://artificialanalysis.ai/leaderboards/models",
+        "collected": "2026-11-13",
+        "benchmark_raw": "AA-Intelligence-v5.0.1@max"
+      },
+      {
+        "model": "deepseek-v4.1-flash-1017",
+        "benchmark": "AA-Intelligence-v5.0.1",
+        "effort": "max",
+        "score": 32.5896393532027,
+        "upstream_model": "DeepSeek V4.1 Flash 1017 (Max)",
+        "url": "https://artificialanalysis.ai/leaderboards/models",
+        "collected": "2026-11-13",
+        "benchmark_raw": "AA-Intelligence-v5.0.1@max"
+      },
+      {
+        "model": "deepseek-v4.1-flash-1017",
+        "benchmark": "AA-Intelligence-v5.0.1",
+        "effort": "high",
+        "score": 28.6437391540402,
+        "upstream_model": "DeepSeek V4.1 Flash 1017 (High)",
+        "url": "https://artificialanalysis.ai/leaderboards/models",
+        "collected": "2026-11-13",
+        "benchmark_raw": "AA-Intelligence-v5.0.1@high"
+      },
+      {
+        "model": "gemini-3.8-flash",
+        "benchmark": "AA-Intelligence-v5.0.1",
+        "effort": "high",
+        "score": 30.8468119957291,
+        "upstream_model": "Gemini 3.8 Flash (High)",
+        "url": "https://artificialanalysis.ai/leaderboards/models",
+        "collected": "2026-11-13",
+        "benchmark_raw": "AA-Intelligence-v5.0.1@high"
+      },
+      {
+        "model": "gemini-3.8-flash",
+        "benchmark": "AA-Intelligence-v5.0.1",
+        "effort": "medium",
+        "score": 30.078569475636,
+        "upstream_model": "Gemini 3.8 Flash (Medium)",
+        "url": "https://artificialanalysis.ai/leaderboards/models",
+        "collected": "2026-11-13",
+        "benchmark_raw": "AA-Intelligence-v5.0.1@medium"
+      },
+      {
+        "model": "gemini-3.8-flash",
+        "benchmark": "AA-Intelligence-v5.0.1",
+        "effort": "low",
+        "score": 22.548302237854,
+        "upstream_model": "Gemini 3.8 Flash (Low)",
+        "url": "https://artificialanalysis.ai/leaderboards/models",
+        "collected": "2026-11-13",
+        "benchmark_raw": "AA-Intelligence-v5.0.1@low"
+      },
+      {
+        "model": "gemini-4-argon",
+        "benchmark": "AA-Intelligence-v5.0.1",
+        "effort": "high",
+        "score": 50.4121935905389,
+        "upstream_model": "Gemini 4 Argon (High)",
+        "url": "https://artificialanalysis.ai/leaderboards/models",
+        "collected": "2026-11-13",
+        "benchmark_raw": "AA-Intelligence-v5.0.1@high"
+      },
+      {
+        "model": "gemini-4-carbon",
+        "benchmark": "AA-Intelligence-v5.0.1",
+        "effort": "high",
+        "score": 60.025738829526,
+        "upstream_model": "Gemini 4 Carbon (High)",
+        "url": "https://artificialanalysis.ai/leaderboards/models",
+        "collected": "2026-11-13",
+        "benchmark_raw": "AA-Intelligence-v5.0.1@high"
+      },
+      {
+        "model": "gemini-4-carbon",
+        "benchmark": "AA-Intelligence-v5.0.1",
+        "effort": "medium",
+        "score": 58.2587824022788,
+        "upstream_model": "Gemini 4 Carbon (Medium)",
+        "url": "https://artificialanalysis.ai/leaderboards/models",
+        "collected": "2026-11-13",
+        "benchmark_raw": "AA-Intelligence-v5.0.1@medium"
+      },
+      {
+        "model": "gemini-4-carbon",
+        "benchmark": "AA-Intelligence-v5.0.1",
+        "effort": "low",
+        "score": 54.2206114502924,
+        "upstream_model": "Gemini 4 Carbon (Low)",
+        "url": "https://artificialanalysis.ai/leaderboards/models",
+        "collected": "2026-11-13",
+        "benchmark_raw": "AA-Intelligence-v5.0.1@low"
+      },
+      {
+        "model": "gemini-4-hydrogen",
+        "benchmark": "AA-Intelligence-v5.0.1",
+        "effort": "xhigh",
+        "score": 53.9192287317542,
+        "upstream_model": "Gemini 4 Hydrogen (Xhigh)",
+        "url": "https://artificialanalysis.ai/leaderboards/models",
+        "collected": "2026-11-13",
+        "benchmark_raw": "AA-Intelligence-v5.0.1@xhigh"
+      },
+      {
+        "model": "gemini-4-hydrogen",
+        "benchmark": "AA-Intelligence-v5.0.1",
+        "effort": "high",
+        "score": 50.7870826951304,
+        "upstream_model": "Gemini 4 Hydrogen (High)",
+        "url": "https://artificialanalysis.ai/leaderboards/models",
+        "collected": "2026-11-13",
+        "benchmark_raw": "AA-Intelligence-v5.0.1@high"
+      },
+      {
+        "model": "gemini-4-hydrogen",
+        "benchmark": "AA-Intelligence-v5.0.1",
+        "effort": "medium",
+        "score": 41.2329566992579,
+        "upstream_model": "Gemini 4 Hydrogen (Medium)",
+        "url": "https://artificialanalysis.ai/leaderboards/models",
+        "collected": "2026-11-13",
+        "benchmark_raw": "AA-Intelligence-v5.0.1@medium"
+      },
+      {
+        "model": "gemini-4-hydrogen",
+        "benchmark": "AA-Intelligence-v5.0.1",
+        "effort": "low",
+        "score": 26.8936694361562,
+        "upstream_model": "Gemini 4 Hydrogen (Low)",
+        "url": "https://artificialanalysis.ai/leaderboards/models",
+        "collected": "2026-11-13",
+        "benchmark_raw": "AA-Intelligence-v5.0.1@low"
+      },
+      {
+        "model": "glm-5.3",
+        "benchmark": "AA-Intelligence-v5.0.1",
+        "effort": "max",
+        "score": 31.653381843882,
+        "upstream_model": "GLM-5.3 (Max)",
+        "url": "https://artificialanalysis.ai/leaderboards/models",
+        "collected": "2026-11-13",
+        "benchmark_raw": "AA-Intelligence-v5.0.1@max"
+      },
+      {
+        "model": "glm-5.3",
+        "benchmark": "AA-Intelligence-v5.0.1",
+        "effort": "low",
+        "score": 23.1079373025379,
+        "upstream_model": "GLM-5.3 (Low)",
+        "url": "https://artificialanalysis.ai/leaderboards/models",
+        "collected": "2026-11-13",
+        "benchmark_raw": "AA-Intelligence-v5.0.1@low"
+      },
+      {
+        "model": "gpt-6-astra",
+        "benchmark": "AA-Intelligence-v5.0.1",
+        "effort": "max",
+        "score": 56.8538559596797,
+        "upstream_model": "GPT-6 Astra (Max)",
+        "url": "https://artificialanalysis.ai/leaderboards/models",
+        "collected": "2026-11-13",
+        "benchmark_raw": "AA-Intelligence-v5.0.1@max"
+      },
+      {
+        "model": "gpt-6-astra",
+        "benchmark": "AA-Intelligence-v5.0.1",
+        "effort": "xhigh",
+        "score": 55.3057468569681,
+        "upstream_model": "GPT-6 Astra (Xhigh)",
+        "url": "https://artificialanalysis.ai/leaderboards/models",
+        "collected": "2026-11-13",
+        "benchmark_raw": "AA-Intelligence-v5.0.1@xhigh"
+      },
+      {
+        "model": "gpt-6-astra",
+        "benchmark": "AA-Intelligence-v5.0.1",
+        "effort": "high",
+        "score": 54.849838322506,
+        "upstream_model": "GPT-6 Astra (High)",
+        "url": "https://artificialanalysis.ai/leaderboards/models",
+        "collected": "2026-11-13",
+        "benchmark_raw": "AA-Intelligence-v5.0.1@high"
+      },
+      {
+        "model": "gpt-6-astra",
+        "benchmark": "AA-Intelligence-v5.0.1",
+        "effort": "medium",
+        "score": 51.5548393864113,
+        "upstream_model": "GPT-6 Astra (Medium)",
+        "url": "https://artificialanalysis.ai/leaderboards/models",
+        "collected": "2026-11-13",
+        "benchmark_raw": "AA-Intelligence-v5.0.1@medium"
+      },
+      {
+        "model": "gpt-6-astra",
+        "benchmark": "AA-Intelligence-v5.0.1",
+        "effort": "low",
+        "score": 43.3349823228524,
+        "upstream_model": "GPT-6 Astra (Low)",
+        "url": "https://artificialanalysis.ai/leaderboards/models",
+        "collected": "2026-11-13",
+        "benchmark_raw": "AA-Intelligence-v5.0.1@low"
+      },
+      {
+        "model": "gpt-6-luna",
+        "benchmark": "AA-Intelligence-v5.0.1",
+        "effort": "max",
+        "score": 27.8552004938153,
+        "upstream_model": "GPT-6 Luna (Max)",
+        "url": "https://artificialanalysis.ai/leaderboards/models",
+        "collected": "2026-11-13",
+        "benchmark_raw": "AA-Intelligence-v5.0.1@max"
+      },
+      {
+        "model": "gpt-6-luna",
+        "benchmark": "AA-Intelligence-v5.0.1",
+        "effort": "xhigh",
+        "score": 23.4508728089378,
+        "upstream_model": "GPT-6 Luna (Xhigh)",
+        "url": "https://artificialanalysis.ai/leaderboards/models",
+        "collected": "2026-11-13",
+        "benchmark_raw": "AA-Intelligence-v5.0.1@xhigh"
+      },
+      {
+        "model": "gpt-6-luna",
+        "benchmark": "AA-Intelligence-v5.0.1",
+        "effort": "high",
+        "score": 21.4290170864582,
+        "upstream_model": "GPT-6 Luna (High)",
+        "url": "https://artificialanalysis.ai/leaderboards/models",
+        "collected": "2026-11-13",
+        "benchmark_raw": "AA-Intelligence-v5.0.1@high"
+      },
+      {
+        "model": "gpt-6-luna",
+        "benchmark": "AA-Intelligence-v5.0.1",
+        "effort": "medium",
+        "score": 18.4542156192416,
+        "upstream_model": "GPT-6 Luna (Medium)",
+        "url": "https://artificialanalysis.ai/leaderboards/models",
+        "collected": "2026-11-13",
+        "benchmark_raw": "AA-Intelligence-v5.0.1@medium"
+      },
+      {
+        "model": "gpt-6-luna",
+        "benchmark": "AA-Intelligence-v5.0.1",
+        "effort": "low",
+        "score": 9.66610812336462,
+        "upstream_model": "GPT-6 Luna (Low)",
+        "url": "https://artificialanalysis.ai/leaderboards/models",
+        "collected": "2026-11-13",
+        "benchmark_raw": "AA-Intelligence-v5.0.1@low"
+      },
+      {
+        "model": "gpt-6.1-sol",
+        "benchmark": "AA-Intelligence-v5.0.1",
+        "effort": "max",
+        "score": 54.6087338138148,
+        "upstream_model": "GPT-6.1 Sol (Max)",
+        "url": "https://artificialanalysis.ai/leaderboards/models",
+        "collected": "2026-11-13",
+        "benchmark_raw": "AA-Intelligence-v5.0.1@max"
+      },
+      {
+        "model": "gpt-6.1-sol",
+        "benchmark": "AA-Intelligence-v5.0.1",
+        "effort": "xhigh",
+        "score": 52.458219253291,
+        "upstream_model": "GPT-6.1 Sol (Xhigh)",
+        "url": "https://artificialanalysis.ai/leaderboards/models",
+        "collected": "2026-11-13",
+        "benchmark_raw": "AA-Intelligence-v5.0.1@xhigh"
+      },
+      {
+        "model": "gpt-6.1-sol",
+        "benchmark": "AA-Intelligence-v5.0.1",
+        "effort": "high",
+        "score": 50.3291231936536,
+        "upstream_model": "GPT-6.1 Sol (High)",
+        "url": "https://artificialanalysis.ai/leaderboards/models",
+        "collected": "2026-11-13",
+        "benchmark_raw": "AA-Intelligence-v5.0.1@high"
+      },
+      {
+        "model": "gpt-6.1-sol",
+        "benchmark": "AA-Intelligence-v5.0.1",
+        "effort": "medium",
+        "score": 46.3468797067114,
+        "upstream_model": "GPT-6.1 Sol (Medium)",
+        "url": "https://artificialanalysis.ai/leaderboards/models",
+        "collected": "2026-11-13",
+        "benchmark_raw": "AA-Intelligence-v5.0.1@medium"
+      },
+      {
+        "model": "gpt-6.1-sol",
+        "benchmark": "AA-Intelligence-v5.0.1",
+        "effort": "low",
+        "score": 34.8029244314559,
+        "upstream_model": "GPT-6.1 Sol (Low)",
+        "url": "https://artificialanalysis.ai/leaderboards/models",
+        "collected": "2026-11-13",
+        "benchmark_raw": "AA-Intelligence-v5.0.1@low"
+      },
+      {
+        "model": "gpt-6.1-terra",
+        "benchmark": "AA-Intelligence-v5.0.1",
+        "effort": "max",
+        "score": 51.3265188577015,
+        "upstream_model": "GPT-6.1 Terra (Max)",
+        "url": "https://artificialanalysis.ai/leaderboards/models",
+        "collected": "2026-11-13",
+        "benchmark_raw": "AA-Intelligence-v5.0.1@max"
+      },
+      {
+        "model": "gpt-6.1-terra",
+        "benchmark": "AA-Intelligence-v5.0.1",
+        "effort": "xhigh",
+        "score": 45.250051789066,
+        "upstream_model": "GPT-6.1 Terra (Xhigh)",
+        "url": "https://artificialanalysis.ai/leaderboards/models",
+        "collected": "2026-11-13",
+        "benchmark_raw": "AA-Intelligence-v5.0.1@xhigh"
+      },
+      {
+        "model": "gpt-6.1-terra",
+        "benchmark": "AA-Intelligence-v5.0.1",
+        "effort": "high",
+        "score": 42.4344508712563,
+        "upstream_model": "GPT-6.1 Terra (High)",
+        "url": "https://artificialanalysis.ai/leaderboards/models",
+        "collected": "2026-11-13",
+        "benchmark_raw": "AA-Intelligence-v5.0.1@high"
+      },
+      {
+        "model": "gpt-6.1-terra",
+        "benchmark": "AA-Intelligence-v5.0.1",
+        "effort": "medium",
+        "score": 38.1652076677975,
+        "upstream_model": "GPT-6.1 Terra (Medium)",
+        "url": "https://artificialanalysis.ai/leaderboards/models",
+        "collected": "2026-11-13",
+        "benchmark_raw": "AA-Intelligence-v5.0.1@medium"
+      },
+      {
+        "model": "gpt-6.1-terra",
+        "benchmark": "AA-Intelligence-v5.0.1",
+        "effort": "low",
+        "score": 29.4169280792131,
+        "upstream_model": "GPT-6.1 Terra (Low)",
+        "url": "https://artificialanalysis.ai/leaderboards/models",
+        "collected": "2026-11-13",
+        "benchmark_raw": "AA-Intelligence-v5.0.1@low"
+      },
+      {
+        "model": "grok-4.7",
+        "benchmark": "AA-Intelligence-v5.0.1",
+        "effort": "xhigh",
+        "score": 35.4850117067196,
+        "upstream_model": "Grok 4.7 (Xhigh)",
+        "url": "https://artificialanalysis.ai/leaderboards/models",
+        "collected": "2026-11-13",
+        "benchmark_raw": "AA-Intelligence-v5.0.1@xhigh"
+      },
+      {
+        "model": "grok-4.7",
+        "benchmark": "AA-Intelligence-v5.0.1",
+        "effort": "high",
+        "score": 35.2122962959703,
+        "upstream_model": "Grok 4.7 (High)",
+        "url": "https://artificialanalysis.ai/leaderboards/models",
+        "collected": "2026-11-13",
+        "benchmark_raw": "AA-Intelligence-v5.0.1@high"
+      },
+      {
+        "model": "grok-4.7",
+        "benchmark": "AA-Intelligence-v5.0.1",
+        "effort": "low",
+        "score": 31.132077602567,
+        "upstream_model": "Grok 4.7 (Low)",
+        "url": "https://artificialanalysis.ai/leaderboards/models",
+        "collected": "2026-11-13",
+        "benchmark_raw": "AA-Intelligence-v5.0.1@low"
+      }
+    ],
+    "effort_skipped_models": [
+      "Inkling",
+      "Mistral Large 4",
+      "Muse Spark Open",
+      "Muse Wonder",
+      "Muse Glimmer",
+      "Qwen3.8 27B",
+      "Muse Wonder Full",
+      "Muse Ember",
+      "gpt-oss-120b"
+    ],
+    "effort_unparsed_rows": [],
+    "fetch": {
+      "status": "ok",
+      "version": "v5.0.1",
+      "httpStatus": 200,
+      "records": 111,
+      "url": "https://artificialanalysis.ai/leaderboards/models",
+      "fetchedAt": "2026-11-13T19:30:01.867Z"
+    },
+    "fetch_warnings": []
+  },
+  "arena": {
+    "source_label": "LMArena（官方 HF 数据集）",
+    "source_type": "third-party",
+    "dataset": "lmarena-ai/leaderboard-dataset",
+    "metric": "rating",
+    "boards": [
+      {
+        "board": "text",
+        "benchmark": "Arena-text",
+        "label": "LMArena 文本",
+        "fetch": {
+          "status": "ok",
+          "httpStatus": 200,
+          "records": 100,
+          "url": "https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=text&split=latest",
+          "metrics": [
+            "rating"
+          ],
+          "sampledRows": 100,
+          "totalRows": null,
+          "sampleScope": "只取了 first-rows 窗口（100 行）；全榜行数未核实"
+        },
+        "exported_rows": 13,
+        "collected": "2026-11-13",
+        "stale": false
+      },
+      {
+        "board": "text_style_control",
+        "benchmark": "Arena-text_style_control",
+        "label": "LMArena 风格控制",
+        "fetch": {
+          "status": "ok",
+          "httpStatus": 200,
+          "records": 100,
+          "url": "https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=text_style_control&split=latest",
+          "metrics": [
+            "rating"
+          ],
+          "sampledRows": 100,
+          "totalRows": 11177,
+          "sampleScope": "只取了 first-rows 窗口（100 行），全榜 11177 行"
+        },
+        "exported_rows": 11,
+        "collected": "2026-11-13",
+        "stale": false
+      },
+      {
+        "board": "webdev",
+        "benchmark": "Arena-webdev",
+        "label": "LMArena 前端",
+        "fetch": {
+          "status": "ok",
+          "httpStatus": 200,
+          "records": 100,
+          "url": "https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=webdev&split=latest",
+          "metrics": [
+            "rating"
+          ],
+          "sampledRows": 100,
+          "totalRows": 672,
+          "sampleScope": "只取了 first-rows 窗口（100 行），全榜 672 行"
+        },
+        "exported_rows": 14,
+        "collected": "2026-11-13",
+        "stale": false
+      }
+    ],
+    "revisions": [
+      {
+        "revision": "4217986c2fa1163d072e7a3dda637bb56cce8d79",
+        "collected": "2026-11-11"
+      },
+      {
+        "revision": "4ca698d9bb5780db156459679d5c7e6dff4edbd3",
+        "collected": "2026-11-13"
+      },
+      {
+        "revision": "5a7e6bb84a93f55df56b198be8e56e53755a216a",
+        "collected": "2026-11-06"
+      },
+      {
+        "revision": "6bec3cfe5fa82bef0d388082632009919a6b94b8",
+        "collected": "2026-11-09"
+      },
+      {
+        "revision": "e69cdc26eb7af798d9628215ce45ce353e66d26a",
+        "collected": "2026-11-12"
+      },
+      {
+        "revision": "ec013bce1ac4ce168415e6f888da8b476f7f237e",
+        "collected": "2026-11-10"
+      },
+      {
+        "revision": "f566816dfe80f18d0bc804dd5deafa68d5957cb9",
+        "collected": "2026-11-08"
+      }
+    ],
+    "fetch": {
+      "updatedAt": "2026-11-13T19:30:01.867Z",
+      "revision": "4ca698d9bb5780db156459679d5c7e6dff4edbd3",
+      "categories": [
+        "text_style_control",
+        "text",
+        "webdev"
+      ],
+      "records": 300,
+      "status": "ok",
+      "url": "https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=webdev&split=latest"
+    },
+    "fetch_failures": [],
+    "fetch_missing_boards": [],
+    "skipped_models": [
+      "Claude Opus 4.6",
+      "Claude Opus 4.7",
+      "Gemini 3.1 Pro Preview",
+      "Gemini 3 Pro",
+      "Muse Spark 1.1",
+      "Qwen3.7-Max-Preview",
+      "Muse Spark",
+      "Qwen3.5-Max-Preview",
+      "ERNIE 5.1",
+      "GPT-5.5",
+      "Gemini 3 Flash",
+      "MiMo-V2.5-Pro",
+      "Claude Sonnet 4.6",
+      "Gemini 2.5 Pro",
+      "Qwen3.7-Plus",
+      "Claude Opus 4.8",
+      "GPT-5.4",
+      "Grok 4.20 Beta (Reasoning, 0309)",
+      "Claude Opus 4.5 (20251101)",
+      "Grok 4.20 Multi-Agent Beta (0309)",
+      "amazon-nova-experimental-chat (26-02-10)",
+      "Dola Seed 2.0 Pro",
+      "Qwen3.6-Max-Preview",
+      "GLM-5",
+      "NVIDIA-Nemotron-3-Ultra-550B-A55B (NVFP4)",
+      "Kimi K2.5 (Thinking)",
+      "ERNIE 5.0 (0110)",
+      "Grok 4.20 Beta 1",
+      "Gemma 4 31B",
+      "Inkling",
+      "ERNIE-5.0-Preview (1203)",
+      "GLM-4.6",
+      "Qwen3-Max-Preview",
+      "Claude Sonnet 4.5 (20250929)",
+      "GPT-5.2 Chat (20260210)",
+      "Qwen3.8-27B",
+      "Qwen3.5-397B-A17B",
+      "Grok 4.1 (Thinking)",
+      "Qwen3.6-Plus",
+      "MiMo-V2-Pro",
+      "Grok 4.1",
+      "Gemini 3.5 Flash-Lite",
+      "GLM-4.7",
+      "Gemma 4 26B A4B",
+      "Mistral Large 4",
+      "GLM-4.5",
+      "ERNIE-5.0-Preview (1022)",
+      "ChatGPT-4o Latest (20250326)",
+      "Mistral Large 3",
+      "MiMo-V2.5",
+      "DeepSeek-R1 (0528)",
+      "GPT-5.5 Instant",
+      "GPT-5.3 Chat",
+      "Claude Opus 4.1 (Thinking 16K, 20250805)",
+      "Claude Opus 4.1 (20250805)",
+      "GPT-4.5 Preview (2025-02-27)",
+      "Grok 4.3",
+      "GPT-5.1",
+      "Qwen3.8-Flash-Next",
+      "Seed2.1 Pro Preview",
+      "Qwen3.7-Max (20260517)",
+      "spark-x2.6",
+      "Kimi K2.7 Code",
+      "GPT-5.5 (Codex Harness)",
+      "Beam 1.0 501B A23B",
+      "GPT-5.2",
+      "Inkling-Small",
+      "GPT-5.3-Codex (Codex Harness)",
+      "Kimi K2.5 (Instant)",
+      "Inkling 2 Small"
+    ],
+    "records": [
+      {
+        "model": "deepseek-v4-1-flash",
+        "board": "text",
+        "rank": 93,
+        "rating": 1432.02,
+        "ci": [
+          1427.99,
+          1436.05
+        ],
+        "votes": 51336,
+        "upstream_model": "DeepSeek-V4-Flash",
+        "collected": "2026-11-13",
+        "url": "https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=text&split=latest"
+      },
+      {
+        "model": "deepseek-v4-pro",
+        "board": "text",
+        "rank": 51,
+        "rating": 1451.26,
+        "ci": [
+          1447.37,
+          1455.16
+        ],
+        "votes": 56857,
+        "upstream_model": "DeepSeek-V4-Pro",
+        "collected": "2026-11-13",
+        "url": "https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=text&split=latest"
+      },
+      {
+        "model": "deepseek-v4-pro",
+        "board": "text_style_control",
+        "rank": 66,
+        "rating": 1457.88,
+        "ci": [
+          1453.97,
+          1461.79
+        ],
+        "votes": 56857,
+        "upstream_model": "DeepSeek-V4-Pro",
+        "collected": "2026-11-13",
+        "url": "https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=text_style_control&split=latest"
+      },
+      {
+        "model": "deepseek-v4-pro",
+        "board": "webdev",
+        "rank": 84,
+        "rating": 1448.4,
+        "ci": [
+          1442.03,
+          1454.77
+        ],
+        "votes": 13770,
+        "upstream_model": "DeepSeek-V4-Pro",
+        "collected": "2026-11-13",
+        "url": "https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=webdev&split=latest"
+      },
+      {
+        "model": "glm-5-1",
+        "board": "text",
+        "rank": 41,
+        "rating": 1462.45,
+        "ci": [
+          1458.94,
+          1465.96
+        ],
+        "votes": 67009,
+        "upstream_model": "GLM-5.1",
+        "collected": "2026-11-13",
+        "url": "https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=text&split=latest"
+      },
+      {
+        "model": "glm-5-1",
+        "board": "text_style_control",
+        "rank": 59,
+        "rating": 1464.97,
+        "ci": [
+          1461.44,
+          1468.49
+        ],
+        "votes": 67009,
+        "upstream_model": "GLM-5.1",
+        "collected": "2026-11-13",
+        "url": "https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=text_style_control&split=latest"
+      },
+      {
+        "model": "glm-5-1",
+        "board": "webdev",
+        "rank": 68,
+        "rating": 1508.08,
+        "ci": [
+          1501.27,
+          1514.9
+        ],
+        "votes": 10531,
+        "upstream_model": "GLM-5.1",
+        "collected": "2026-11-13",
+        "url": "https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=webdev&split=latest"
+      },
+      {
+        "model": "glm-5-3-flash",
+        "board": "text",
+        "rank": 30,
+        "rating": 1471.72,
+        "ci": [
+          1467.33,
+          1476.11
+        ],
+        "votes": 51019,
+        "upstream_model": "GLM-5.3-Flash",
+        "collected": "2026-11-13",
+        "url": "https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=text&split=latest"
+      },
+      {
+        "model": "glm-5-3-flash",
+        "board": "text_style_control",
+        "rank": 36,
+        "rating": 1475.26,
+        "ci": [
+          1470.85,
+          1479.67
+        ],
+        "votes": 51019,
+        "upstream_model": "GLM-5.3-Flash",
+        "collected": "2026-11-13",
+        "url": "https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=text_style_control&split=latest"
+      },
+      {
+        "model": "glm-5-3-flash",
+        "board": "webdev",
+        "rank": 36,
+        "rating": 1608.79,
+        "ci": [
+          1602.62,
+          1614.95
+        ],
+        "votes": 23608,
+        "upstream_model": "GLM-5.3-Flash",
+        "collected": "2026-11-13",
+        "url": "https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=webdev&split=latest"
+      },
+      {
+        "model": "glm-5v-turbo",
+        "board": "text",
+        "rank": 82,
+        "rating": 1437.86,
+        "ci": [
+          1431.42,
+          1444.31
+        ],
+        "votes": 10291,
+        "upstream_model": "GLM-5V-Turbo",
+        "collected": "2026-11-12",
+        "url": "https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=text&split=latest"
+      },
+      {
+        "model": "glm-5v-turbo",
+        "board": "webdev",
+        "rank": 99,
+        "rating": 1400.57,
+        "ci": [
+          1387.36,
+          1413.78
+        ],
+        "votes": 2405,
+        "upstream_model": "GLM-5V-Turbo",
+        "collected": "2026-11-08",
+        "url": "https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=webdev&split=latest"
+      },
+      {
+        "model": "grok-4-5",
+        "board": "text",
+        "rank": 60,
+        "rating": 1448.02,
+        "ci": [
+          1443.66,
+          1452.38
+        ],
+        "votes": 39122,
+        "upstream_model": "Grok 4.5",
+        "collected": "2026-11-13",
+        "url": "https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=text&split=latest"
+      },
+      {
+        "model": "grok-4-5",
+        "board": "text_style_control",
+        "rank": 55,
+        "rating": 1465.76,
+        "ci": [
+          1461.4,
+          1470.13
+        ],
+        "votes": 39122,
+        "upstream_model": "Grok 4.5",
+        "collected": "2026-11-13",
+        "url": "https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=text_style_control&split=latest"
+      },
+      {
+        "model": "grok-4-5",
+        "board": "webdev",
+        "rank": 52,
+        "rating": 1552.6,
+        "ci": [
+          1545.87,
+          1559.33
+        ],
+        "votes": 10796,
+        "upstream_model": "Grok 4.5",
+        "collected": "2026-11-13",
+        "url": "https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=webdev&split=latest"
+      },
+      {
+        "model": "hy3",
+        "board": "text",
+        "rank": 80,
+        "rating": 1438.62,
+        "ci": [
+          1432.97,
+          1444.27
+        ],
+        "votes": 15178,
+        "upstream_model": "Hy3",
+        "collected": "2026-11-13",
+        "url": "https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=text&split=latest"
+      },
+      {
+        "model": "hy3",
+        "board": "text_style_control",
+        "rank": 77,
+        "rating": 1453.99,
+        "ci": [
+          1448.31,
+          1459.66
+        ],
+        "votes": 15178,
+        "upstream_model": "Hy3",
+        "collected": "2026-11-13",
+        "url": "https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=text_style_control&split=latest"
+      },
+      {
+        "model": "hy3",
+        "board": "webdev",
+        "rank": 69,
+        "rating": 1505.43,
+        "ci": [
+          1497.55,
+          1513.32
+        ],
+        "votes": 7274,
+        "upstream_model": "Hy3",
+        "collected": "2026-11-13",
+        "url": "https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=webdev&split=latest"
+      },
+      {
+        "model": "hy4-preview",
+        "board": "webdev",
+        "rank": 26,
+        "rating": 1631.67,
+        "ci": [
+          1621.88,
+          1641.45
+        ],
+        "votes": 4601,
+        "upstream_model": "Hy4 preview",
+        "collected": "2026-11-13",
+        "url": "https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=webdev&split=latest"
+      },
+      {
+        "model": "kimi-k2-6",
+        "board": "text",
+        "rank": 47,
+        "rating": 1455.41,
+        "ci": [
+          1450.99,
+          1459.83
+        ],
+        "votes": 39551,
+        "upstream_model": "Kimi K2.6",
+        "collected": "2026-11-13",
+        "url": "https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=text&split=latest"
+      },
+      {
+        "model": "kimi-k2-6",
+        "board": "text_style_control",
+        "rank": 61,
+        "rating": 1460.86,
+        "ci": [
+          1456.42,
+          1465.3
+        ],
+        "votes": 39551,
+        "upstream_model": "Kimi K2.6",
+        "collected": "2026-11-13",
+        "url": "https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=text_style_control&split=latest"
+      },
+      {
+        "model": "kimi-k2-6",
+        "board": "webdev",
+        "rank": 67,
+        "rating": 1509.32,
+        "ci": [
+          1502.03,
+          1516.6
+        ],
+        "votes": 10005,
+        "upstream_model": "Kimi K2.6",
+        "collected": "2026-11-13",
+        "url": "https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=webdev&split=latest"
+      },
+      {
+        "model": "mimo-v2-6-flash",
+        "board": "text",
+        "rank": 55,
+        "rating": 1450.84,
+        "ci": [
+          1445.7,
+          1455.99
+        ],
+        "votes": 23252,
+        "upstream_model": "MiMo-V2.6-Flash",
+        "collected": "2026-11-13",
+        "url": "https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=text&split=latest"
+      },
+      {
+        "model": "mimo-v2-6-flash",
+        "board": "text_style_control",
+        "rank": 85,
+        "rating": 1448.4,
+        "ci": [
+          1443.21,
+          1453.58
+        ],
+        "votes": 23252,
+        "upstream_model": "MiMo-V2.6-Flash",
+        "collected": "2026-11-13",
+        "url": "https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=text_style_control&split=latest"
+      },
+      {
+        "model": "mimo-v2-6-flash",
+        "board": "webdev",
+        "rank": 25,
+        "rating": 1638.06,
+        "ci": [
+          1630.34,
+          1645.78
+        ],
+        "votes": 8944,
+        "upstream_model": "MiMo-V2.6-Flash",
+        "collected": "2026-11-13",
+        "url": "https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=webdev&split=latest"
+      },
+      {
+        "model": "mimo-v2-6-pro",
+        "board": "text",
+        "rank": 14,
+        "rating": 1491.6,
+        "ci": [
+          1482.18,
+          1501.02
+        ],
+        "votes": 4064,
+        "upstream_model": "MiMo-V2.6-Pro",
+        "collected": "2026-11-13",
+        "url": "https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=text&split=latest"
+      },
+      {
+        "model": "mimo-v2-6-pro",
+        "board": "text_style_control",
+        "rank": 31,
+        "rating": 1479.89,
+        "ci": [
+          1470.42,
+          1489.37
+        ],
+        "votes": 4064,
+        "upstream_model": "MiMo-V2.6-Pro",
+        "collected": "2026-11-13",
+        "url": "https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=text_style_control&split=latest"
+      },
+      {
+        "model": "mimo-v2-6-pro",
+        "board": "webdev",
+        "rank": 28,
+        "rating": 1625.02,
+        "ci": [
+          1617.36,
+          1632.67
+        ],
+        "votes": 8846,
+        "upstream_model": "MiMo-V2.6-Pro",
+        "collected": "2026-11-13",
+        "url": "https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=webdev&split=latest"
+      },
+      {
+        "model": "minimax-m3",
+        "board": "text",
+        "rank": 100,
+        "rating": 1428.07,
+        "ci": [
+          1424.43,
+          1431.71
+        ],
+        "votes": 73579,
+        "upstream_model": "MiniMax-M3",
+        "collected": "2026-11-13",
+        "url": "https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=text&split=latest"
+      },
+      {
+        "model": "minimax-m3",
+        "board": "text_style_control",
+        "rank": 98,
+        "rating": 1439.24,
+        "ci": [
+          1435.49,
+          1442.99
+        ],
+        "votes": 68611,
+        "upstream_model": "MiniMax-M3",
+        "collected": "2026-11-06",
+        "url": "https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=text_style_control&split=latest"
+      },
+      {
+        "model": "minimax-m3",
+        "board": "webdev",
+        "rank": 75,
+        "rating": 1484.07,
+        "ci": [
+          1478.66,
+          1489.49
+        ],
+        "votes": 21058,
+        "upstream_model": "MiniMax-M3",
+        "collected": "2026-11-13",
+        "url": "https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=webdev&split=latest"
+      },
+      {
+        "model": "minimax-m3-1-flash",
+        "board": "webdev",
+        "rank": 42,
+        "rating": 1583.89,
+        "ci": [
+          1574.33,
+          1593.45
+        ],
+        "votes": 4904,
+        "upstream_model": "MiniMax-M3.1-Flash",
+        "collected": "2026-11-13",
+        "url": "https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=webdev&split=latest"
+      },
+      {
+        "model": "qwen3-8-max",
+        "board": "text",
+        "rank": 17,
+        "rating": 1485.28,
+        "ci": [
+          1480.73,
+          1489.82
+        ],
+        "votes": 36936,
+        "upstream_model": "Qwen3.8-Max",
+        "collected": "2026-11-13",
+        "url": "https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=text&split=latest"
+      },
+      {
+        "model": "qwen3-8-max",
+        "board": "text_style_control",
+        "rank": 25,
+        "rating": 1484.11,
+        "ci": [
+          1479.54,
+          1488.67
+        ],
+        "votes": 36936,
+        "upstream_model": "Qwen3.8-Max",
+        "collected": "2026-11-13",
+        "url": "https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=text_style_control&split=latest"
+      },
+      {
+        "model": "qwen3-8-max",
+        "board": "webdev",
+        "rank": 17,
+        "rating": 1670.43,
+        "ci": [
+          1658.32,
+          1682.54
+        ],
+        "votes": 3370,
+        "upstream_model": "Qwen3.8-Max",
+        "collected": "2026-11-13",
+        "url": "https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=webdev&split=latest"
+      },
+      {
+        "model": "step-5-preview",
+        "board": "text",
+        "rank": 70,
+        "rating": 1443.34,
+        "ci": [
+          1437.1,
+          1449.58
+        ],
+        "votes": 12345,
+        "upstream_model": "Step 5 Preview",
+        "collected": "2026-11-13",
+        "url": "https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=text&split=latest"
+      },
+      {
+        "model": "step-5-preview",
+        "board": "text_style_control",
+        "rank": 84,
+        "rating": 1448.55,
+        "ci": [
+          1442.25,
+          1454.84
+        ],
+        "votes": 12345,
+        "upstream_model": "Step 5 Preview",
+        "collected": "2026-11-13",
+        "url": "https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=text_style_control&split=latest"
+      },
+      {
+        "model": "u2-flash",
+        "board": "webdev",
+        "rank": 35,
+        "rating": 1612.77,
+        "ci": [
+          1596.09,
+          1629.44
+        ],
+        "votes": 1467,
+        "upstream_model": "U2 Flash",
+        "collected": "2026-11-13",
+        "url": "https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=webdev&split=latest"
+      }
+    ],
+    "effort_records": [
+      {
+        "model": "claude-fable-5-1",
+        "board": "text",
+        "benchmark": "Arena-text",
+        "effort": "max",
+        "score": 1512.04,
+        "ci": [
+          1506.57,
+          1517.52
+        ],
+        "rank": 4,
+        "votes": 20511,
+        "upstream_model": "Claude Fable 5.1 (Max)",
+        "url": "https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=text&split=latest",
+        "collected": "2026-11-13",
+        "benchmark_raw": "Arena-text@max"
+      },
+      {
+        "model": "claude-fable-5-1",
+        "board": "text_style_control",
+        "benchmark": "Arena-text_style_control",
+        "effort": "max",
+        "score": 1502.32,
+        "ci": [
+          1496.83,
+          1507.81
+        ],
+        "rank": 7,
+        "votes": 20511,
+        "upstream_model": "Claude Fable 5.1 (Max)",
+        "url": "https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=text_style_control&split=latest",
+        "collected": "2026-11-13",
+        "benchmark_raw": "Arena-text_style_control@max"
+      },
+      {
+        "model": "claude-fable-5-1",
+        "board": "webdev",
+        "benchmark": "Arena-webdev",
+        "effort": "max",
+        "score": 1741.85,
+        "ci": [
+          1733.93,
+          1749.77
+        ],
+        "rank": 7,
+        "votes": 9800,
+        "upstream_model": "Claude Fable 5.1 (Max)",
+        "url": "https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=webdev&split=latest",
+        "collected": "2026-11-13",
+        "benchmark_raw": "Arena-webdev@max"
+      },
+      {
+        "model": "claude-fable-5-2",
+        "board": "webdev",
+        "benchmark": "Arena-webdev",
+        "effort": "xhigh",
+        "score": 1837.81,
+        "ci": [
+          1817.27,
+          1858.35
+        ],
+        "rank": 1,
+        "votes": 1215,
+        "upstream_model": "Claude Fable 5.2 (xHigh)",
+        "url": "https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=webdev&split=latest",
+        "collected": "2026-11-13",
+        "benchmark_raw": "Arena-webdev@xhigh"
+      },
+      {
+        "model": "claude-haiku-5-5",
+        "board": "webdev",
+        "benchmark": "Arena-webdev",
+        "effort": "high",
+        "score": 1593.45,
+        "ci": [
+          1584.98,
+          1601.91
+        ],
+        "rank": 39,
+        "votes": 6643,
+        "upstream_model": "Claude Haiku 5.5 (High)",
+        "url": "https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=webdev&split=latest",
+        "collected": "2026-11-13",
+        "benchmark_raw": "Arena-webdev@high"
+      },
+      {
+        "model": "claude-opus-5-5",
+        "board": "text",
+        "benchmark": "Arena-text",
+        "effort": "high",
+        "score": 1513.66,
+        "ci": [
+          1507.7,
+          1519.61
+        ],
+        "rank": 3,
+        "votes": 15793,
+        "upstream_model": "Claude Opus 5.5 (High)",
+        "url": "https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=text&split=latest",
+        "collected": "2026-11-13",
+        "benchmark_raw": "Arena-text@high"
+      },
+      {
+        "model": "claude-opus-5-5",
+        "board": "text_style_control",
+        "benchmark": "Arena-text_style_control",
+        "effort": "high",
+        "score": 1506.78,
+        "ci": [
+          1500.82,
+          1512.75
+        ],
+        "rank": 4,
+        "votes": 15793,
+        "upstream_model": "Claude Opus 5.5 (High)",
+        "url": "https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=text_style_control&split=latest",
+        "collected": "2026-11-13",
+        "benchmark_raw": "Arena-text_style_control@high"
+      },
+      {
+        "model": "claude-opus-5-5",
+        "board": "webdev",
+        "benchmark": "Arena-webdev",
+        "effort": "max",
+        "score": 1814.65,
+        "ci": [
+          1802.94,
+          1826.36
+        ],
+        "rank": 2,
+        "votes": 4208,
+        "upstream_model": "Claude Opus 5.5 (Max)",
+        "url": "https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=webdev&split=latest",
+        "collected": "2026-11-13",
+        "benchmark_raw": "Arena-webdev@max"
+      },
+      {
+        "model": "claude-sonnet-5-5",
+        "board": "text",
+        "benchmark": "Arena-text",
+        "effort": "xhigh",
+        "score": 1469.13,
+        "ci": [
+          1463.12,
+          1475.14
+        ],
+        "rank": 34,
+        "votes": 14355,
+        "upstream_model": "Claude Sonnet 5.5 (xHigh)",
+        "url": "https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=text&split=latest",
+        "collected": "2026-11-13",
+        "benchmark_raw": "Arena-text@xhigh"
+      },
+      {
+        "model": "claude-sonnet-5-5",
+        "board": "text_style_control",
+        "benchmark": "Arena-text_style_control",
+        "effort": "xhigh",
+        "score": 1472.89,
+        "ci": [
+          1466.85,
+          1478.92
+        ],
+        "rank": 47,
+        "votes": 14355,
+        "upstream_model": "Claude Sonnet 5.5 (xHigh)",
+        "url": "https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=text_style_control&split=latest",
+        "collected": "2026-11-13",
+        "benchmark_raw": "Arena-text_style_control@xhigh"
+      },
+      {
+        "model": "claude-sonnet-5-5",
+        "board": "webdev",
+        "benchmark": "Arena-webdev",
+        "effort": "xhigh",
+        "score": 1772.26,
+        "ci": [
+          1762.38,
+          1782.13
+        ],
+        "rank": 3,
+        "votes": 5895,
+        "upstream_model": "Claude Sonnet 5.5 (xHigh)",
+        "url": "https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=webdev&split=latest",
+        "collected": "2026-11-13",
+        "benchmark_raw": "Arena-webdev@xhigh"
+      },
+      {
+        "model": "claude-sonnet-5-5",
+        "board": "webdev",
+        "benchmark": "Arena-webdev",
+        "effort": "high",
+        "score": 1715.19,
+        "ci": [
+          1706.8,
+          1723.58
+        ],
+        "rank": 9,
+        "votes": 7940,
+        "upstream_model": "Claude Sonnet 5.5 (High)",
+        "url": "https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=webdev&split=latest",
+        "collected": "2026-11-13",
+        "benchmark_raw": "Arena-webdev@high"
+      },
+      {
+        "model": "deepseek-v4-1-flash",
+        "board": "text",
+        "benchmark": "Arena-text",
+        "effort": "max",
+        "score": 1463.56,
+        "ci": [
+          1457.44,
+          1469.67
+        ],
+        "rank": 40,
+        "votes": 13547,
+        "upstream_model": "DeepSeek-V4.1-Flash-20260910 (Max)",
+        "url": "https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=text&split=latest",
+        "collected": "2026-11-13",
+        "benchmark_raw": "Arena-text@max"
+      },
+      {
+        "model": "deepseek-v4-1-flash",
+        "board": "text_style_control",
+        "benchmark": "Arena-text_style_control",
+        "effort": "max",
+        "score": 1475.09,
+        "ci": [
+          1468.95,
+          1481.24
+        ],
+        "rank": 38,
+        "votes": 13547,
+        "upstream_model": "DeepSeek-V4.1-Flash-20260910 (Max)",
+        "url": "https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=text_style_control&split=latest",
+        "collected": "2026-11-13",
+        "benchmark_raw": "Arena-text_style_control@max"
+      },
+      {
+        "model": "deepseek-v4-1-flash",
+        "board": "webdev",
+        "benchmark": "Arena-webdev",
+        "effort": "max",
+        "score": 1663.65,
+        "ci": [
+          1656.87,
+          1670.43
+        ],
+        "rank": 18,
+        "votes": 14108,
+        "upstream_model": "DeepSeek-V4.1-Flash-20261017 (Max)",
+        "url": "https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=webdev&split=latest",
+        "collected": "2026-11-13",
+        "benchmark_raw": "Arena-webdev@max"
+      },
+      {
+        "model": "deepseek-v4-1-flash",
+        "board": "webdev",
+        "benchmark": "Arena-webdev",
+        "effort": "high",
+        "score": 1581.68,
+        "ci": [
+          1572.27,
+          1591.08
+        ],
+        "rank": 44,
+        "votes": 4829,
+        "upstream_model": "DeepSeek-V4-Flash (High)",
+        "url": "https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=webdev&split=latest",
+        "collected": "2026-11-13",
+        "benchmark_raw": "Arena-webdev@high"
+      },
+      {
+        "model": "deepseek-v4-pro",
+        "board": "text",
+        "benchmark": "Arena-text",
+        "effort": "high",
+        "score": 1444.86,
+        "ci": [
+          1438.23,
+          1451.49
+        ],
+        "rank": 65,
+        "votes": 9573,
+        "upstream_model": "DeepSeek-V4-Pro (High, 20260813)",
+        "url": "https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=text&split=latest",
+        "collected": "2026-11-13",
+        "benchmark_raw": "Arena-text@high"
+      },
+      {
+        "model": "deepseek-v4-pro",
+        "board": "text_style_control",
+        "benchmark": "Arena-text_style_control",
+        "effort": "high",
+        "score": 1463.9,
+        "ci": [
+          1457.23,
+          1470.57
+        ],
+        "rank": 60,
+        "votes": 9573,
+        "upstream_model": "DeepSeek-V4-Pro (High, 20260813)",
+        "url": "https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=text_style_control&split=latest",
+        "collected": "2026-11-13",
+        "benchmark_raw": "Arena-text_style_control@high"
+      },
+      {
+        "model": "deepseek-v4-pro",
+        "board": "webdev",
+        "benchmark": "Arena-webdev",
+        "effort": "high",
+        "score": 1580.97,
+        "ci": [
+          1571.44,
+          1590.51
+        ],
+        "rank": 45,
+        "votes": 4605,
+        "upstream_model": "DeepSeek-V4-Pro (High, 20260813)",
+        "url": "https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=webdev&split=latest",
+        "collected": "2026-11-13",
+        "benchmark_raw": "Arena-webdev@high"
+      },
+      {
+        "model": "gemini-3-8-flash",
+        "board": "text",
+        "benchmark": "Arena-text",
+        "effort": "high",
+        "score": 1499.58,
+        "ci": [
+          1495.39,
+          1503.77
+        ],
+        "rank": 10,
+        "votes": 62675,
+        "upstream_model": "Gemini 3.8 Flash (High)",
+        "url": "https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=text&split=latest",
+        "collected": "2026-11-13",
+        "benchmark_raw": "Arena-text@high"
+      },
+      {
+        "model": "gemini-3-8-flash",
+        "board": "text_style_control",
+        "benchmark": "Arena-text_style_control",
+        "effort": "high",
+        "score": 1496.66,
+        "ci": [
+          1492.46,
+          1500.87
+        ],
+        "rank": 9,
+        "votes": 62675,
+        "upstream_model": "Gemini 3.8 Flash (High)",
+        "url": "https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=text_style_control&split=latest",
+        "collected": "2026-11-13",
+        "benchmark_raw": "Arena-text_style_control@high"
+      },
+      {
+        "model": "gemini-3-8-flash",
+        "board": "webdev",
+        "benchmark": "Arena-webdev",
+        "effort": "high",
+        "score": 1583.46,
+        "ci": [
+          1576.83,
+          1590.1
+        ],
+        "rank": 43,
+        "votes": 13914,
+        "upstream_model": "Gemini 3.8 Flash (High)",
+        "url": "https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=webdev&split=latest",
+        "collected": "2026-11-13",
+        "benchmark_raw": "Arena-webdev@high"
+      },
+      {
+        "model": "gemini-4-argon",
+        "board": "text",
+        "benchmark": "Arena-text",
+        "effort": "high",
+        "score": 1529.46,
+        "ci": [
+          1524.11,
+          1534.81
+        ],
+        "rank": 2,
+        "votes": 20779,
+        "upstream_model": "Gemini 4 Argon (High)",
+        "url": "https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=text&split=latest",
+        "collected": "2026-11-13",
+        "benchmark_raw": "Arena-text@high"
+      },
+      {
+        "model": "gemini-4-argon",
+        "board": "text_style_control",
+        "benchmark": "Arena-text_style_control",
+        "effort": "high",
+        "score": 1521.69,
+        "ci": [
+          1516.31,
+          1527.08
+        ],
+        "rank": 2,
+        "votes": 20779,
+        "upstream_model": "Gemini 4 Argon (High)",
+        "url": "https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=text_style_control&split=latest",
+        "collected": "2026-11-13",
+        "benchmark_raw": "Arena-text_style_control@high"
+      },
+      {
+        "model": "gemini-4-argon",
+        "board": "webdev",
+        "benchmark": "Arena-webdev",
+        "effort": "high",
+        "score": 1681.03,
+        "ci": [
+          1671.35,
+          1690.71
+        ],
+        "rank": 13,
+        "votes": 4991,
+        "upstream_model": "Gemini 4 Argon (High)",
+        "url": "https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=webdev&split=latest",
+        "collected": "2026-11-13",
+        "benchmark_raw": "Arena-webdev@high"
+      },
+      {
+        "model": "gemini-4-carbon",
+        "board": "text",
+        "benchmark": "Arena-text",
+        "effort": "high",
+        "score": 1538.38,
+        "ci": [
+          1528.82,
+          1547.93
+        ],
+        "rank": 1,
+        "votes": 4273,
+        "upstream_model": "Gemini 4 Carbon (High)",
+        "url": "https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=text&split=latest",
+        "collected": "2026-11-13",
+        "benchmark_raw": "Arena-text@high"
+      },
+      {
+        "model": "gemini-4-carbon",
+        "board": "text_style_control",
+        "benchmark": "Arena-text_style_control",
+        "effort": "high",
+        "score": 1526.18,
+        "ci": [
+          1516.57,
+          1535.8
+        ],
+        "rank": 1,
+        "votes": 4273,
+        "upstream_model": "Gemini 4 Carbon (High)",
+        "url": "https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=text_style_control&split=latest",
+        "collected": "2026-11-13",
+        "benchmark_raw": "Arena-text_style_control@high"
+      },
+      {
+        "model": "gemini-4-carbon",
+        "board": "webdev",
+        "benchmark": "Arena-webdev",
+        "effort": "high",
+        "score": 1768.23,
+        "ci": [
+          1752.9,
+          1783.55
+        ],
+        "rank": 4,
+        "votes": 2120,
+        "upstream_model": "Gemini 4 Carbon (High)",
+        "url": "https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=webdev&split=latest",
+        "collected": "2026-11-13",
+        "benchmark_raw": "Arena-webdev@high"
+      },
+      {
+        "model": "gemini-4-hydrogen",
+        "board": "text",
+        "benchmark": "Arena-text",
+        "effort": "high",
+        "score": 1502.12,
+        "ci": [
+          1493.14,
+          1511.1
+        ],
+        "rank": 8,
+        "votes": 4741,
+        "upstream_model": "Gemini 4 Hydrogen (High)",
+        "url": "https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=text&split=latest",
+        "collected": "2026-11-13",
+        "benchmark_raw": "Arena-text@high"
+      },
+      {
+        "model": "gemini-4-hydrogen",
+        "board": "text_style_control",
+        "benchmark": "Arena-text_style_control",
+        "effort": "high",
+        "score": 1490.43,
+        "ci": [
+          1481.42,
+          1499.44
+        ],
+        "rank": 15,
+        "votes": 4741,
+        "upstream_model": "Gemini 4 Hydrogen (High)",
+        "url": "https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=text_style_control&split=latest",
+        "collected": "2026-11-13",
+        "benchmark_raw": "Arena-text_style_control@high"
+      },
+      {
+        "model": "gemini-4-hydrogen",
+        "board": "webdev",
+        "benchmark": "Arena-webdev",
+        "effort": "high",
+        "score": 1704.21,
+        "ci": [
+          1689.82,
+          1718.61
+        ],
+        "rank": 10,
+        "votes": 1997,
+        "upstream_model": "Gemini 4 Hydrogen (High)",
+        "url": "https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=webdev&split=latest",
+        "collected": "2026-11-13",
+        "benchmark_raw": "Arena-webdev@high"
+      },
+      {
+        "model": "glm-5-2",
+        "board": "text",
+        "benchmark": "Arena-text",
+        "effort": "max",
+        "score": 1469.38,
+        "ci": [
+          1465.33,
+          1473.43
+        ],
+        "rank": 33,
+        "votes": 54143,
+        "upstream_model": "GLM-5.2 (Max)",
+        "url": "https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=text&split=latest",
+        "collected": "2026-11-13",
+        "benchmark_raw": "Arena-text@max"
+      },
+      {
+        "model": "glm-5-2",
+        "board": "text_style_control",
+        "benchmark": "Arena-text_style_control",
+        "effort": "max",
+        "score": 1475.01,
+        "ci": [
+          1470.93,
+          1479.09
+        ],
+        "rank": 39,
+        "votes": 54143,
+        "upstream_model": "GLM-5.2 (Max)",
+        "url": "https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=text_style_control&split=latest",
+        "collected": "2026-11-13",
+        "benchmark_raw": "Arena-text_style_control@max"
+      },
+      {
+        "model": "glm-5-2",
+        "board": "webdev",
+        "benchmark": "Arena-webdev",
+        "effort": "max",
+        "score": 1607.69,
+        "ci": [
+          1601.8,
+          1613.57
+        ],
+        "rank": 38,
+        "votes": 17925,
+        "upstream_model": "GLM-5.2 (Max)",
+        "url": "https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=webdev&split=latest",
+        "collected": "2026-11-13",
+        "benchmark_raw": "Arena-webdev@max"
+      },
+      {
+        "model": "glm-5-3",
+        "board": "text",
+        "benchmark": "Arena-text",
+        "effort": "max",
+        "score": 1474.93,
+        "ci": [
+          1470.26,
+          1479.61
+        ],
+        "rank": 26,
+        "votes": 31604,
+        "upstream_model": "GLM-5.3 (Max)",
+        "url": "https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=text&split=latest",
+        "collected": "2026-11-13",
+        "benchmark_raw": "Arena-text@max"
+      },
+      {
+        "model": "glm-5-3",
+        "board": "text_style_control",
+        "benchmark": "Arena-text_style_control",
+        "effort": "max",
+        "score": 1481.57,
+        "ci": [
+          1476.86,
+          1486.27
+        ],
+        "rank": 28,
+        "votes": 31604,
+        "upstream_model": "GLM-5.3 (Max)",
+        "url": "https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=text_style_control&split=latest",
+        "collected": "2026-11-13",
+        "benchmark_raw": "Arena-text_style_control@max"
+      },
+      {
+        "model": "glm-5-3",
+        "board": "webdev",
+        "benchmark": "Arena-webdev",
+        "effort": "max",
+        "score": 1622.45,
+        "ci": [
+          1615.61,
+          1629.3
+        ],
+        "rank": 30,
+        "votes": 12695,
+        "upstream_model": "GLM-5.3 (Max)",
+        "url": "https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=webdev&split=latest",
+        "collected": "2026-11-13",
+        "benchmark_raw": "Arena-webdev@max"
+      },
+      {
+        "model": "gpt-6-1-sol",
+        "board": "text",
+        "benchmark": "Arena-text",
+        "effort": "max",
+        "score": 1444.75,
+        "ci": [
+          1438.57,
+          1450.92
+        ],
+        "rank": 66,
+        "votes": 13498,
+        "upstream_model": "GPT-6.1 Sol (Max)",
+        "url": "https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=text&split=latest",
+        "collected": "2026-11-13",
+        "benchmark_raw": "Arena-text@max"
+      },
+      {
+        "model": "gpt-6-1-sol",
+        "board": "text_style_control",
+        "benchmark": "Arena-text_style_control",
+        "effort": "max",
+        "score": 1480.82,
+        "ci": [
+          1474.6,
+          1487.04
+        ],
+        "rank": 30,
+        "votes": 13498,
+        "upstream_model": "GPT-6.1 Sol (Max)",
+        "url": "https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=text_style_control&split=latest",
+        "collected": "2026-11-13",
+        "benchmark_raw": "Arena-text_style_control@max"
+      },
+      {
+        "model": "gpt-6-1-sol",
+        "board": "webdev",
+        "benchmark": "Arena-webdev",
+        "effort": "max",
+        "score": 1743.26,
+        "ci": [
+          1733.46,
+          1753.06
+        ],
+        "rank": 6,
+        "votes": 5590,
+        "upstream_model": "GPT-6.1 Sol (Max)",
+        "url": "https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=webdev&split=latest",
+        "collected": "2026-11-13",
+        "benchmark_raw": "Arena-webdev@max"
+      },
+      {
+        "model": "gpt-6-1-terra",
+        "board": "webdev",
+        "benchmark": "Arena-webdev",
+        "effort": "max",
+        "score": 1678.15,
+        "ci": [
+          1667.57,
+          1688.72
+        ],
+        "rank": 14,
+        "votes": 4016,
+        "upstream_model": "GPT-6.1 Terra (Max)",
+        "url": "https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=webdev&split=latest",
+        "collected": "2026-11-13",
+        "benchmark_raw": "Arena-webdev@max"
+      },
+      {
+        "model": "gpt-6-astra",
+        "board": "text",
+        "benchmark": "Arena-text",
+        "effort": "max",
+        "score": 1439.61,
+        "ci": [
+          1434.11,
+          1445.12
+        ],
+        "rank": 78,
+        "votes": 18745,
+        "upstream_model": "GPT-6 Astra (Max)",
+        "url": "https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=text&split=latest",
+        "collected": "2026-11-13",
+        "benchmark_raw": "Arena-text@max"
+      },
+      {
+        "model": "gpt-6-astra",
+        "board": "text_style_control",
+        "benchmark": "Arena-text_style_control",
+        "effort": "max",
+        "score": 1473.91,
+        "ci": [
+          1468.39,
+          1479.42
+        ],
+        "rank": 42,
+        "votes": 18745,
+        "upstream_model": "GPT-6 Astra (Max)",
+        "url": "https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=text_style_control&split=latest",
+        "collected": "2026-11-13",
+        "benchmark_raw": "Arena-text_style_control@max"
+      },
+      {
+        "model": "gpt-6-astra",
+        "board": "webdev",
+        "benchmark": "Arena-webdev",
+        "effort": "max",
+        "score": 1763.76,
+        "ci": [
+          1755.19,
+          1772.34
+        ],
+        "rank": 5,
+        "votes": 8470,
+        "upstream_model": "GPT-6 Astra (Max)",
+        "url": "https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=webdev&split=latest",
+        "collected": "2026-11-13",
+        "benchmark_raw": "Arena-webdev@max"
+      },
+      {
+        "model": "gpt-6-luna",
+        "board": "text_style_control",
+        "benchmark": "Arena-text_style_control",
+        "effort": "max",
+        "score": 1440.88,
+        "ci": [
+          1436.79,
+          1444.97
+        ],
+        "rank": 99,
+        "votes": 108508,
+        "upstream_model": "GPT-6 Luna (Max)",
+        "url": "https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=text_style_control&split=latest",
+        "collected": "2026-11-13",
+        "benchmark_raw": "Arena-text_style_control@max"
+      },
+      {
+        "model": "gpt-6-luna",
+        "board": "webdev",
+        "benchmark": "Arena-webdev",
+        "effort": "max",
+        "score": 1577.21,
+        "ci": [
+          1571.29,
+          1583.14
+        ],
+        "rank": 46,
+        "votes": 30581,
+        "upstream_model": "GPT-6 Luna (Max)",
+        "url": "https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=webdev&split=latest",
+        "collected": "2026-11-13",
+        "benchmark_raw": "Arena-webdev@max"
+      },
+      {
+        "model": "grok-4-6",
+        "board": "text",
+        "benchmark": "Arena-text",
+        "effort": "high",
+        "score": 1430.02,
+        "ci": [
+          1425.36,
+          1434.68
+        ],
+        "rank": 96,
+        "votes": 34582,
+        "upstream_model": "Grok 4.6 (High)",
+        "url": "https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=text&split=latest",
+        "collected": "2026-11-13",
+        "benchmark_raw": "Arena-text@high"
+      },
+      {
+        "model": "grok-4-6",
+        "board": "text_style_control",
+        "benchmark": "Arena-text_style_control",
+        "effort": "high",
+        "score": 1456.66,
+        "ci": [
+          1452.02,
+          1461.3
+        ],
+        "rank": 69,
+        "votes": 34582,
+        "upstream_model": "Grok 4.6 (High)",
+        "url": "https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=text_style_control&split=latest",
+        "collected": "2026-11-13",
+        "benchmark_raw": "Arena-text_style_control@high"
+      },
+      {
+        "model": "grok-4-6",
+        "board": "webdev",
+        "benchmark": "Arena-webdev",
+        "effort": "high",
+        "score": 1618.07,
+        "ci": [
+          1611.12,
+          1625.01
+        ],
+        "rank": 33,
+        "votes": 12195,
+        "upstream_model": "Grok 4.6 (High)",
+        "url": "https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=webdev&split=latest",
+        "collected": "2026-11-13",
+        "benchmark_raw": "Arena-webdev@high"
+      },
+      {
+        "model": "grok-4-7",
+        "board": "text_style_control",
+        "benchmark": "Arena-text_style_control",
+        "effort": "xhigh",
+        "score": 1443.32,
+        "ci": [
+          1438.05,
+          1448.59
+        ],
+        "rank": 92,
+        "votes": 22219,
+        "upstream_model": "Grok 4.7 (xHigh)",
+        "url": "https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=text_style_control&split=latest",
+        "collected": "2026-11-13",
+        "benchmark_raw": "Arena-text_style_control@xhigh"
+      },
+      {
+        "model": "grok-4-7",
+        "board": "webdev",
+        "benchmark": "Arena-webdev",
+        "effort": "xhigh",
+        "score": 1640.7,
+        "ci": [
+          1632.77,
+          1648.62
+        ],
+        "rank": 24,
+        "votes": 8186,
+        "upstream_model": "Grok 4.7 (xHigh)",
+        "url": "https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=webdev&split=latest",
+        "collected": "2026-11-13",
+        "benchmark_raw": "Arena-webdev@xhigh"
+      },
+      {
+        "model": "kimi-k3",
+        "board": "text",
+        "benchmark": "Arena-text",
+        "effort": "max",
+        "score": 1474.59,
+        "ci": [
+          1470.32,
+          1478.85
+        ],
+        "rank": 28,
+        "votes": 41402,
+        "upstream_model": "Kimi K3 (Max)",
+        "url": "https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=text&split=latest",
+        "collected": "2026-11-13",
+        "benchmark_raw": "Arena-text@max"
+      },
+      {
+        "model": "kimi-k3",
+        "board": "text_style_control",
+        "benchmark": "Arena-text_style_control",
+        "effort": "max",
+        "score": 1487.44,
+        "ci": [
+          1483.16,
+          1491.71
+        ],
+        "rank": 20,
+        "votes": 41402,
+        "upstream_model": "Kimi K3 (Max)",
+        "url": "https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=text_style_control&split=latest",
+        "collected": "2026-11-13",
+        "benchmark_raw": "Arena-text_style_control@max"
+      },
+      {
+        "model": "kimi-k3",
+        "board": "webdev",
+        "benchmark": "Arena-webdev",
+        "effort": "max",
+        "score": 1657.76,
+        "ci": [
+          1652.07,
+          1663.45
+        ],
+        "rank": 19,
+        "votes": 22448,
+        "upstream_model": "Kimi K3 (Max)",
+        "url": "https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=webdev&split=latest",
+        "collected": "2026-11-13",
+        "benchmark_raw": "Arena-webdev@max"
+      },
+      {
+        "model": "kimi-k3-1-pro",
+        "board": "text",
+        "benchmark": "Arena-text",
+        "effort": "max",
+        "score": 1459.14,
+        "ci": [
+          1449.16,
+          1469.11
+        ],
+        "rank": 43,
+        "votes": 3995,
+        "upstream_model": "Kimi K3.1 Pro (Max)",
+        "url": "https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=text&split=latest",
+        "collected": "2026-11-13",
+        "benchmark_raw": "Arena-text@max"
+      },
+      {
+        "model": "kimi-k3-1-pro",
+        "board": "text_style_control",
+        "benchmark": "Arena-text_style_control",
+        "effort": "max",
+        "score": 1484.72,
+        "ci": [
+          1474.7,
+          1494.73
+        ],
+        "rank": 24,
+        "votes": 3995,
+        "upstream_model": "Kimi K3.1 Pro (Max)",
+        "url": "https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=text_style_control&split=latest",
+        "collected": "2026-11-13",
+        "benchmark_raw": "Arena-text_style_control@max"
+      },
+      {
+        "model": "kimi-k3-1-pro",
+        "board": "webdev",
+        "benchmark": "Arena-webdev",
+        "effort": "max",
+        "score": 1687.22,
+        "ci": [
+          1677.54,
+          1696.91
+        ],
+        "rank": 12,
+        "votes": 4977,
+        "upstream_model": "Kimi K3.1 Pro (Max)",
+        "url": "https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=webdev&split=latest",
+        "collected": "2026-11-13",
+        "benchmark_raw": "Arena-webdev@max"
+      },
+      {
+        "model": "step-5-preview",
+        "board": "webdev",
+        "benchmark": "Arena-webdev",
+        "effort": "high",
+        "score": 1572.54,
+        "ci": [
+          1564.46,
+          1580.63
+        ],
+        "rank": 47,
+        "votes": 7659,
+        "upstream_model": "Step 5 Preview (High)",
+        "url": "https://datasets-server.huggingface.co/first-rows?dataset=lmarena-ai%2Fleaderboard-dataset&config=webdev&split=latest",
+        "collected": "2026-11-13",
+        "benchmark_raw": "Arena-webdev@high"
+      }
+    ],
+    "effort_skipped_models": [
+      "Muse Wonder",
+      "Claude Fable 5",
+      "Claude Opus 4.6",
+      "Claude Opus 4.7",
+      "Muse Spark 1.3",
+      "Muse Spark 1.2",
+      "Claude Opus 5",
+      "Gemini 3.7 Flash",
+      "GPT-5.6 Sol",
+      "Gemini 3.6 Flash",
+      "Claude Opus 4.8",
+      "GPT-5.5",
+      "Gemini 3.5 Flash",
+      "GPT-5.4",
+      "Claude Opus 4.5",
+      "GPT-5.6 Terra",
+      "Claude Sonnet 5",
+      "GPT-6 Sol",
+      "Claude Sonnet 4.5",
+      "GPT-5.1",
+      "DeepSeek-V4-Pro Preview",
+      "GPT-5.6 Luna",
+      "GPT-5.4 mini",
+      "DeepSeek-V4-Flash Preview",
+      "Muse Wonder Full",
+      "Muse Spark Open",
+      "GPT-5",
+      "Muse Ember"
+    ],
+    "effort_unparsed_rows": [
+      {
+        "benchmark": "Arena-text@minimal",
+        "model": "Gemini 3 Flash",
+        "collected": "2026-11-13"
+      },
+      {
+        "benchmark": "Arena-text_style_control@minimal",
+        "model": "Gemini 3 Flash",
+        "collected": "2026-11-13"
+      }
+    ]
+  },
   "entries": [
+    {
+      "model": "claude-fable-5-2",
+      "benchmarks": {
+        "AA-LCR": {
+          "value": 83,
+          "max": null,
+          "effort": "max",
+          "source_type": "third-party",
+          "url": "https://artificialanalysis.ai/models/claude-fable-5-2",
+          "origin": "increment-20261110",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 83,
+              "source_type": "third-party",
+              "effort": "max",
+              "origin": "increment-20261110",
+              "url": "https://artificialanalysis.ai/models/claude-fable-5-2",
+              "source_label": "artificialanalysis.ai"
+            }
+          ]
+        },
+        "HLE": {
+          "value": 74,
+          "max": null,
+          "effort": "max",
+          "source_type": "third-party",
+          "url": "https://artificialanalysis.ai/models/claude-fable-5-2",
+          "origin": "increment-20261110",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 74,
+              "source_type": "third-party",
+              "effort": "max",
+              "origin": "increment-20261110",
+              "url": "https://artificialanalysis.ai/models/claude-fable-5-2",
+              "source_label": "artificialanalysis.ai"
+            }
+          ]
+        },
+        "SciCode": {
+          "value": 68,
+          "max": null,
+          "effort": "max",
+          "source_type": "third-party",
+          "url": "https://artificialanalysis.ai/models/claude-fable-5-2",
+          "origin": "increment-20261110",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 68,
+              "source_type": "third-party",
+              "effort": "max",
+              "origin": "increment-20261110",
+              "url": "https://artificialanalysis.ai/models/claude-fable-5-2",
+              "source_label": "artificialanalysis.ai"
+            }
+          ]
+        },
+        "Terminal-Bench-4.0": {
+          "value": 60,
+          "max": null,
+          "effort": "max",
+          "source_type": "third-party",
+          "url": "https://artificialanalysis.ai/models/claude-fable-5-2",
+          "origin": "increment-20261110",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 60,
+              "source_type": "third-party",
+              "effort": "max",
+              "origin": "increment-20261110",
+              "url": "https://artificialanalysis.ai/models/claude-fable-5-2",
+              "source_label": "artificialanalysis.ai"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "model": "claude-haiku-5-5",
+      "benchmarks": {
+        "AA-LCR": {
+          "value": 83,
+          "max": null,
+          "effort": "max",
+          "source_type": "third-party",
+          "url": "https://artificialanalysis.ai/models/claude-haiku-5-5",
+          "origin": "increment-20261110",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 83,
+              "source_type": "third-party",
+              "effort": "max",
+              "origin": "increment-20261110",
+              "url": "https://artificialanalysis.ai/models/claude-haiku-5-5",
+              "source_label": "artificialanalysis.ai"
+            }
+          ]
+        },
+        "HLE": {
+          "value": 44,
+          "max": null,
+          "effort": "max",
+          "source_type": "third-party",
+          "url": "https://artificialanalysis.ai/models/claude-haiku-5-5",
+          "origin": "increment-20261110",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 44,
+              "source_type": "third-party",
+              "effort": "max",
+              "origin": "increment-20261110",
+              "url": "https://artificialanalysis.ai/models/claude-haiku-5-5",
+              "source_label": "artificialanalysis.ai"
+            }
+          ]
+        },
+        "SciCode": {
+          "value": 55,
+          "max": null,
+          "effort": "max",
+          "source_type": "third-party",
+          "url": "https://artificialanalysis.ai/models/claude-haiku-5-5",
+          "origin": "increment-20261110",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 55,
+              "source_type": "third-party",
+              "effort": "max",
+              "origin": "increment-20261110",
+              "url": "https://artificialanalysis.ai/models/claude-haiku-5-5",
+              "source_label": "artificialanalysis.ai"
+            }
+          ]
+        },
+        "Terminal-Bench-4.0": {
+          "value": 33,
+          "max": null,
+          "effort": "max",
+          "source_type": "third-party",
+          "url": "https://artificialanalysis.ai/models/claude-haiku-5-5",
+          "origin": "increment-20261110",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 33,
+              "source_type": "third-party",
+              "effort": "max",
+              "origin": "increment-20261110",
+              "url": "https://artificialanalysis.ai/models/claude-haiku-5-5",
+              "source_label": "artificialanalysis.ai"
+            }
+          ]
+        }
+      }
+    },
     {
       "model": "claude-opus-5.5",
       "benchmarks": {
@@ -2018,6 +4816,97 @@
       }
     },
     {
+      "model": "grok-4.6",
+      "benchmarks": {
+        "SWE-bench-Verified": {
+          "value": 95.6,
+          "max": null,
+          "effort": null,
+          "source_type": "third-party",
+          "url": "https://www.vals.ai/models/grok_grok-4.6",
+          "origin": "increment-20261106",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 95.6,
+              "source_type": "third-party",
+              "effort": null,
+              "origin": "increment-20261106",
+              "url": "https://www.vals.ai/models/grok_grok-4.6",
+              "source_label": "vals.ai"
+            }
+          ]
+        },
+        "Terminal-Bench-2.1(Vals)": {
+          "value": 78.3,
+          "max": null,
+          "effort": null,
+          "source_type": "third-party",
+          "url": "https://www.vals.ai/models/grok_grok-4.6",
+          "origin": "increment-20261106",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 78.3,
+              "source_type": "third-party",
+              "effort": null,
+              "origin": "increment-20261106",
+              "url": "https://www.vals.ai/models/grok_grok-4.6",
+              "source_label": "vals.ai"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "model": "grok-4.7",
+      "benchmarks": {
+        "Terminal-Bench-2.1(Vals)": {
+          "value": 73.4,
+          "max": null,
+          "effort": null,
+          "source_type": "third-party",
+          "url": "https://www.vals.ai/models/grok_grok-4.7",
+          "origin": "increment-20261106",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 73.4,
+              "source_type": "third-party",
+              "effort": null,
+              "origin": "increment-20261106",
+              "url": "https://www.vals.ai/models/grok_grok-4.7",
+              "source_label": "vals.ai"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "model": "grok-4.7-build-fast",
+      "benchmarks": {
+        "Terminal-Bench-2.1(Vals)": {
+          "value": 73.4,
+          "max": null,
+          "effort": null,
+          "source_type": "third-party",
+          "url": "https://www.vals.ai/models/grok_grok-4.7",
+          "origin": "increment-20261106",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 73.4,
+              "source_type": "third-party",
+              "effort": null,
+              "origin": "increment-20261106",
+              "url": "https://www.vals.ai/models/grok_grok-4.7",
+              "source_label": "vals.ai"
+            }
+          ]
+        }
+      }
+    },
+    {
       "model": "hy3",
       "benchmarks": {
         "DeepSWE-1.1": {
@@ -3092,6 +5981,87 @@
             }
           ],
           "caveat": "vendor-self-reported"
+        }
+      }
+    },
+    {
+      "model": "MiniMax-M3.1-Flash",
+      "benchmarks": {
+        "AA-LCR": {
+          "value": 80,
+          "max": null,
+          "effort": "max",
+          "source_type": "third-party",
+          "url": "https://artificialanalysis.ai/models/minimax-m3-1-flash",
+          "origin": "increment-20261110",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 80,
+              "source_type": "third-party",
+              "effort": "max",
+              "origin": "increment-20261110",
+              "url": "https://artificialanalysis.ai/models/minimax-m3-1-flash",
+              "source_label": "artificialanalysis.ai"
+            }
+          ]
+        },
+        "HLE": {
+          "value": 48,
+          "max": null,
+          "effort": "max",
+          "source_type": "third-party",
+          "url": "https://artificialanalysis.ai/models/minimax-m3-1-flash",
+          "origin": "increment-20261110",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 48,
+              "source_type": "third-party",
+              "effort": "max",
+              "origin": "increment-20261110",
+              "url": "https://artificialanalysis.ai/models/minimax-m3-1-flash",
+              "source_label": "artificialanalysis.ai"
+            }
+          ]
+        },
+        "SciCode": {
+          "value": 53,
+          "max": null,
+          "effort": "max",
+          "source_type": "third-party",
+          "url": "https://artificialanalysis.ai/models/minimax-m3-1-flash",
+          "origin": "increment-20261110",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 53,
+              "source_type": "third-party",
+              "effort": "max",
+              "origin": "increment-20261110",
+              "url": "https://artificialanalysis.ai/models/minimax-m3-1-flash",
+              "source_label": "artificialanalysis.ai"
+            }
+          ]
+        },
+        "Terminal-Bench-4.0": {
+          "value": 26,
+          "max": null,
+          "effort": "max",
+          "source_type": "third-party",
+          "url": "https://artificialanalysis.ai/models/minimax-m3-1-flash",
+          "origin": "increment-20261110",
+          "kind": "single",
+          "candidates": [
+            {
+              "value": 26,
+              "source_type": "third-party",
+              "effort": "max",
+              "origin": "increment-20261110",
+              "url": "https://artificialanalysis.ai/models/minimax-m3-1-flash",
+              "source_label": "artificialanalysis.ai"
+            }
+          ]
         }
       }
     },
